@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="Client.PortTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Client"
+             mc:Ignorable="d" Height="24
+             " Width="100">
+    <StackPanel Height="24" Margin="0,0,0,0" Width="100" Orientation="Horizontal">
+        <TextBox x:Name="txt_port" Height="18" TextWrapping="Wrap" Width="70" FocusManager.IsFocusScope="True" Margin="0,3" VerticalAlignment="Center" TextChanged="txt_port_TextChanged" MaxLength="5" DataObject.Pasting="DataObject_OnPasting" PreviewKeyDown="txt_port_PreviewKeyDown"/>
+        <Image x:Name="img_alert" Height="24" Width="24" Margin="6,0,0,0" Source="imgs/22x22_alert.png" ToolTip="Port number is invalid" Visibility="Hidden"/>
+    </StackPanel>
+</UserControl>
