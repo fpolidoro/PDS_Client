@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="Client.OpenWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Client"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="146">
+    <StackPanel Orientation="Horizontal" Height="26">
+        <Image x:Name="img_OpenWindowIcon" Width="26" Height="26"/>
+        <TextBlock x:Name="txtb_ProcessName" TextTrimming="WordEllipsis" VerticalAlignment="Center" Width="80"/>
+        <TextBlock x:Name="txtb_ProcessTimeFocused" Margin="4,0,0,0" Width="26" VerticalAlignment="Center"/>
+    </StackPanel>
+</UserControl>

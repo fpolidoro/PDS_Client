@@ -26,8 +26,8 @@
             </Menu>
         </DockPanel>
         <StackPanel x:Name="stackp_WindowsList" MinHeight="124" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Margin="2,0,2,2">
-            <ListBox x:Name="listBox_OpenWindows"  Height="124" Margin="2,0,2,2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Visibility="Collapsed">
-                <ListBox.ItemTemplate>
+            <ListBox x:Name="listBox_OpenWindows"  MinHeight="124" Margin="2,0,2,2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Visibility="Collapsed">
+                <!--<ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <Image Width="26" Height="26" Source="{Binding Icon}"/>
@@ -35,7 +35,7 @@
                             <Label Width="{Binding FocusTime}" Margin="4,0,0,0"/>
                         </StackPanel>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
+                </ListBox.ItemTemplate>-->
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" 

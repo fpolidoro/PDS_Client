@@ -34,3 +34,5 @@ U:\Documenti\Malnati\Client\Client\obj\Debug\ServerElement.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.g.resources
 U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.Properties.Resources.resources
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csproj.GenerateResource.Cache
+U:\Documenti\Malnati\Client\Client\obj\Debug\OpenWindow.g.cs
+U:\Documenti\Malnati\Client\Client\obj\Debug\OpenWindow.baml

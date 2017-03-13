@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 U:\Documenti\Malnati\Client\Client\App.xaml
-7154913140
+8408669057
 
-162121320995
+161665324317
 171983170503
-IPTextBox.xaml;MainWindow.xaml;PortTextBox.xaml;NewConnectionDialog.xaml;AddressBox.xaml;Themes\Generic.xaml;ServerElement.xaml;
+IPTextBox.xaml;MainWindow.xaml;PortTextBox.xaml;NewConnectionDialog.xaml;AddressBox.xaml;Themes\Generic.xaml;ServerElement.xaml;OpenWindow.xaml;
 
-True
+False
 
