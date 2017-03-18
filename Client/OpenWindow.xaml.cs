@@ -31,7 +31,7 @@ namespace Client
         [JsonProperty(PropertyName = "Status")]
         public String Status { get; set; }
 
-        private TimeSpan _hasFocusTime;
+        //private TimeSpan _hasFocusTime;
 
         public OpenWindow()
         {
@@ -40,7 +40,7 @@ namespace Client
 
         public void Initialize()
         {
-            _hasFocusTime = new TimeSpan();
+            //_hasFocusTime = new TimeSpan();
             img_OpenWindowIcon.Source = Base64ToBitmapImage(IconaBase64);
             txtb_ProcessName.Text = ProcName;             
         }

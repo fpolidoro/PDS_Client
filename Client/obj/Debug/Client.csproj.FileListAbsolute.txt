@@ -7,7 +7,6 @@ C:\Users\fab\Documents\Visual Studio 2015\Projects\Client\Client\obj\Debug\WpfAp
 U:\Documenti\Malnati\Client\Client\bin\Debug\WpfApplication3.exe.config
 U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.exe
 U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.pdb
-U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
 U:\Documenti\Malnati\Client\Client\obj\Debug\IPTextBox.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\IPTextBox.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\MainWindow.g.cs
@@ -36,3 +35,7 @@ U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.Properties.Resource
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csproj.GenerateResource.Cache
 U:\Documenti\Malnati\Client\Client\obj\Debug\OpenWindow.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\OpenWindow.baml
+E:\Documenti\Malnati\Client\Client\bin\Debug\WpfApplication3.exe.config
+E:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.exe
+E:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.pdb
+U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache

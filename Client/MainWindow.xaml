@@ -57,11 +57,11 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>-->
                 <!-- ItemTemplate -->
-                <ItemsControl.ItemTemplate>
+                <!-- <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <local:ServerElement BorderBrush="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" BorderThickness="1"/>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
+                </ItemsControl.ItemTemplate>-->
             </ItemsControl>
         </StackPanel>
         <StatusBar x:Name="statusBar" Height="26" Margin="0,0,0,0">

@@ -23,7 +23,7 @@ namespace Client
 
     public partial class MainWindow : Window
     {
-        private Boolean IsDirty;
+        //private Boolean IsDirty;
         public ObservableCollection<ServerElement> ServerList {
             get;
             set;
@@ -38,6 +38,12 @@ namespace Client
             ServerList.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(CollectionChanged);
         }
 
+        //per modificare il comportamento del tasto X della finestra principale
+        /*protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+
+        }*/
+
         private void btn_newConnection_Click(object sender, RoutedEventArgs e)
         {
             Server srv;
@@ -45,9 +51,9 @@ namespace Client
             newConnWin.ShowDialog();//showDialog fa in modo che la finestra sia modale
             if (srv.IsValid)
             {
-                var serverWin = new ServerElement();
+                var serverWin = new ServerElement(srv);
                 serverWin.SetParent(this);
-                serverWin.Srv = srv;
+                //serverWin.Srv = srv;
                 ServerList.Add(serverWin);
             }
         }

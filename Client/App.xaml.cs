@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,15 +13,15 @@ namespace Client
     /// </summary>
     public partial class App : Application
     {
-        /*
+        
         [STAThread]
         public static void Main()
         {
             var application = new App();
             application.InitializeComponent();
             application.Run();
-        }*/
+        }
     }
 
     
-}
+}*/
