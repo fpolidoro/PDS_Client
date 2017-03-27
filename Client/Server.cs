@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using System.Drawing;
+using System.Threading;
 
 namespace Client
 {
@@ -19,6 +20,7 @@ namespace Client
         private DateTime _connectionTime;   //tempo in cui la connessione è attiva
         //private LinkedList<OpenWindow> _openWindows;    //linkedList può aggiungere in testa o in coda o in punti specifici
         private ServerElement _parentGUIElement;
+        private ManualResetEvent CloseEvent = new ManualResetEvent(false); //permette di fermare la ricezione
 
         public Server()
         {
@@ -78,11 +80,12 @@ namespace Client
         /** Riceve una stringa json da cui estrae nome processo, icona e tipo di evento (nuova finestra, chiusura finestra, cambio focus)
         *   Ritorna true se l'operazione e' andata a buon fine, false se ci sono errori
         **/
+
         public void Receive()
         {
             Console.WriteLine("Receive è partita.");
-            /*try
-            {*/
+            try
+            {
                 NetworkStream nws = new NetworkStream(_socket);
                 StringBuilder json = new StringBuilder();
                 string received;
@@ -92,51 +95,76 @@ namespace Client
                 int totalRead;
                 int read;
                 Action<string> addToList = _parentGUIElement.pendingJSONs.Add;
-                while(nws.DataAvailable)
+
+                while (!CloseEvent.WaitOne(0))
                 {//ciclo fino a quando ricevo uno stop dall'esterno oppure ottengo un errore dal socket
                     totalRead = 0;
                     length = 0;
-                    Console.WriteLine("Dentro al while di receive.");
-                    //ricevo la stringa json
-                    read = nws.Read(bufferLength, 0, 4);
-                    length = BitConverter.ToInt32(bufferLength, 0);
-                    buffer = new byte[length];
-                    read = 0;
-                    while (totalRead < buffer.Length)
+                    //Console.WriteLine("Dentro al while di receive.");
+                    try
                     {
-                        read = nws.Read(buffer, totalRead, buffer.Length - totalRead);
-                        totalRead += read;
-                        received = Encoding.ASCII.GetString(buffer);
-                        json.Append(received);
-                    }/* while (nws.DataAvailable);*/
-                     //il json è stato ricevuto completamente, quindi lo aggiungo alla lista dei json
-                     //(che è nel thread della GUI) da elaborare e visualizzare
-                     /*_parentGUIElement.Dispatcher.BeginInvoke((Action)delegate ()
-                     {
-                         _parentGUIElement.pendingJSONs.Add(json.ToString());
-                     });*/
-
-                    _parentGUIElement.Dispatcher.BeginInvoke(addToList, json.ToString());
-                    //_parentGUIElement.pendingJSONs.Add(json.ToString());
-                    //Console.WriteLine("Received string: {0}", received);
-                    Console.WriteLine("pendingJSONs ha {0} elementi.", _parentGUIElement.pendingJSONs.Count);
-                    //Console.WriteLine("elemento: {0}", _parentGUIElement.pendingJSONs.Last());
+                        if (!nws.DataAvailable)
+                        {
+                            Thread.Sleep(1);
+                        }
+                        else if ((read = nws.Read(bufferLength, 0, 4)) > 0)
+                        {
+                            // Raise the DataReceived event w/ data...
+                            length = BitConverter.ToInt32(bufferLength, 0);
+                            if (length < 10000 && length > 0)
+                            {
+                                Console.WriteLine("length = {0}", length);
+                                buffer = new byte[length];
+                                read = 0;
+                                while (totalRead < buffer.Length)
+                                {
+                                    read = nws.Read(buffer, totalRead, buffer.Length - totalRead);
+                                    totalRead += read;
+                                    received = Encoding.ASCII.GetString(buffer);
+                                    json.Append(received);
+                                }
+                                _parentGUIElement.Dispatcher.BeginInvoke(addToList, json.ToString());
+                                json.Clear();   //ripulisco la stringa contenente il json
+                                Console.WriteLine("pendingJSONs ha {0} elementi.", _parentGUIElement.pendingJSONs.Count);
+                            }
+                            else
+                            {   //la dimensione del json è eccessivamente grande o negativa, quindi chiudo il socket
+                                Console.WriteLine("La dimensione del json è eccessivamente grande o negativa, quindi chiudo il socket");
+                                CloseEvent.Set();
+                            }
+                        }
+                        else
+                        {
+                            // The connection has closed gracefully, so stop the
+                            // thread.
+                            Console.WriteLine("Connessione chiusa dalla controparte");
+                            CloseEvent.Set();
+                        }
+                    }
+                    catch (IOException ioe)
+                    {   //càpita quando il timeout scade senza che siano stati ricevuti dati
+                        Console.WriteLine("Connessione chiusa per timeout: {0}", MsgException);
+                        MsgException = ioe.Message;
+                    }
                 }
-            /*}
-            catch (ObjectDisposedException ode)
-            {
-                //il socket è chiuso o è impossibile leggere dalla rete
-                //la finestra deve diventare grigia e il client deve riprovare a connettersi al server
-                MsgException = ode.Message;
-                return;
+                Console.WriteLine("uscito dal while.waitone");
             }
             catch (Exception e)
             {
                 MsgException = e.Message;
-                return;
-            }*/
+                Console.WriteLine("Eccezione nel try-catch esterno: {0}",MsgException);
+            }
+            finally
+            {
+                Console.WriteLine("Finally");
+                Close();
+            }
             ////Console.WriteLine("json = " + json.ToString());
             return;
+        }
+
+        public void StopReceive() {
+            CloseEvent.Set();
         }
 
         /** Converte l'img codificata in base64 in oggetto Image

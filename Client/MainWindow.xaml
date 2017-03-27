@@ -22,7 +22,7 @@
                     <MenuItem Header="_New Connection"/>
                     <Separator/>
                     <MenuItem Header="_Disconnect All" />
-                    <MenuItem Header="Send Key Combo" />
+                    <MenuItem Header="_Send Key Combo" />
                 </MenuItem>
             </Menu>
             <Menu x:Name="menu_about" Width="18">
@@ -48,22 +48,24 @@
             </Button>
             <Rectangle Fill="#FFF4F4F5" Stroke="Black" Width="500" Opacity="0"/>
         </DockPanel>
-        <StackPanel x:Name="stackp_serverGrid" ScrollViewer.VerticalScrollBarVisibility="Auto" Width="790" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" MinHeight="492">
-            <ItemsControl x:Name="ic_serverElements" Height="492">
-                <!-- ItemsPanelTemplate -->
-                <!--<ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>-->
-                <!-- ItemTemplate -->
-                <!-- <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <local:ServerElement BorderBrush="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" BorderThickness="1"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>-->
-            </ItemsControl>
-        </StackPanel>
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1">
+            <StackPanel x:Name="stackp_serverGrid" ScrollViewer.VerticalScrollBarVisibility="Auto" Width="790" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" MinHeight="492">
+                <ItemsControl x:Name="ic_serverElements" Height="492">
+                    <!-- ItemsPanelTemplate -->
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <!-- ItemTemplate -->
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <!--<local:ServerElement BorderBrush="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" BorderThickness="1"/>-->
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
         <StatusBar x:Name="statusBar" Height="26" Margin="0,0,0,0">
             <Label x:Name="lbl_status" Content="status" Padding="5,0" Height="18"/>
         </StatusBar>

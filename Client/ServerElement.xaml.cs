@@ -94,34 +94,52 @@ namespace Client
                             gif_retrievingList.Visibility = Visibility.Collapsed;
                     stackp_WindowsList.ClearValue(ToolTipProperty);
                     //estraggo il primo elemento della lista e lo processo (le aggiunte sono fatte in coda)
-                    OpenWindow win = JsonConvert.DeserializeObject<OpenWindow>(pendingJSONs.First());
-                    Debug.Assert(win != null, "win == NULL");
-                    win.Initialize();
-                    if (win.HasFocus())
-                    {   //la finestra ha il focus, quindi la metto come prima della lista
-                        _openWindows.AddFirst(win);
-                        listBox_OpenWindows.Items.Add(win);
-                    }
-                    else
-                    {//DA RIVEDERE: se non è in focus, la devo inserire in base al tempo per cui è stata in focus e non al fondo
-                        _openWindows.AddLast(win); //meglio avere una SortedList
-                        listBox_OpenWindows.Items.Add(win);
-                        Console.WriteLine("aggiunto l'item win");
-                    }
-
-                    if (listBox_OpenWindows.Visibility == Visibility.Collapsed)
+                    string element = pendingJSONs.First();
+                    try
                     {
-                        listBox_OpenWindows.Visibility = Visibility.Visible;
-                        if (win.Status == "NewWindow")
-                        {
-                            _openWindows.AddLast(win);
+                        OpenWindow win = JsonConvert.DeserializeObject<OpenWindow>(pendingJSONs.First());
+                        Debug.Assert(win != null, "win == NULL");
+                        win.Initialize();
+                        if (win.HasFocus())
+                        {   //la finestra ha il focus, quindi la metto come prima della lista
+                            _openWindows.AddFirst(win);
+                            listBox_OpenWindows.Items.Add(win);
                         }
+                        else
+                        {//DA RIVEDERE: se non è in focus, la devo inserire in base al tempo per cui è stata in focus e non al fondo
+                            _openWindows.AddLast(win); //meglio avere una SortedList
+                            listBox_OpenWindows.Items.Add(win);
+                            Console.WriteLine("aggiunto l'item win");
+                        }
+
+                        if (listBox_OpenWindows.Visibility == Visibility.Collapsed)
+                        {
+                            listBox_OpenWindows.Visibility = Visibility.Visible;
+                            if (win.Status == "NewWindow")
+                            {
+                                _openWindows.AddLast(win);
+                            }
+                        }
+                        //else if (listBox_OpenWindows.Visibility == Visibility.Visible && _openWindows.Count == 1 /*&& _openWindows.First*/)
+                        /*{
+                            //se ho un solo elemento nella lista che sta venendo chiuso, collasso la lista, ma va messo un msg tipo "no finestre aperte"
+                            listBox_OpenWindows.Visibility = Visibility.Collapsed;
+                        }*/
                     }
-                    //else if (listBox_OpenWindows.Visibility == Visibility.Visible && _openWindows.Count == 1 /*&& _openWindows.First*/)
+                    catch (JsonException jsone)
                     {
-                        //se ho un solo elemento nella lista che sta venendo chiuso, collasso la lista, ma va messo un msg tipo "no finestre aperte"
-                        listBox_OpenWindows.Visibility = Visibility.Collapsed;
+                        Console.WriteLine("{0}: l'elemento non sarà visualizzato", jsone.Message);
                     }
+                    catch (Exception ex)
+                    {
+                        //errore nella deserializzazione del json, quindi rimuovo l'elemento dalla lista
+                        Console.WriteLine("{0}: l'elemento non sarà visualizzato", ex.Message);
+                    }
+                    finally
+                    {
+                        pendingJSONs.Remove(element);
+                    }
+                    
                 }
             }
 
@@ -194,7 +212,7 @@ namespace Client
         private void mitem_disconnect_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("Receive stopped.");
-            _receiveThread.Abort();
+            _srv.StopReceive();
             Console.WriteLine("Thread joined.");
             _srv.Close();
             Console.WriteLine("_srv closed.");
