@@ -91,7 +91,7 @@ namespace Client
                 {
                     Debug.WriteLine(item);
                     //rimuovo il tooltip
-                            gif_retrievingList.Visibility = Visibility.Collapsed;
+                    gif_retrievingList.Visibility = Visibility.Collapsed;
                     stackp_WindowsList.ClearValue(ToolTipProperty);
                     //estraggo il primo elemento della lista e lo processo (le aggiunte sono fatte in coda)
                     string element = pendingJSONs.First();
@@ -103,13 +103,14 @@ namespace Client
                         if (win.HasFocus())
                         {   //la finestra ha il focus, quindi la metto come prima della lista
                             _openWindows.AddFirst(win);
-                            listBox_OpenWindows.Items.Add(win);
+                            win.Highlight(true);
+                            listBox_OpenWindows.Items.Insert(0, win);
                         }
                         else
                         {//DA RIVEDERE: se non è in focus, la devo inserire in base al tempo per cui è stata in focus e non al fondo
                             _openWindows.AddLast(win); //meglio avere una SortedList
                             listBox_OpenWindows.Items.Add(win);
-                            Console.WriteLine("aggiunto l'item win");
+                            Debug.WriteLine("aggiunto l'item win");
                         }
 
                         if (listBox_OpenWindows.Visibility == Visibility.Collapsed)
@@ -128,12 +129,12 @@ namespace Client
                     }
                     catch (JsonException jsone)
                     {
-                        Console.WriteLine("{0}: l'elemento non sarà visualizzato", jsone.Message);
+                        Debug.WriteLine("{0}: l'elemento non sarà visualizzato", jsone.Message);
                     }
                     catch (Exception ex)
                     {
                         //errore nella deserializzazione del json, quindi rimuovo l'elemento dalla lista
-                        Console.WriteLine("{0}: l'elemento non sarà visualizzato", ex.Message);
+                        Debug.WriteLine("{0}: l'elemento non sarà visualizzato", ex.Message);
                     }
                     finally
                     {
@@ -161,7 +162,7 @@ namespace Client
         //{
         //    add
         //    {
-        //        Console.Write("La lista è stata modificata dal server.");
+        //        Debug.Write("La lista è stata modificata dal server.");
         //        //rimuovo il tooltip
         //        gif_retrievingList.Visibility = Visibility.Collapsed;
         //        stackp_WindowsList.ClearValue(ToolTipProperty);
@@ -178,7 +179,7 @@ namespace Client
         //        {//DA RIVEDERE: se non è in focus, la devo inserire in base al tempo per cui è stata in focus e non al fondo
         //            _openWindows.AddLast(win); //meglio avere una SortedList
         //            listBox_OpenWindows.Items.Add(win);
-        //            Console.WriteLine("aggiunto l'item win");
+        //            Debug.WriteLine("aggiunto l'item win");
         //        }
 
         //        if (listBox_OpenWindows.Visibility == Visibility.Collapsed)
@@ -211,11 +212,11 @@ namespace Client
 
         private void mitem_disconnect_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Receive stopped.");
+            Debug.WriteLine("Receive stopped.");
             _srv.StopReceive();
-            Console.WriteLine("Thread joined.");
+            Debug.WriteLine("Thread joined.");
             _srv.Close();
-            Console.WriteLine("_srv closed.");
+            Debug.WriteLine("_srv closed.");
             //rimuove il server element dalla lista dei server
             //anche se meglio avere un listener nel main
             _parent.ServerList.Remove(this);
@@ -224,10 +225,10 @@ namespace Client
         /*
         private async void ParseJSONToWindow(string json)
         {
-            Console.WriteLine("siamo in ReadAndParseJSON");
+            Debug.WriteLine("siamo in ReadAndParseJSON");
             Debug.Assert(!json.Equals(""), "json == {}");
             Debug.Assert(json != null, "json == NULL");
-            Console.WriteLine(json);
+            Debug.WriteLine(json);
             OpenWindow win = JsonConvert.DeserializeObject<OpenWindow>(json);
             Debug.Assert(win != null, "win == NULL");
             win.Initialize();
@@ -240,7 +241,7 @@ namespace Client
             {//DA RIVEDERE: se non è in focus, la devo inserire in base al tempo per cui è stata in focus e non al fondo
                 _openWindows.AddLast(win); //meglio avere una SortedList
                 listBox_OpenWindows.Items.Add(win);
-                Console.WriteLine("aggiunto l'item win");
+                Debug.WriteLine("aggiunto l'item win");
             }
 
             if (listBox_OpenWindows.Visibility == Visibility.Collapsed)

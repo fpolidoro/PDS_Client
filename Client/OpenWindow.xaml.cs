@@ -51,6 +51,11 @@ namespace Client
             return false;
         }
 
+        //imposta il colore di background dell'elemento in focus
+        public void Highlight(bool value) {
+            this.Background = Brushes.Wheat;
+        }
+
         public static BitmapImage Base64ToBitmapImage(string base64String)
         {
             // Convert base 64 string to byte[]

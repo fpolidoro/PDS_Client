@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Drawing;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Client
 {
@@ -83,7 +84,7 @@ namespace Client
 
         public void Receive()
         {
-            Console.WriteLine("Receive è partita.");
+            Debug.WriteLine("Receive è partita.");
             try
             {
                 NetworkStream nws = new NetworkStream(_socket);
@@ -100,7 +101,7 @@ namespace Client
                 {//ciclo fino a quando ricevo uno stop dall'esterno oppure ottengo un errore dal socket
                     totalRead = 0;
                     length = 0;
-                    //Console.WriteLine("Dentro al while di receive.");
+                    //Debug.WriteLine("Dentro al while di receive.");
                     try
                     {
                         if (!nws.DataAvailable)
@@ -113,7 +114,7 @@ namespace Client
                             length = BitConverter.ToInt32(bufferLength, 0);
                             if (length < 10000 && length > 0)
                             {
-                                Console.WriteLine("length = {0}", length);
+                                Debug.WriteLine("length = {0}", length);
                                 buffer = new byte[length];
                                 read = 0;
                                 while (totalRead < buffer.Length)
@@ -125,11 +126,11 @@ namespace Client
                                 }
                                 _parentGUIElement.Dispatcher.BeginInvoke(addToList, json.ToString());
                                 json.Clear();   //ripulisco la stringa contenente il json
-                                Console.WriteLine("pendingJSONs ha {0} elementi.", _parentGUIElement.pendingJSONs.Count);
+                                Debug.WriteLine("pendingJSONs ha {0} elementi.", _parentGUIElement.pendingJSONs.Count);
                             }
                             else
                             {   //la dimensione del json è eccessivamente grande o negativa, quindi chiudo il socket
-                                Console.WriteLine("La dimensione del json è eccessivamente grande o negativa, quindi chiudo il socket");
+                                Debug.WriteLine("La dimensione del json è eccessivamente grande o negativa, quindi chiudo il socket");
                                 CloseEvent.Set();
                             }
                         }
@@ -137,29 +138,29 @@ namespace Client
                         {
                             // The connection has closed gracefully, so stop the
                             // thread.
-                            Console.WriteLine("Connessione chiusa dalla controparte");
+                            Debug.WriteLine("Connessione chiusa dalla controparte");
                             CloseEvent.Set();
                         }
                     }
                     catch (IOException ioe)
                     {   //càpita quando il timeout scade senza che siano stati ricevuti dati
-                        Console.WriteLine("Connessione chiusa per timeout: {0}", MsgException);
+                        Debug.WriteLine("Connessione chiusa per timeout: {0}", MsgException);
                         MsgException = ioe.Message;
                     }
                 }
-                Console.WriteLine("uscito dal while.waitone");
+                Debug.WriteLine("uscito dal while.waitone");
             }
             catch (Exception e)
             {
                 MsgException = e.Message;
-                Console.WriteLine("Eccezione nel try-catch esterno: {0}",MsgException);
+                Debug.WriteLine("Eccezione nel try-catch esterno: {0}",MsgException);
             }
             finally
             {
-                Console.WriteLine("Finally");
+                Debug.WriteLine("Finally");
                 Close();
             }
-            ////Console.WriteLine("json = " + json.ToString());
+            ////Debug.WriteLine("json = " + json.ToString());
             return;
         }
 

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Client" Height="600" Width="800" WindowStartupLocation="CenterScreen" MinWidth="800" MinHeight="600" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        Title="Client" Height="600" Width="820" WindowStartupLocation="CenterScreen" MinWidth="810" MinHeight="600" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
     <StackPanel x:Name="stackp_base" Margin="0">
         <WrapPanel x:Name="wrap_menus" Height="18" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
             <Menu x:Name="menu_file" Height="24" Width="32">
@@ -49,12 +49,12 @@
             <Rectangle Fill="#FFF4F4F5" Stroke="Black" Width="500" Opacity="0"/>
         </DockPanel>
         <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1">
-            <StackPanel x:Name="stackp_serverGrid" ScrollViewer.VerticalScrollBarVisibility="Auto" Width="790" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" MinHeight="492">
-                <ItemsControl x:Name="ic_serverElements" Height="492">
+            <StackPanel x:Name="stackp_serverGrid" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" MinHeight="492">
+                <ItemsControl x:Name="ic_serverElements" MinHeight="492">
                     <!-- ItemsPanelTemplate -->
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                            <UniformGrid ScrollViewer.VerticalScrollBarVisibility="Auto" Rows="2" Columns="4" VerticalAlignment="Top"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <!-- ItemTemplate -->
