@@ -44,6 +44,10 @@ namespace Client
             _port = port;
         }
 
+        public string GetAddress() {
+            return _address;
+        }
+
         public Task<string> Startup()
         {
             //MessageBox.Show("server is connecting", "Prova", MessageBoxButton.OK, MessageBoxImage.None);
@@ -57,7 +61,7 @@ namespace Client
 
                 //clientAddr.AddressFamily serve a specificare il socket giusto
                 _socket = new Socket(clientAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                SetSocketOptions();
+                _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
                 _socket.Connect(clientEndPoint);
                 //_TCPclient = new TcpClient();
                 //_TCPclient.Connect(clientAddr, _port);
@@ -96,6 +100,7 @@ namespace Client
                 int totalRead;
                 int read;
                 Action<string> addToList = _parentGUIElement.pendingJSONs.Add;
+                Action<string> notifySocketStatus = _parentGUIElement.SocketStatusChanged;
 
                 while (!CloseEvent.WaitOne(0))
                 {//ciclo fino a quando ricevo uno stop dall'esterno oppure ottengo un errore dal socket
@@ -104,12 +109,19 @@ namespace Client
                     //Debug.WriteLine("Dentro al while di receive.");
                     try
                     {
-                        if (!nws.DataAvailable)
+                        /*if (!nws.DataAvailable)
                         {
                             Thread.Sleep(1);
                         }
-                        else if ((read = nws.Read(bufferLength, 0, 4)) > 0)
+                        else */if ((read = nws.Read(bufferLength, 0, 4)) >= 0)
                         {
+                            if (read == 0)
+                            {//il server ha chiuso la connessione, non ha senso riconnettersi perchè ha proprio fatto socket close
+                                Debug.WriteLine("Connessione chiusa gentilmente dalla controparte");
+                                _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "SocketGentlyDisposed");
+                                CloseEvent.Set();
+                                break;
+                            }
                             // Raise the DataReceived event w/ data...
                             length = BitConverter.ToInt32(bufferLength, 0);
                             if (length < 10000 && length > 0)
@@ -134,18 +146,26 @@ namespace Client
                                 CloseEvent.Set();
                             }
                         }
-                        else
+                        /*else
                         {
                             // The connection has closed gracefully, so stop the
                             // thread.
                             Debug.WriteLine("Connessione chiusa dalla controparte");
                             CloseEvent.Set();
-                        }
+                        }*/
                     }
-                    catch (IOException ioe)
+                    catch (IOException ioe) //qui è probabile che sia crashato il server, quindi bisogna tentare le 3 riconnessioni
                     {   //càpita quando il timeout scade senza che siano stati ricevuti dati
                         Debug.WriteLine("Connessione chiusa per timeout: {0}", MsgException);
                         MsgException = ioe.Message;
+                        _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "IOException");
+                        break;
+                    }
+                    catch (ObjectDisposedException ode) {
+                        Debug.WriteLine("Connessione chiusa per timeout: {0}", MsgException);
+                        MsgException = ode.Message;
+                        _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "ObjectDisposedException");
+                        break;
                     }
                 }
                 Debug.WriteLine("uscito dal while.waitone");
@@ -186,16 +206,6 @@ namespace Client
         {
             _socket.Dispose();
             _socket.Close();
-        }
-
-        public void SetSocketOptions()
-        {
-            if (_socket.Poll(1000, SelectMode.SelectRead)) {
-                //per chiudere la connessione in modo "grazioso" ma senza attendere la fine delle spedizioni
-                _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
-                //per mantenere attiva la connessione, spedendo pacchetti ogni tanto
-                _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
-            }
         }
 
         public string Name()

@@ -72,8 +72,8 @@
             </CheckBox>
         </StackPanel>
         <StackPanel x:Name="stackp_ConnectAndCancel" Orientation="Horizontal" MinHeight="24" FlowDirection="RightToLeft">
-            <Button x:Name="btn_Ok" Content="Ok" Width="60" Margin="2" Visibility="Collapsed" Click="btn_Ok_Click"/>
             <Button x:Name="btn_Connect" Content="Connect" IsDefault="True" Width="60" Margin="2,2,16,2" HorizontalAlignment="Right" Click="btn_Connect_Click"/>
+            <Button x:Name="btn_Ok" Content="Ok" Width="60" Margin="2" Visibility="Collapsed" Click="btn_Ok_Click"/>
             <Button x:Name="btn_Cancel" Content="Cancel" IsCancel="True" Width="60" HorizontalAlignment="Right" Margin="0,2"/>
         </StackPanel>
     </StackPanel>

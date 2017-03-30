@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -24,6 +26,7 @@ namespace Client
     public partial class MainWindow : Window
     {
         //private Boolean IsDirty;
+        private LinkedList<string> _serverAddressList;
         public ObservableCollection<ServerElement> ServerList {
             get;
             set;
@@ -32,6 +35,7 @@ namespace Client
         public MainWindow()
         {
             ServerList = new ObservableCollection<ServerElement>();
+            _serverAddressList = new LinkedList<string>();
             InitializeComponent();
             //ItemsSource = "{Binding Source=ServerList}"
             ic_serverElements.ItemsSource = ServerList;
@@ -47,15 +51,26 @@ namespace Client
         private void btn_newConnection_Click(object sender, RoutedEventArgs e)
         {
             Server srv;
-            Window newConnWin = new NewConnectionDialog(out srv);
+            Window newConnWin = new NewConnectionDialog(out srv, this);
             newConnWin.ShowDialog();//showDialog fa in modo che la finestra sia modale
             if (srv.IsValid)
             {
-                var serverWin = new ServerElement(srv);
-                serverWin.SetParent(this);
-                //serverWin.Srv = srv;
-                ServerList.Add(serverWin);
+                if (_serverAddressList.Contains(srv.GetAddress()))
+                {
+                    MessageBox.Show(MsgServerAlreadyExisting(srv.GetAddress()), "Warning", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                else {
+                    var serverWin = new ServerElement(srv);
+                    serverWin.SetParent(this);
+                    //serverWin.Srv = srv;
+                    _serverAddressList.AddLast(srv.GetAddress());
+                    ServerList.Add(serverWin);
+                }
             }
+        }
+
+        public void UpdateStatusBar(string status) {
+            lbl_status.Content = status;
         }
 
         
@@ -75,5 +90,11 @@ namespace Client
         {
             IsDirty = true;
         }*/
+
+        private string MsgServerAlreadyExisting(string ip)
+        {
+            return "Server " + ip + " already exists.";
+        }
     }
+
 }

@@ -22,6 +22,7 @@ namespace Client
     /// </summary>
     public partial class NewConnectionDialog : Window, INotifyPropertyChanged
     {
+        private MainWindow _parentWindow;
         private Boolean _addressIsValid;    //indirizzo
         private Boolean _portIsValid;    //porta
         private bool _closeOnConnected;
@@ -40,11 +41,12 @@ namespace Client
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public NewConnectionDialog(out Server serv)
+        public NewConnectionDialog(out Server serv, MainWindow parentWin)
         {
             serv = new Server();
             _srv = serv;
             Debug.Assert(_srv == serv);
+            _parentWindow = parentWin;
             InitializeComponent();
             rdbtn_IPaddress.IsChecked = true;   //altrimenti dà nullRefException perchè il secondo radio non è ancora inizializzato quando il primo viene spuntato
             btn_Connect.IsEnabled = false;
@@ -188,7 +190,17 @@ namespace Client
             }
             ConnectionLabel = "Connecting";
             _srv.SetAddressAndPort(_address, _port);
+            Action<string> actionUpdateStatusBar = _parentWindow.UpdateStatusBar;
+            StringBuilder connectingTo = new StringBuilder("Trying to connect to ");
+            connectingTo.Append(_address);
+            connectingTo.Append(":");
+            connectingTo.Append(_port);
+            _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
             ConnectionLabel = await Task.Run(() => _srv.Startup());
+            connectingTo.Clear();
+            connectingTo.Append("Connected to ");
+            connectingTo.Append(_address);
+            _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
             //animazione della gui
         }
 

@@ -25,7 +25,7 @@ namespace Client
     /// <summary>
     /// Logica di interazione per ServerElement.xaml
     /// </summary>
-    public partial class ServerElement : UserControl/*, INotifyPropertyChanged*/
+    public partial class ServerElement : UserControl
     {
         private MainWindow _parent;
         private Server _srv;
@@ -35,16 +35,6 @@ namespace Client
         //private int _reconnAttempts;
         private Thread _receiveThread;
         private object _lock;
-
-        /*public Server Srv{
-            get { return _srv; }
-            set
-            {
-                _srv = value;
-                _srv.SetGUIParentElement(this);
-                txtb_serverAddress.Text = _srv.Name();
-            }
-        }*/
 
         public ObservableCollection<string> pendingJSONs;
 
@@ -152,6 +142,19 @@ namespace Client
                 {
                     Debug.WriteLine(item);
                 }
+            }
+        }
+
+        public void SocketStatusChanged(string value) {
+            if (value.Equals("ObjectDisposedException") || value.Equals("IOException"))
+            {
+                //il socket si è chiuso inaspettatamente
+                
+                //img_ConnectionStatus.Source
+            }
+            else if (value.Equals("SocketGentlyDisposed")) {
+                //il socket ha chiuso la connessione in modo corretto
+                //dovrei trasformare le finestre da colori in grayscale per far capire che la connessione è andata
             }
         }
 

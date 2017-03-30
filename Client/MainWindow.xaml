@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Client" Height="600" Width="820" WindowStartupLocation="CenterScreen" MinWidth="810" MinHeight="600" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        Title="Client" Height ="610" Width="820" WindowStartupLocation="CenterScreen" MinWidth="810" MinHeight="610" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
     <StackPanel x:Name="stackp_base" Margin="0">
         <WrapPanel x:Name="wrap_menus" Height="18" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
             <Menu x:Name="menu_file" Height="24" Width="32">
@@ -66,7 +66,7 @@
                 </ItemsControl>
             </StackPanel>
         </Border>
-        <StatusBar x:Name="statusBar" Height="26" Margin="0,0,0,0">
+        <StatusBar x:Name="statusBar" Height="24" Margin="0,0,0,0" MinHeight="24">
             <Label x:Name="lbl_status" Content="status" Padding="5,0" Height="18"/>
         </StatusBar>
     </StackPanel>
