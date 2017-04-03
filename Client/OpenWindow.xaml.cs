@@ -22,6 +22,9 @@ namespace Client
     /// </summary>
     public partial class OpenWindow : UserControl
     {
+        [JsonProperty(PropertyName = "WindowID")]
+        public string WindowID { get; set; }
+
         [JsonProperty(PropertyName = "WindowName")]
         public string ProcName { get; set; }
 
@@ -30,6 +33,8 @@ namespace Client
 
         [JsonProperty(PropertyName = "Status")]
         public String Status { get; set; }
+
+        public int ID { get; set; }
 
         //private TimeSpan _hasFocusTime;
 
@@ -41,7 +46,11 @@ namespace Client
         public void Initialize()
         {
             //_hasFocusTime = new TimeSpan();
-            img_OpenWindowIcon.Source = Base64ToBitmapImage(IconaBase64);
+            if (!IconaBase64.Equals(""))    //i json successivi al NewWindow non avranno l'icona, quindi arriverà una stringa vuota
+            {
+                img_OpenWindowIcon.Source = Base64ToBitmapImage(IconaBase64);
+            }
+            ID = Convert.ToInt32(WindowID);
             txtb_ProcessName.Text = ProcName;             
         }
         public bool HasFocus()

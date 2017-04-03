@@ -30,7 +30,9 @@ namespace Client
         private MainWindow _parent;
         private Server _srv;
         private Uri _uriRetrieving;
-        private LinkedList<OpenWindow> _openWindows;
+        private Uri _uriConnected;
+        private Uri _uriDisconnected;
+        private LinkedList<int> _openWindows;
         //private static int _RECLIMIT = 3;
         //private int _reconnAttempts;
         private Thread _receiveThread;
@@ -42,6 +44,8 @@ namespace Client
         {
             InitializeComponent();
             _uriRetrieving = new Uri(@"pack://application:,,,/imgs/32x32_RetrievingList.gif");
+            _uriDisconnected = new Uri("pack://application:,,,/imgs/16x16_disconnected.png");
+            _uriConnected = new Uri("pack://application:,,,/imgs/16x16_Connected.png");
             //qui devo avviare il task asincrono che gestisca la receive o comunque l'ascolto
             //_reconnAttempts = 0;
 
@@ -50,7 +54,7 @@ namespace Client
             _srv.SetGUIParentElement(this);
             txtb_serverAddress.Text = _srv.Name();
 
-            _openWindows = new LinkedList<OpenWindow>();
+            _openWindows = new LinkedList<int>();
             pendingJSONs = new ObservableCollection<string>();
             _lock = new object();
             Debug.Assert(pendingJSONs != null, "pendingJSONs == NULL");
@@ -90,15 +94,16 @@ namespace Client
                         OpenWindow win = JsonConvert.DeserializeObject<OpenWindow>(pendingJSONs.First());
                         Debug.Assert(win != null, "win == NULL");
                         win.Initialize();
+                        if(win.ID())
                         if (win.HasFocus())
                         {   //la finestra ha il focus, quindi la metto come prima della lista
-                            _openWindows.AddFirst(win);
+                            _openWindows.AddFirst(win.ID());
                             win.Highlight(true);
                             listBox_OpenWindows.Items.Insert(0, win);
                         }
                         else
                         {//DA RIVEDERE: se non è in focus, la devo inserire in base al tempo per cui è stata in focus e non al fondo
-                            _openWindows.AddLast(win); //meglio avere una SortedList
+                            _openWindows.AddLast(win.ID); //meglio avere una SortedList
                             listBox_OpenWindows.Items.Add(win);
                             Debug.WriteLine("aggiunto l'item win");
                         }
@@ -108,7 +113,7 @@ namespace Client
                             listBox_OpenWindows.Visibility = Visibility.Visible;
                             if (win.Status == "NewWindow")
                             {
-                                _openWindows.AddLast(win);
+                                _openWindows.AddLast(win.ID);
                             }
                         }
                         //else if (listBox_OpenWindows.Visibility == Visibility.Visible && _openWindows.Count == 1 /*&& _openWindows.First*/)
@@ -145,67 +150,24 @@ namespace Client
             }
         }
 
-        public void SocketStatusChanged(string value) {
+        public void SocketStatusChanged(string value)
+        {
             if (value.Equals("ObjectDisposedException") || value.Equals("IOException"))
             {
                 //il socket si è chiuso inaspettatamente
-                
-                //img_ConnectionStatus.Source
+                img_ConnectionStatus.Source = new BitmapImage(_uriDisconnected);
             }
-            else if (value.Equals("SocketGentlyDisposed")) {
+            else if (value.Equals("SocketGentlyDisposed"))
+            {
                 //il socket ha chiuso la connessione in modo corretto
                 //dovrei trasformare le finestre da colori in grayscale per far capire che la connessione è andata
+                img_ConnectionStatus.Source = new BitmapImage(_uriDisconnected);
+            }
+            else if (value.Equals("Connected"))
+            {
+                img_ConnectionStatus.Source = new BitmapImage(_uriConnected);
             }
         }
-
-        /** Property change listener per la ObservableCollection pendingJSONs: per ciascuna aggiunta/rimozione
-         *  la UI viene aggiornata
-        **/
-        //event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
-        //{
-        //    add
-        //    {
-        //        Debug.Write("La lista è stata modificata dal server.");
-        //        //rimuovo il tooltip
-        //        gif_retrievingList.Visibility = Visibility.Collapsed;
-        //        stackp_WindowsList.ClearValue(ToolTipProperty);
-        //        //estraggo il primo elemento della lista e lo processo (le aggiunte sono fatte in coda)
-        //        OpenWindow win = JsonConvert.DeserializeObject<OpenWindow>(pendingJSONs.First());
-        //        Debug.Assert(win != null, "win == NULL");
-        //        win.Initialize();
-        //        if (win.HasFocus())
-        //        {   //la finestra ha il focus, quindi la metto come prima della lista
-        //            _openWindows.AddFirst(win);
-        //            listBox_OpenWindows.Items.Add(win);
-        //        }
-        //        else
-        //        {//DA RIVEDERE: se non è in focus, la devo inserire in base al tempo per cui è stata in focus e non al fondo
-        //            _openWindows.AddLast(win); //meglio avere una SortedList
-        //            listBox_OpenWindows.Items.Add(win);
-        //            Debug.WriteLine("aggiunto l'item win");
-        //        }
-
-        //        if (listBox_OpenWindows.Visibility == Visibility.Collapsed)
-        //        {
-        //            listBox_OpenWindows.Visibility = Visibility.Visible;
-        //            if (win.Status == "NewWindow")
-        //            {
-        //                _openWindows.AddLast(win);
-        //            }
-        //        }
-        //        //else if (listBox_OpenWindows.Visibility == Visibility.Visible && _openWindows.Count == 1 /*&& _openWindows.First*/)
-        //        {
-        //            //se ho un solo elemento nella lista che sta venendo chiuso, collasso la lista, ma va messo un msg tipo "no finestre aperte"
-        //            listBox_OpenWindows.Visibility = Visibility.Collapsed;
-        //        }
-        //    }
-
-        //    remove
-        //    {
-        //        //non capita nulla perchè man mano che le finestre vengono disegnate, non servono più in questa lista
-        //        //throw new NotImplementedException();
-        //    }
-        //}
 
 
         public void SetParent(MainWindow parent)
@@ -224,44 +186,6 @@ namespace Client
             //anche se meglio avere un listener nel main
             _parent.ServerList.Remove(this);
         }
-
-        /*
-        private async void ParseJSONToWindow(string json)
-        {
-            Debug.WriteLine("siamo in ReadAndParseJSON");
-            Debug.Assert(!json.Equals(""), "json == {}");
-            Debug.Assert(json != null, "json == NULL");
-            Debug.WriteLine(json);
-            OpenWindow win = JsonConvert.DeserializeObject<OpenWindow>(json);
-            Debug.Assert(win != null, "win == NULL");
-            win.Initialize();
-            if (win.HasFocus())
-            {   //la finestra ha il focus, quindi la metto come prima della lista
-                _openWindows.AddFirst(win);
-                listBox_OpenWindows.Items.Add(win);
-            }
-            else
-            {//DA RIVEDERE: se non è in focus, la devo inserire in base al tempo per cui è stata in focus e non al fondo
-                _openWindows.AddLast(win); //meglio avere una SortedList
-                listBox_OpenWindows.Items.Add(win);
-                Debug.WriteLine("aggiunto l'item win");
-            }
-
-            if (listBox_OpenWindows.Visibility == Visibility.Collapsed)
-            {
-                listBox_OpenWindows.Visibility = Visibility.Visible;
-                if (win.Status == "NewWindow")
-                {
-                    _openWindows.AddLast(win);
-                }
-            }
-            //else if (listBox_OpenWindows.Visibility == Visibility.Visible && _openWindows.Count == 1 /*&& _openWindows.First*///)
-                                                                                                                                /*{
-                                                                                                                                    //se ho un solo elemento nella lista che sta venendo chiuso, collasso la lista, ma va messo un msg tipo "no finestre aperte"
-                                                                                                                                    listBox_OpenWindows.Visibility = Visibility.Collapsed;
-                                                                                                                                }*/
-                                                                                                                                //}
-
 
         private string Msg_RetrievingList()
         {
