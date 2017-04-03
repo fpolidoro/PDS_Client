@@ -32,11 +32,12 @@ namespace Client
         private Uri _uriRetrieving;
         private Uri _uriConnected;
         private Uri _uriDisconnected;
-        private LinkedList<int> _openWindows;
+        private Dictionary<int, OpenWindow> _openWindows;
         //private static int _RECLIMIT = 3;
         //private int _reconnAttempts;
         private Thread _receiveThread;
         private object _lock;
+        private OpenWindow _currentlyOnFocus;
 
         public ObservableCollection<string> pendingJSONs;
 
@@ -54,7 +55,7 @@ namespace Client
             _srv.SetGUIParentElement(this);
             txtb_serverAddress.Text = _srv.Name();
 
-            _openWindows = new LinkedList<int>();
+            _openWindows = new Dictionary<int, OpenWindow>();
             pendingJSONs = new ObservableCollection<string>();
             _lock = new object();
             Debug.Assert(pendingJSONs != null, "pendingJSONs == NULL");
@@ -91,21 +92,44 @@ namespace Client
                     string element = pendingJSONs.First();
                     try
                     {
-                        OpenWindow win = JsonConvert.DeserializeObject<OpenWindow>(pendingJSONs.First());
+                        var win = JsonConvert.DeserializeObject<OpenWindow>(pendingJSONs.First());
                         Debug.Assert(win != null, "win == NULL");
-                        win.Initialize();
-                        if(win.ID())
-                        if (win.HasFocus())
-                        {   //la finestra ha il focus, quindi la metto come prima della lista
-                            _openWindows.AddFirst(win.ID());
-                            win.Highlight(true);
-                            listBox_OpenWindows.Items.Insert(0, win);
+                        var winID = Convert.ToInt32(win.WindowID);
+                        if (_openWindows.ContainsKey(winID))   //la finestra era già stata aperta in precedenza, ora cambia solo stato
+                        {
+                            OpenWindow winToUpdate;
+                            if(_openWindows.TryGetValue(winID, out winToUpdate))
+                            {   //estraggo la OpenWindow e le assegno il nuovo stato
+                                winToUpdate.Status = win.Status;
+                            }
+                            if (winToUpdate.HasFocus()) {
+                                Debug.WriteLine(" has focus now", winToUpdate.ProcName);
+                                if (_currentlyOnFocus != null) {
+                                    Debug.WriteLine(" has lost focus", _currentlyOnFocus.ProcName);
+                                    _currentlyOnFocus.Status = "NotOnFocus";
+                                    //la finestra non più in focus va messa in lista in base al suo tempo di permanenza in focus
+                                }
+                                _currentlyOnFocus = winToUpdate;
+                                listBox_OpenWindows.Items.Remove(winToUpdate);  //rimuovo dalla posizione attuale
+                                listBox_OpenWindows.Items.Insert(0, winToUpdate);   //reinserisco in cima
+                            }
+                            if (winToUpdate.Status.Equals("Closed"))
+                            {
+                                listBox_OpenWindows.Items.Remove(winToUpdate);
+                            }
                         }
-                        else
-                        {//DA RIVEDERE: se non è in focus, la devo inserire in base al tempo per cui è stata in focus e non al fondo
-                            _openWindows.AddLast(win.ID); //meglio avere una SortedList
-                            listBox_OpenWindows.Items.Add(win);
-                            Debug.WriteLine("aggiunto l'item win");
+                        else {  //la finestra non esisteva ancora, quindi creo l'oggetto
+                            if (win.Status.Equals("NewWindow"))
+                            {
+                                win.Initialize();
+                                _openWindows.Add(win.ID, win);
+                                listBox_OpenWindows.Items.Add(win);
+                                Debug.WriteLine("aggiunto l'item win");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error in CollectionChanged: the item to be added is not a NewWindow event.", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            }
                         }
 
                         if (listBox_OpenWindows.Visibility == Visibility.Collapsed)
@@ -113,7 +137,7 @@ namespace Client
                             listBox_OpenWindows.Visibility = Visibility.Visible;
                             if (win.Status == "NewWindow")
                             {
-                                _openWindows.AddLast(win.ID);
+                                _openWindows.Add(win.ID, win);
                             }
                         }
                         //else if (listBox_OpenWindows.Visibility == Visibility.Visible && _openWindows.Count == 1 /*&& _openWindows.First*/)

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,15 +33,25 @@ namespace Client
         public string IconaBase64 { get; set; }
 
         [JsonProperty(PropertyName = "Status")]
-        public String Status { get; set; }
+        public String Status { get { return _status; }
+            set {
+                if (!_status.Equals(value))
+                {
+                    _status = value;
+                    OnPropertyChanged("Status");
+                }
+            } }
 
         public int ID { get; set; }
 
+        private event PropertyChangedEventHandler PropertyChanged;
+        private string _status;
         //private TimeSpan _hasFocusTime;
 
         public OpenWindow()
         {
             InitializeComponent();
+            _status = "";
         }
 
         public void Initialize()
@@ -51,7 +62,8 @@ namespace Client
                 img_OpenWindowIcon.Source = Base64ToBitmapImage(IconaBase64);
             }
             ID = Convert.ToInt32(WindowID);
-            txtb_ProcessName.Text = ProcName;             
+            txtb_ProcessName.Text = ProcName;
+            PropertyChanged += new PropertyChangedEventHandler(HighlightWindowOnFocus);          
         }
         public bool HasFocus()
         {
@@ -60,9 +72,26 @@ namespace Client
             return false;
         }
 
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
         //imposta il colore di background dell'elemento in focus
-        public void Highlight(bool value) {
-            this.Background = Brushes.Wheat;
+        public void HighlightWindowOnFocus(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName.Equals("Status")) {
+                if (Status.Equals("OnFocus"))
+                {   //lo evidenzio cambiando colore di sfondo
+                    this.Background = Brushes.Wheat;
+                }
+                else
+                {   //qualcun altro è in focus, tolgo il colore di sfondo
+                    this.ClearValue(BackgroundProperty);
+                }
+            }
         }
 
         public static BitmapImage Base64ToBitmapImage(string base64String)

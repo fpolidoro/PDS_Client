@@ -74,16 +74,11 @@ namespace Client
         }
 
         
-        private void CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs args)
+        private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-          /*  if (args.OldItems != null)
-                foreach (var oldItem in args.OldItems)
-                    (oldItem as INotifyPropertyChanged).PropertyChanged -= ServerItem_PropertyChanged;
-
-            if (args.NewItems != null)
-                foreach (var newItem in args.NewItems)
-                    (newItem as INotifyPropertyChanged).PropertyChanged += ServerItem_PropertyChanged;
-        */    
+            if (args.OldItems != null) {
+                _serverAddressList.RemoveLast();
+            }                   
         }
         /*
         private void ServerItem_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs args)
