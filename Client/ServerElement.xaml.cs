@@ -180,12 +180,21 @@ namespace Client
             {
                 //il socket si è chiuso inaspettatamente
                 img_ConnectionStatus.Source = new BitmapImage(_uriDisconnected);
+                foreach (var openWin in _openWindows.Values) {
+                    openWin.ConvertToGrayscale();
+                    stackp_WindowsList.ToolTip = "The connection was lost unespectedly.";
+                }
             }
             else if (value.Equals("SocketGentlyDisposed"))
             {
                 //il socket ha chiuso la connessione in modo corretto
                 //dovrei trasformare le finestre da colori in grayscale per far capire che la connessione è andata
                 img_ConnectionStatus.Source = new BitmapImage(_uriDisconnected);
+                foreach (var openWin in _openWindows.Values)
+                {
+                    openWin.ConvertToGrayscale();
+                    stackp_WindowsList.ToolTip = "The counterpart closed the connection (gently).";
+                }
             }
             else if (value.Equals("Connected"))
             {

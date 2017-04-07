@@ -19,6 +19,7 @@ namespace Client
         private string _address;
         private Int32 _port;
         private DateTime _connectionTime;   //tempo in cui la connessione è attiva
+        private int _connectionsCounter; //contatore per il # di volte di tentata riconnessione al server
         //private LinkedList<OpenWindow> _openWindows;    //linkedList può aggiungere in testa o in coda o in punti specifici
         private ServerElement _parentGUIElement;
         private ManualResetEvent CloseEvent = new ManualResetEvent(false); //permette di fermare la ricezione
@@ -120,6 +121,8 @@ namespace Client
                                 Debug.WriteLine("Connessione chiusa gentilmente dalla controparte");
                                 _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "SocketGentlyDisposed");
                                 CloseEvent.Set();
+                                //devo ancora specificare un flag per dire che il server si è disconnesso gentilmente e quindi non si
+                                //tenteranno le 3 riconnessioni, che invece si cercheranno di fare nel caso di objectDisposedException
                                 break;
                             }
                             // Raise the DataReceived event w/ data...
@@ -162,7 +165,7 @@ namespace Client
                         break;
                     }
                     catch (ObjectDisposedException ode) {
-                        Debug.WriteLine("Connessione chiusa per timeout: {0}", MsgException);
+                        Debug.WriteLine("Connessione chiusa per objectDisposed: {0}", MsgException);
                         MsgException = ode.Message;
                         _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "ObjectDisposedException");
                         break;

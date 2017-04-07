@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -30,7 +31,12 @@ namespace Client
         public string ProcName { get; set; }
 
         [JsonProperty(PropertyName = "Icon")]
-        public string IconaBase64 { get; set; }
+        public string IconaBase64 { get { return _base64string; }
+            set { if (!value.Equals(""))
+                    _base64string = value;
+                    }
+        }
+        private string _base64string;
 
         [JsonProperty(PropertyName = "Status")]
         public String Status { get { return _status; }
@@ -94,6 +100,7 @@ namespace Client
             }
         }
 
+        //converte da base64 a Image
         public static BitmapImage Base64ToBitmapImage(string base64String)
         {
             // Convert base 64 string to byte[]
@@ -109,5 +116,60 @@ namespace Client
                 return bmpimg;
             }
         }
+
+
+        //converte l'icona in scala di grigi
+        public void ConvertToGrayscale()
+        {
+            byte[] imageBytes = Convert.FromBase64String(_base64string);
+            System.Drawing.Image image;
+            using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
+            {
+                image = System.Drawing.Image.FromStream(ms);
+            }
+            
+            System.Drawing.Bitmap grayscaleImage = new System.Drawing.Bitmap(image.Width, image.Height, image.PixelFormat);
+
+            // Create the ImageAttributes object and apply the ColorMatrix
+            System.Drawing.Imaging.ImageAttributes attributes = new System.Drawing.Imaging.ImageAttributes();
+            System.Drawing.Imaging.ColorMatrix grayscaleMatrix = new System.Drawing.Imaging.ColorMatrix(new float[][]{
+        new float[] {0.299f, 0.299f, 0.299f, 0, 0},
+        new float[] {0.587f, 0.587f, 0.587f, 0, 0},
+        new float[] {0.114f, 0.114f, 0.114f, 0, 0},
+        new float[] {     0,      0,      0, 1, 0},
+        new float[] {     0,      0,      0, 0, 1}
+        });
+            attributes.SetColorMatrix(grayscaleMatrix);
+
+            // Use a new Graphics object from the new image.
+            using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(grayscaleImage))
+            {
+                // Draw the original image using the ImageAttributes created above.
+                g.DrawImage(image,
+                            new System.Drawing.Rectangle(0, 0, grayscaleImage.Width, grayscaleImage.Height),
+                            0, 0, grayscaleImage.Width, grayscaleImage.Height,
+                            System.Drawing.GraphicsUnit.Pixel,
+                            attributes);
+            }
+
+            using (var memory = new MemoryStream())
+            {
+                grayscaleImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+                memory.Position = 0;
+
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+
+                img_OpenWindowIcon.Source = bitmapImage;
+            }
+            txtb_ProcessName.Foreground = Brushes.Gray;
+            txtb_ProcessTimeFocused.Foreground = Brushes.Gray;
+
+        }
+
+
     }
 }
