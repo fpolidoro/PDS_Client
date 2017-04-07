@@ -9,7 +9,7 @@
     <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Margin="3">
         <StackPanel Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
             <DockPanel Height="24">
-                <Image x:Name="img_ConnectionStatus" Source="imgs/16x16_Connected.png" Stretch="Fill" Width="16" Height="16" Margin="2,0,0,0"/>
+                <Image x:Name="img_ConnectionStatus" Source="imgs/connected16x16.png" Stretch="Fill" Width="16" Height="16" Margin="2,0,0,0"/>
                 <TextBlock x:Name="txtb_serverAddress" TextTrimming="WordEllipsis" Margin="2,0,0,0" VerticalAlignment="Center" />
                 <Menu x:Name="menu" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="36">
                     <MenuItem>

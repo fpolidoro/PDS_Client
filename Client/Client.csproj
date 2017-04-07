@@ -241,6 +241,12 @@
     <Resource Include="imgs\newConnection.png" />
     <Resource Include="imgs\sendKeyCombo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\connected16x16.png" />
+    <Resource Include="imgs\disconnectedBadly16x16.png" />
+    <Resource Include="imgs\disconnectedGently16x16.png" />
+    <Resource Include="imgs\lostConnection16x16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

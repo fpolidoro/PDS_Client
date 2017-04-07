@@ -51,21 +51,15 @@ namespace Client
         private void btn_newConnection_Click(object sender, RoutedEventArgs e)
         {
             Server srv;
-            Window newConnWin = new NewConnectionDialog(out srv, this);
+            Window newConnWin = new NewConnectionDialog(out srv, this, _serverAddressList);
             newConnWin.ShowDialog();//showDialog fa in modo che la finestra sia modale
-            if (srv.IsValid)
+            if (srv != null && srv.IsValid)
             {
-                if (_serverAddressList.Contains(srv.GetAddress()))
-                {
-                    MessageBox.Show(MsgServerAlreadyExisting(srv.GetAddress()), "Warning", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                }
-                else {
-                    var serverWin = new ServerElement(srv);
-                    serverWin.SetParent(this);
-                    //serverWin.Srv = srv;
-                    _serverAddressList.AddLast(srv.GetAddress());
-                    ServerList.Add(serverWin);
-                }
+                var serverWin = new ServerElement(srv);
+                serverWin.SetParent(this);
+                 //serverWin.Srv = srv;
+                _serverAddressList.AddLast(srv.GetAddress());
+                ServerList.Add(serverWin);
             }
         }
 
@@ -79,16 +73,6 @@ namespace Client
             if (args.OldItems != null) {
                 _serverAddressList.RemoveLast();
             }                   
-        }
-        /*
-        private void ServerItem_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs args)
-        {
-            IsDirty = true;
-        }*/
-
-        private string MsgServerAlreadyExisting(string ip)
-        {
-            return "Server " + ip + " already exists.";
         }
     }
 

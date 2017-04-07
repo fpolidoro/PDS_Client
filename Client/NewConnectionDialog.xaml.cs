@@ -29,6 +29,7 @@ namespace Client
         private string _address;
         private Int32 _port;
         private string _connectStatus;
+        private LinkedList<string> _existingServers;
 
         private Uri _uriWorld;
         private Uri _uriCrossedWorld;
@@ -41,11 +42,12 @@ namespace Client
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public NewConnectionDialog(out Server serv, MainWindow parentWin)
+        public NewConnectionDialog(out Server serv, MainWindow parentWin, LinkedList<string> existingServers)
         {
             serv = new Server();
             _srv = serv;
             Debug.Assert(_srv == serv);
+            _existingServers = existingServers;
             _parentWindow = parentWin;
             InitializeComponent();
             rdbtn_IPaddress.IsChecked = true;   //altrimenti dà nullRefException perchè il secondo radio non è ancora inizializzato quando il primo viene spuntato
@@ -161,47 +163,53 @@ namespace Client
 
         private async void btn_Connect_Click(object sender, RoutedEventArgs e)
         {
-            stackp_ConnectionStatus.Visibility = Visibility.Visible;
-            if (rdbtn_IPaddress.IsChecked == true)
-            {
-                _address = iptxt_IPaddress.Address;
-                _port = ptxt_IPport.Port;
+                if (rdbtn_IPaddress.IsChecked == true)
+                {
+                    _address = iptxt_IPaddress.Address;
+                    _port = ptxt_IPport.Port;
+                }
+                else if (rdbtn_DNSaddress.IsChecked == true)
+                {
+                    _address = atxt_DNSaddress.textBox.Text;
+                    _port = ptxt_DNSport.Port;
+                }
+                else
+                {
+                    _address = null;
+                    _port = 0;
+                }
+            if (_existingServers.Contains(_address))
+            {   //MA devo controllare il caso in cui prima metto l'ip e poi il nome corrispondente allo stesso ip
+                MessageBox.Show(MsgServerAlreadyExisting(_address), "Warning", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-            else if (rdbtn_DNSaddress.IsChecked == true)
-            {
-                _address = atxt_DNSaddress.textBox.Text;
-                _port = ptxt_DNSport.Port;
+            else {
+                stackp_ConnectionStatus.Visibility = Visibility.Visible;
+                try
+                { //se le immagini non possono essere caricate, non visualizzo il pannello con le immagini
+                    img_world.Source = new BitmapImage(_uriWorld);
+                    img_server.Source = new BitmapImage(_uriComputerBN);
+                    ImageBehavior.SetAnimatedSource(gif_loading2server, new BitmapImage(_uriLoading));
+                    ImageBehavior.SetAnimatedSource(gif_loading2world, new BitmapImage(_uriLoading));
+                }
+                catch (System.IO.IOException)
+                {
+                    stackp_ConnectionImgs.Visibility = Visibility.Collapsed;
+                } 
+                ConnectionLabel = "Connecting";
+                _srv.SetAddressAndPort(_address, _port);
+                Action<string> actionUpdateStatusBar = _parentWindow.UpdateStatusBar;
+                StringBuilder connectingTo = new StringBuilder("Trying to connect to ");
+                connectingTo.Append(_address);
+                connectingTo.Append(":");
+                connectingTo.Append(_port);
+                _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
+                ConnectionLabel = await Task.Run(() => _srv.Startup());
+                connectingTo.Clear();
+                connectingTo.Append("Connected to ");
+                connectingTo.Append(_address);
+                _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
+                    //animazione della gui
             }
-            else
-            {
-                _address = null;
-                _port = 0;
-            }
-            try
-            { //se le immagini non possono essere caricate, non visualizzo il pannello con le immagini
-                img_world.Source = new BitmapImage(_uriWorld);
-                img_server.Source = new BitmapImage(_uriComputerBN);
-                ImageBehavior.SetAnimatedSource(gif_loading2server, new BitmapImage(_uriLoading));
-                ImageBehavior.SetAnimatedSource(gif_loading2world, new BitmapImage(_uriLoading));
-            }
-            catch (System.IO.IOException)
-            {
-                stackp_ConnectionImgs.Visibility = Visibility.Collapsed;
-            }
-            ConnectionLabel = "Connecting";
-            _srv.SetAddressAndPort(_address, _port);
-            Action<string> actionUpdateStatusBar = _parentWindow.UpdateStatusBar;
-            StringBuilder connectingTo = new StringBuilder("Trying to connect to ");
-            connectingTo.Append(_address);
-            connectingTo.Append(":");
-            connectingTo.Append(_port);
-            _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
-            ConnectionLabel = await Task.Run(() => _srv.Startup());
-            connectingTo.Clear();
-            connectingTo.Append("Connected to ");
-            connectingTo.Append(_address);
-            _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
-            //animazione della gui
         }
 
         /** PropertyChangeListener per modificare la label dello stato di connessione
@@ -319,6 +327,11 @@ namespace Client
         private void btn_Ok_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private string MsgServerAlreadyExisting(string ip)
+        {
+            return "Server " + ip + " already exists.";
         }
     }
 }

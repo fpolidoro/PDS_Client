@@ -32,6 +32,8 @@ namespace Client
         private Uri _uriRetrieving;
         private Uri _uriConnected;
         private Uri _uriDisconnected;
+        private Uri _uriDisconnectedBadly;
+        private Uri _uriLostConnection;
         private Dictionary<int, OpenWindow> _openWindows;
         //private static int _RECLIMIT = 3;
         //private int _reconnAttempts;
@@ -45,8 +47,12 @@ namespace Client
         {
             InitializeComponent();
             _uriRetrieving = new Uri(@"pack://application:,,,/imgs/32x32_RetrievingList.gif");
-            _uriDisconnected = new Uri("pack://application:,,,/imgs/16x16_disconnected.png");
-            _uriConnected = new Uri("pack://application:,,,/imgs/16x16_Connected.png");
+            /*_uriDisconnected = new Uri("pack://application:,,,/imgs/16x16_disconnected.png");
+            _uriConnected = new Uri("pack://application:,,,/imgs/16x16_Connected.png");*/
+            _uriDisconnected = new Uri("pack://application:,,,/imgs/disconnectedGently16x16.png");
+            _uriLostConnection = new Uri("pack://application:,,,/imgs/lostConnection16x16.png");
+            _uriDisconnectedBadly = new Uri("pack://application:,,,/imgs/disconnectedBadly16x16.png");
+            _uriConnected = new Uri("pack://application:,,,/imgs/connected16x16.png");
             //qui devo avviare il task asincrono che gestisca la receive o comunque l'ascolto
             //_reconnAttempts = 0;
 
@@ -179,17 +185,20 @@ namespace Client
             if (value.Equals("ObjectDisposedException") || value.Equals("IOException"))
             {
                 //il socket si è chiuso inaspettatamente
-                img_ConnectionStatus.Source = new BitmapImage(_uriDisconnected);
+                img_ConnectionStatus.Source = new BitmapImage(_uriLostConnection);
+                img_ConnectionStatus.ToolTip = "The connection was lost unespectedly.";
                 foreach (var openWin in _openWindows.Values) {
                     openWin.ConvertToGrayscale();
                     stackp_WindowsList.ToolTip = "The connection was lost unespectedly.";
                 }
+                //qui ci va una specie di if await task tryReconnect ==superato il count, metto l'iconetta disconnectedBadly
             }
             else if (value.Equals("SocketGentlyDisposed"))
             {
                 //il socket ha chiuso la connessione in modo corretto
                 //dovrei trasformare le finestre da colori in grayscale per far capire che la connessione è andata
                 img_ConnectionStatus.Source = new BitmapImage(_uriDisconnected);
+                img_ConnectionStatus.ToolTip = "The counterpart closed the connection (gently).";
                 foreach (var openWin in _openWindows.Values)
                 {
                     openWin.ConvertToGrayscale();
