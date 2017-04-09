@@ -8,9 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/connected16x16.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/disconnectedbadly16x16.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/disconnectedgently16x16.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/lostconnection16x16.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/closeserverelement16x16.png")]
 
 

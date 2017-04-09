@@ -80,6 +80,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ColumnsConverter.cs" />
+    <Compile Include="RowsConverter.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="PortTextBox.xaml.cs">
       <DependentUpon>PortTextBox.xaml</DependentUpon>
@@ -246,6 +248,16 @@
     <Resource Include="imgs\disconnectedBadly16x16.png" />
     <Resource Include="imgs\disconnectedGently16x16.png" />
     <Resource Include="imgs\lostConnection16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\disconnectedByUs16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\reconnect16x16.png" />
+    <Resource Include="imgs\SendKeyCombo16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\closeServerElement16x16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

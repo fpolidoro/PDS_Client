@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -23,10 +26,26 @@ namespace Client
     /// Logica di interazione per MainWindow.xaml
     /// </summary>
 
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;   //per dire ai server element che è stato premuto disconnect all
+
         //private Boolean IsDirty;
         private LinkedList<string> _serverAddressList;
+        private Boolean _disconnectAll;
+        public Boolean DisconnectAll
+        {
+            set
+            {
+                _disconnectAll = value;
+                if (value)
+                {
+                    Debug.WriteLine("MAIN_WINDOW: disconnectAll changed to TRUE");
+                    OnPropertyChanged("DisconnectAll");
+                }
+            }
+        }
+
         public ObservableCollection<ServerElement> ServerList {
             get;
             set;
@@ -40,13 +59,8 @@ namespace Client
             //ItemsSource = "{Binding Source=ServerList}"
             ic_serverElements.ItemsSource = ServerList;
             ServerList.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(CollectionChanged);
+            DisconnectAll = false;
         }
-
-        //per modificare il comportamento del tasto X della finestra principale
-        /*protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
-        {
-
-        }*/
 
         private void btn_newConnection_Click(object sender, RoutedEventArgs e)
         {
@@ -63,11 +77,38 @@ namespace Client
             }
         }
 
+        private void btn_disconnectAll_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("disconnectAll is TRUE");
+            DisconnectAll = true;
+        }
+
         public void UpdateStatusBar(string status) {
             lbl_status.Content = status;
         }
 
-        
+        //GEstore evento di chiusura [X] della MainWindow
+        public void OnClose(object sender, CancelEventArgs e)
+        {
+            if(ServerList.Count != 0)
+            {
+                DisconnectAll = true;
+                //qua credo che la finestra si chiuda, ma i thread dei server continuino
+                //nella chiusura anche dopo che la finestra è diventata invisibile
+            }
+        }
+
+        //PropertyChanged per l'evento click sul bottone disconnetti tutti.
+        //Ciascun server element si registra qua e ascolta quando viene fatto click
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            Debug.WriteLine("MAIN_WINDOW: OnPropertyChanged");
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+                DisconnectAll = false; //riporto la proprietà a false, perchè ormai l'evento è andato
+            }
+
+
         private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             if (args.OldItems != null) {

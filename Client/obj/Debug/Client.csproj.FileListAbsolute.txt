@@ -38,4 +38,5 @@ U:\Documenti\Malnati\Client\Client\obj\Debug\OpenWindow.baml
 E:\Documenti\Malnati\Client\Client\bin\Debug\WpfApplication3.exe.config
 E:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.exe
 E:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.pdb
+U:\Documenti\Malnati\Client\Client\obj\Debug\App.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache

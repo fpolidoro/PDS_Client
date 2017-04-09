@@ -121,6 +121,7 @@ namespace Client
         //converte l'icona in scala di grigi
         public void ConvertToGrayscale()
         {
+            //ottengo l'icona dal base64 (perchè ha le trasparenze)
             byte[] imageBytes = Convert.FromBase64String(_base64string);
             System.Drawing.Image image;
             using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
@@ -152,6 +153,7 @@ namespace Client
                             attributes);
             }
 
+            //cast da Bitmap a BitmapImage
             using (var memory = new MemoryStream())
             {
                 grayscaleImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
@@ -163,11 +165,17 @@ namespace Client
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.EndInit();
 
+                //imposto l'icona in scala di grigi
                 img_OpenWindowIcon.Source = bitmapImage;
             }
+            //porto i testi in grigio
             txtb_ProcessName.Foreground = Brushes.Gray;
             txtb_ProcessTimeFocused.Foreground = Brushes.Gray;
-
+            //se questo oggetto corrisponde ad una finestra in focus, trasformo lo sfondo da giallo a grigio chiaro
+            if (Status.Equals("OnFocus"))
+            {
+                Background = Brushes.LightGray;
+            }
         }
 
 

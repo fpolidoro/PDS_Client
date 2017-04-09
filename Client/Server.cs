@@ -27,6 +27,13 @@ namespace Client
         public Server()
         {
             IsValid = false;
+            _connectionsCounter = 0;
+        }
+
+        public int Counter
+        {
+            get { return _connectionsCounter; }
+            set { _connectionsCounter = value; }
         }
 
         public Boolean IsValid
@@ -51,6 +58,8 @@ namespace Client
 
         public Task<string> Startup()
         {
+            CloseEvent.Reset(); //altrimenti il while della receive si interrompe subito
+            _connectionsCounter = 0;
             //MessageBox.Show("server is connecting", "Prova", MessageBoxButton.OK, MessageBoxImage.None);
             try
             {
@@ -70,17 +79,77 @@ namespace Client
             }
             catch (SocketException se)
             {   //An error occurred when attempting to access the socket.
+                _socket.Close();
                 return Task.FromResult(se.Message);
             }
             catch (ObjectDisposedException ode)
-            {   //The Socket has been closed 
+            {   //The Socket has been closed
+                _socket.Close(); 
                 return Task.FromResult(ode.Message);
             }
             catch (Exception e)
             {
+                _socket.Close();
                 return Task.FromResult(e.Message);
             }
+            _connectionsCounter++;
             return Task.FromResult("Connected");
+        }
+
+        private string TryReconnect() {
+            bool tryAgain = true;
+            string msg;
+            Debug.WriteLine("Dentro a TryReconnect");
+            while (tryAgain && _connectionsCounter < 4)
+            {
+                try
+                {
+                    //First permette di prendere il primo ip di tipo ipv4
+                    IPAddress clientAddr = Dns.GetHostEntry(_address).AddressList.First(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+                    var clientEndPoint = new IPEndPoint(clientAddr, _port);
+
+                    //clientAddr.AddressFamily serve a specificare il socket giusto
+                    _socket = new Socket(clientAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                    _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+                    if (_connectionsCounter > 2)
+                        Thread.Sleep(3000); //attendo un po' prima di riconnettere, per dare tempo all'altro eventualmente di tornare online
+                    _socket.Connect(clientEndPoint);
+                    //_connectionTime = DateTime.Now;
+                    tryAgain = false;
+                    Debug.WriteLine("Riconnessione OK");
+                }
+                catch (SocketException se)
+                {   //An error occurred while attempting to access the socket.
+                    _socket.Close();
+                    Debug.WriteLine("TryReconnect: SocketException");
+                    tryAgain = true;
+                }
+                catch (ObjectDisposedException ode)
+                {   //The Socket has been closed
+                    _socket.Close();
+                    Debug.WriteLine("TryReconnect: ObjectDisposedException");
+                    tryAgain = true; 
+                }
+                catch (Exception e)
+                {
+                    _socket.Close();
+                    Debug.WriteLine("TryReconnect: Exception");
+                    tryAgain = true;
+                }
+                _connectionsCounter++;
+            }
+            if (tryAgain) //vuol dire che ho superato il # di tentativi
+            {
+                Debug.WriteLine("TryReconnect: fuori dal while, ReconnectionLimitExceeded");
+                msg = "ReconnectionLimitExceeded";
+            }
+            else
+            {
+                _connectionsCounter = 1;
+                Debug.WriteLine("TryReconnect: Connected");
+                msg = "Connected";
+            }
+            return msg;
         }
 
         /** Riceve una stringa json da cui estrae nome processo, icona e tipo di evento (nuova finestra, chiusura finestra, cambio focus)
@@ -110,6 +179,7 @@ namespace Client
                     //Debug.WriteLine("Dentro al while di receive.");
                     try
                     {
+                        Debug.Assert(_socket.Connected, "_socket IS connected");
                         /*if (!nws.DataAvailable)
                         {
                             Thread.Sleep(1);
@@ -146,7 +216,9 @@ namespace Client
                             else
                             {   //la dimensione del json è eccessivamente grande o negativa, quindi chiudo il socket
                                 Debug.WriteLine("La dimensione del json è eccessivamente grande o negativa, quindi chiudo il socket");
+                                _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "SocketClosedByUs");
                                 CloseEvent.Set();
+                                break;
                             }
                         }
                         /*else
@@ -159,16 +231,43 @@ namespace Client
                     }
                     catch (IOException ioe) //qui è probabile che sia crashato il server, quindi bisogna tentare le 3 riconnessioni
                     {   //càpita quando il timeout scade senza che siano stati ricevuti dati
-                        Debug.WriteLine("Connessione chiusa per timeout: {0}", MsgException);
+                        Debug.WriteLine("Connessione chiusa per timeout:\n" + MsgException);
                         MsgException = ioe.Message;
                         _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "IOException");
-                        break;
+                        nws.Dispose();
+                        String msg = TryReconnect();
+                        if (msg.Equals("ReconnectionLimitExceeded")) {
+                            _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "ReconnectionLimitExceeded");
+                            CloseEvent.Set();
+                            break;
+                        }
+                        if (msg.Equals("Connected"))
+                        {
+                            _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "Connected");
+                            //CloseEvent.Reset();
+                            nws = new NetworkStream(_socket);
+                            continue;
+                        }
                     }
                     catch (ObjectDisposedException ode) {
-                        Debug.WriteLine("Connessione chiusa per objectDisposed: {0}", MsgException);
+                        Debug.WriteLine("Connessione chiusa per objectDisposed:" + MsgException);
                         MsgException = ode.Message;
                         _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "ObjectDisposedException");
-                        break;
+                        nws.Dispose();
+                        String msg = TryReconnect();
+                        if (msg.Equals("ReconnectionLimitExceeded"))
+                        {
+                            _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "ReconnectionLimitExceeded");
+                            CloseEvent.Set();
+                            break;
+                        }
+                        if (msg.Equals("Connected"))
+                        {
+                            _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "Connected");
+                            //CloseEvent.Reset();
+                            nws = new NetworkStream(_socket);
+                            continue;
+                        }
                     }
                 }
                 Debug.WriteLine("uscito dal while.waitone");

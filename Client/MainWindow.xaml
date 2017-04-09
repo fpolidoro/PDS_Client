@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
+        Closing="OnClose"
         Title="Client" Height ="610" Width="820" WindowStartupLocation="CenterScreen" MinWidth="810" MinHeight="610" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
     <StackPanel x:Name="stackp_base" Margin="0">
         <!--<WrapPanel x:Name="wrap_menus" Height="18" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
@@ -57,7 +58,7 @@
                             <TextBlock x:Name="txtB_newConnection" Text="Nuova connessione" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button x:Name="btn_disconnectAll" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" DockPanel.Dock="Right">
+                    <Button x:Name="btn_disconnectAll" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" DockPanel.Dock="Right" Click="btn_disconnectAll_Click">
                         <StackPanel>
                             <Image x:Name="img_disconnectAll" Height="46" Width="46" Source="imgs/disconnectAll.png"/>
                             <TextBlock x:Name="txtB_disconnectAll" Text="Disconnetti tutti" TextWrapping="Wrap" TextAlignment="Center"/>
@@ -94,9 +95,17 @@
             <StackPanel x:Name="stackp_serverGrid" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" MinHeight="492">
                 <ItemsControl x:Name="ic_serverElements" MinHeight="492">
                     <!-- ItemsPanelTemplate -->
+                    <ItemsControl.Resources>
+                        <local:ColumnsConverter x:Key="ColumnsConv"/>
+                        <local:RowsConverter x:Key="RowsConv"/>
+                    </ItemsControl.Resources>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid ScrollViewer.VerticalScrollBarVisibility="Auto" Rows="2" Columns="4" VerticalAlignment="Top"/>
+                            <UniformGrid x:Name="uniGrid_servers" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                         Rows="{Binding ServerList.Count, Converter={StaticResource RowsConv}}"
+                                         Columns="{Binding ServerList.Count, Converter={StaticResource ColumnsConv}}"
+                                         VerticalAlignment="Top"/>
+                                         
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <!-- ItemTemplate -->

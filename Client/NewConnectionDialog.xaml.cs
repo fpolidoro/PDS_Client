@@ -204,10 +204,13 @@ namespace Client
                 connectingTo.Append(_port);
                 _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
                 ConnectionLabel = await Task.Run(() => _srv.Startup());
-                connectingTo.Clear();
-                connectingTo.Append("Connected to ");
-                connectingTo.Append(_address);
-                _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
+                if (ConnectionLabel.Equals("Connected"))
+                {
+                    connectingTo.Clear();
+                    connectingTo.Append("Connected to ");
+                    connectingTo.Append(_address);
+                    _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
+                }
                     //animazione della gui
             }
         }

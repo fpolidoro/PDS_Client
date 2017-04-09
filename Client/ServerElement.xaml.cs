@@ -25,7 +25,7 @@ namespace Client
     /// <summary>
     /// Logica di interazione per ServerElement.xaml
     /// </summary>
-    public partial class ServerElement : UserControl
+    public partial class ServerElement : UserControl, INotifyPropertyChanged
     {
         private MainWindow _parent;
         private Server _srv;
@@ -33,6 +33,7 @@ namespace Client
         private Uri _uriConnected;
         private Uri _uriDisconnected;
         private Uri _uriDisconnectedBadly;
+        private Uri _uriDisconnectedByUs;
         private Uri _uriLostConnection;
         private Dictionary<int, OpenWindow> _openWindows;
         //private static int _RECLIMIT = 3;
@@ -40,6 +41,8 @@ namespace Client
         private Thread _receiveThread;
         private object _lock;
         private OpenWindow _currentlyOnFocus;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public ObservableCollection<string> pendingJSONs;
 
@@ -53,6 +56,7 @@ namespace Client
             _uriLostConnection = new Uri("pack://application:,,,/imgs/lostConnection16x16.png");
             _uriDisconnectedBadly = new Uri("pack://application:,,,/imgs/disconnectedBadly16x16.png");
             _uriConnected = new Uri("pack://application:,,,/imgs/connected16x16.png");
+            _uriDisconnectedByUs = new Uri("pack://application:,,,/imgs/disconnectedByUs16x16.png");
             //qui devo avviare il task asincrono che gestisca la receive o comunque l'ascolto
             //_reconnAttempts = 0;
 
@@ -92,8 +96,12 @@ namespace Client
                 {
                     Debug.WriteLine(item);
                     //rimuovo il tooltip
-                    gif_retrievingList.Visibility = Visibility.Collapsed;
-                    stackp_WindowsList.ClearValue(ToolTipProperty);
+                    if (gif_retrievingList.Visibility == Visibility.Visible)
+                    {
+                        gif_retrievingList.Visibility = Visibility.Collapsed;
+                        listBox_OpenWindows.Visibility = Visibility.Visible;
+                        stackp_WindowsList.ClearValue(ToolTipProperty);
+                    }
                     //estraggo il primo elemento della lista e lo processo (le aggiunte sono fatte in coda)
                     string element = pendingJSONs.First();
                     try
@@ -187,11 +195,15 @@ namespace Client
                 //il socket si è chiuso inaspettatamente
                 img_ConnectionStatus.Source = new BitmapImage(_uriLostConnection);
                 img_ConnectionStatus.ToolTip = "The connection was lost unespectedly.";
-                foreach (var openWin in _openWindows.Values) {
+                foreach (var openWin in _openWindows.Values)
+                {
                     openWin.ConvertToGrayscale();
                     stackp_WindowsList.ToolTip = "The connection was lost unespectedly.";
                 }
-                //qui ci va una specie di if await task tryReconnect ==superato il count, metto l'iconetta disconnectedBadly
+                mitem_disconnect.Visibility = Visibility.Collapsed;
+                if(mitem_reconnect.IsEnabled)
+                    mitem_reconnect.IsEnabled = false;
+                mitem_close.Visibility = Visibility.Visible;
             }
             else if (value.Equals("SocketGentlyDisposed"))
             {
@@ -202,12 +214,49 @@ namespace Client
                 foreach (var openWin in _openWindows.Values)
                 {
                     openWin.ConvertToGrayscale();
-                    stackp_WindowsList.ToolTip = "The counterpart closed the connection (gently).";
                 }
+                stackp_WindowsList.ToolTip = "The counterpart closed the connection (gently).";
+                mitem_disconnect.Visibility = Visibility.Collapsed;
+                if (mitem_reconnect.IsEnabled)
+                    mitem_reconnect.IsEnabled = false;
+                mitem_close.Visibility = Visibility.Visible;
             }
             else if (value.Equals("Connected"))
             {
                 img_ConnectionStatus.Source = new BitmapImage(_uriConnected);
+                if (_openWindows.Count != 0)
+                {
+                    _openWindows.Clear();
+                    listBox_OpenWindows.Items.Clear();
+                }
+                if(mitem_disconnect.Visibility == Visibility.Collapsed)
+                    mitem_disconnect.Visibility = Visibility.Visible;
+                if (mitem_reconnect.IsEnabled)
+                    mitem_reconnect.IsEnabled = false;
+                if(mitem_close.Visibility == Visibility.Visible)
+                    mitem_close.Visibility = Visibility.Collapsed;
+            }
+            else if (value.Equals("ReconnectionLimitExceeded"))
+            {
+                //il # di riconnessioni è stato superato
+                img_ConnectionStatus.Source = new BitmapImage(_uriDisconnectedBadly);
+                img_ConnectionStatus.ToolTip = "Reconnection limit exceeded: no answer from the counterpart.";
+                foreach (var openWin in _openWindows.Values)
+                {
+                    openWin.ConvertToGrayscale();
+                    stackp_WindowsList.ToolTip = "Reconnection limit exceeded: no answer from the counterpart.";
+                }
+                mitem_disconnect.Visibility = Visibility.Collapsed;
+                mitem_reconnect.IsEnabled = true;
+                mitem_close.Visibility = Visibility.Visible;
+            }
+            else if (value.Equals("SocketClosedByUs")) {
+                //abbiamo ricevuto un json con dimensione brutta, chiuso il socket
+                //mettiamo una icona con ! e lasciamo all'utente la possibilità di riconnettersi
+                img_ConnectionStatus.Source = new BitmapImage(_uriDisconnectedByUs);
+                mitem_disconnect.Visibility = Visibility.Collapsed;
+                mitem_reconnect.IsEnabled = true;
+                mitem_close.Visibility = Visibility.Visible;
             }
         }
 
@@ -215,6 +264,20 @@ namespace Client
         public void SetParent(MainWindow parent)
         {
             _parent = parent;
+            _parent.PropertyChanged += this.OnPropertyChanged;
+            Debug.WriteLine("SERVER_ELEMENT: subscribed to MAIN_WINDOW's property changed");
+        }
+
+        //Collegato al metodo OnPropertyChanged della MainWindow per ascoltare quando viene premuto disconnectAll
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "DisconnectAll")
+            {   //bottone premuto, disconnetto questo server
+                Debug.WriteLine("SERVER_ELEMENT: OnPropertyChanged stopping the servers");
+                _srv.StopReceive();
+                _srv.Close();
+                _parent.ServerList.Remove(this);
+            }
         }
 
         private void mitem_disconnect_Click(object sender, RoutedEventArgs e)
@@ -226,6 +289,33 @@ namespace Client
             Debug.WriteLine("_srv closed.");
             //rimuove il server element dalla lista dei server
             //anche se meglio avere un listener nel main
+            _parent.ServerList.Remove(this);
+        }
+
+        private async void mitem_reconnect_Click(object sender, RoutedEventArgs e)
+        {
+            listBox_OpenWindows.Visibility = Visibility.Collapsed;
+            gif_retrievingList.Visibility = Visibility.Visible;
+            stackp_WindowsList.ToolTip = Msg_RetrievingList(); 
+            try
+            {
+                ImageBehavior.SetAnimatedSource(gif_retrievingList, new BitmapImage(_uriRetrieving));
+            }
+            catch (System.IO.IOException)
+            {   //se non riesce a caricare l'img, l'img viene collassata
+                gif_retrievingList.Visibility = Visibility.Collapsed;
+            }
+            String result = await Task.Run(() => _srv.Startup());
+            if (result.Equals("Connected"))
+            {
+                _receiveThread = new Thread(_srv.Receive);
+                _receiveThread.Start();
+                SocketStatusChanged("Connected");
+            }
+        }
+
+        private void mitem_close_Click(object sender, RoutedEventArgs e)
+        {
             _parent.ServerList.Remove(this);
         }
 
