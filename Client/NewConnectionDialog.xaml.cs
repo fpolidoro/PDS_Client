@@ -178,11 +178,11 @@ namespace Client
                     _address = null;
                     _port = 0;
                 }
-            if (_existingServers.Contains(_address))
+            /*if (_existingServers.Contains(_address))
             {   //MA devo controllare il caso in cui prima metto l'ip e poi il nome corrispondente allo stesso ip
                 MessageBox.Show(MsgServerAlreadyExisting(_address), "Warning", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-            else {
+            else {*/
                 stackp_ConnectionStatus.Visibility = Visibility.Visible;
                 try
                 { //se le immagini non possono essere caricate, non visualizzo il pannello con le immagini
@@ -212,7 +212,7 @@ namespace Client
                     _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
                 }
                     //animazione della gui
-            }
+         //   }
         }
 
         /** PropertyChangeListener per modificare la label dello stato di connessione

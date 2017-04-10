@@ -79,17 +79,17 @@ namespace Client
             }
             catch (SocketException se)
             {   //An error occurred when attempting to access the socket.
-                _socket.Close();
+                if(_socket != null) _socket.Close();
                 return Task.FromResult(se.Message);
             }
             catch (ObjectDisposedException ode)
             {   //The Socket has been closed
-                _socket.Close(); 
+                if (_socket != null) _socket.Close(); 
                 return Task.FromResult(ode.Message);
             }
             catch (Exception e)
             {
-                _socket.Close();
+                if (_socket != null) _socket.Close();
                 return Task.FromResult(e.Message);
             }
             _connectionsCounter++;
@@ -100,7 +100,7 @@ namespace Client
             bool tryAgain = true;
             string msg;
             Debug.WriteLine("Dentro a TryReconnect");
-            while (tryAgain && _connectionsCounter < 4)
+            while (tryAgain && _connectionsCounter < 4 && !CloseEvent.WaitOne(0))
             {
                 try
                 {
@@ -118,21 +118,21 @@ namespace Client
                     tryAgain = false;
                     Debug.WriteLine("Riconnessione OK");
                 }
-                catch (SocketException se)
+                catch (SocketException)
                 {   //An error occurred while attempting to access the socket.
-                    _socket.Close();
+                    if (_socket != null) _socket.Close();
                     Debug.WriteLine("TryReconnect: SocketException");
                     tryAgain = true;
                 }
-                catch (ObjectDisposedException ode)
+                catch (ObjectDisposedException)
                 {   //The Socket has been closed
-                    _socket.Close();
+                    if (_socket != null) _socket.Close();
                     Debug.WriteLine("TryReconnect: ObjectDisposedException");
                     tryAgain = true; 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    _socket.Close();
+                    if (_socket != null) _socket.Close();
                     Debug.WriteLine("TryReconnect: Exception");
                     tryAgain = true;
                 }
@@ -306,8 +306,11 @@ namespace Client
 
         public void Close()
         {
-            _socket.Dispose();
-            _socket.Close();
+            if (_socket != null)
+            {
+                _socket.Dispose();
+                _socket.Close();
+            }
         }
 
         public string Name()

@@ -50,6 +50,16 @@ namespace Client
             get;
             set;
         }
+
+        private int _cols;
+        public int Cols {
+            get { return _cols; }
+        }
+
+        private int _rows;
+        public int Rows {
+            get { return _rows; }
+        }
         
         public MainWindow()
         {
@@ -60,6 +70,7 @@ namespace Client
             ic_serverElements.ItemsSource = ServerList;
             ServerList.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(CollectionChanged);
             DisconnectAll = false;
+            _cols = 0;
         }
 
         private void btn_newConnection_Click(object sender, RoutedEventArgs e)
@@ -113,7 +124,31 @@ namespace Client
         {
             if (args.OldItems != null) {
                 _serverAddressList.RemoveLast();
-            }                   
+            }
+            /*if (ServerList.Count > 6) {
+                _cols = 4;
+                decimal val = ServerList.Count / 4;
+                _rows = (int)Math.Ceiling(val);
+            }
+            else if (ServerList.Count >= 3 && ServerList.Count <= 6) {
+                _cols = 3;
+                _rows = 2;
+            }
+            else if (ServerList.Count <= 2)
+            {
+                _cols = 2;
+                _rows = 1;
+            }*/
+        }
+
+        //Evento scatenato quando si fa il resize della finestra principale
+        private void mainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (ServerList.Count != 0 && ServerList.Count > 3) {
+                Debug.WriteLine("width = {0} srv.Count = {1}", stackp_serverGrid.ActualWidth, ServerList.Count);
+                _cols = (int)Math.Floor(stackp_serverGrid.ActualWidth / (ServerList.Count*200));
+                Debug.WriteLine("_cols = {0}", _cols);
+            }
         }
     }
 

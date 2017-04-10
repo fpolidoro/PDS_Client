@@ -4,9 +4,17 @@ C:\Users\fab\Documents\Visual Studio 2015\Projects\WpfApplication3\WpfApplicatio
 C:\Users\fab\Documents\Visual Studio 2015\Projects\Client\Client\bin\Debug\WpfApplication3.exe.config
 C:\Users\fab\Documents\Visual Studio 2015\Projects\Client\Client\obj\Debug\WpfApplication3.exe
 C:\Users\fab\Documents\Visual Studio 2015\Projects\Client\Client\obj\Debug\WpfApplication3.pdb
+E:\Documenti\Malnati\Client\Client\bin\Debug\WpfApplication3.exe.config
+E:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.exe
+E:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.pdb
 U:\Documenti\Malnati\Client\Client\bin\Debug\WpfApplication3.exe.config
-U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.exe
-U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.pdb
+U:\Documenti\Malnati\Client\Client\bin\Debug\WpfApplication3.exe
+U:\Documenti\Malnati\Client\Client\bin\Debug\WpfApplication3.pdb
+U:\Documenti\Malnati\Client\Client\bin\Debug\Newtonsoft.Json.dll
+U:\Documenti\Malnati\Client\Client\bin\Debug\WpfAnimatedGif.dll
+U:\Documenti\Malnati\Client\Client\bin\Debug\Newtonsoft.Json.xml
+U:\Documenti\Malnati\Client\Client\bin\Debug\WpfAnimatedGif.xml
+U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
 U:\Documenti\Malnati\Client\Client\obj\Debug\IPTextBox.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\IPTextBox.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\MainWindow.g.cs
@@ -14,29 +22,21 @@ U:\Documenti\Malnati\Client\Client\obj\Debug\PortTextBox.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\NewConnectionDialog.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\AddressBox.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\ServerElement.g.cs
+U:\Documenti\Malnati\Client\Client\obj\Debug\OpenWindow.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\App.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\GeneratedInternalTypeHelper.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3_MarkupCompile.cache
 U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3_MarkupCompile.lref
-U:\Documenti\Malnati\Client\Client\bin\Debug\WpfApplication3.exe
-U:\Documenti\Malnati\Client\Client\bin\Debug\WpfApplication3.pdb
-U:\Documenti\Malnati\Client\Client\bin\Debug\Newtonsoft.Json.dll
-U:\Documenti\Malnati\Client\Client\bin\Debug\WpfAnimatedGif.dll
-U:\Documenti\Malnati\Client\Client\bin\Debug\Newtonsoft.Json.xml
-U:\Documenti\Malnati\Client\Client\bin\Debug\WpfAnimatedGif.xml
+U:\Documenti\Malnati\Client\Client\obj\Debug\App.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\MainWindow.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\PortTextBox.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\NewConnectionDialog.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\AddressBox.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\Themes\Generic.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\ServerElement.baml
+U:\Documenti\Malnati\Client\Client\obj\Debug\OpenWindow.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.g.resources
 U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.Properties.Resources.resources
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csproj.GenerateResource.Cache
-U:\Documenti\Malnati\Client\Client\obj\Debug\OpenWindow.g.cs
-U:\Documenti\Malnati\Client\Client\obj\Debug\OpenWindow.baml
-E:\Documenti\Malnati\Client\Client\bin\Debug\WpfApplication3.exe.config
-E:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.exe
-E:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.pdb
-U:\Documenti\Malnati\Client\Client\obj\Debug\App.baml
-U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
+U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.exe
+U:\Documenti\Malnati\Client\Client\obj\Debug\WpfApplication3.pdb

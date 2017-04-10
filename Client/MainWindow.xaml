@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
         Closing="OnClose"
-        Title="Client" Height ="610" Width="820" WindowStartupLocation="CenterScreen" MinWidth="810" MinHeight="610" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-    <StackPanel x:Name="stackp_base" Margin="0">
+        Title="Client" Height ="610" Width="820" WindowStartupLocation="CenterScreen" MinWidth="810" MinHeight="610" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" SizeChanged="mainWindow_SizeChanged">
+    <DockPanel x:Name="stackp_base" Margin="0">
         <!--<WrapPanel x:Name="wrap_menus" Height="18" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
             <Menu x:Name="menu_file" Height="24" Width="32">
                 <MenuItem Header="_File">
@@ -54,13 +54,13 @@
                 <ToolBarPanel Height="84" VerticalAlignment="Top" Orientation="Horizontal" DockPanel.Dock="Top">
                     <Button x:Name="btn_newConnection" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_newConnection_Click">
                         <StackPanel>
-                            <Image x:Name="img_newConnection" Height="46" Width="46" Source="imgs/newConnection.png"/>
+                            <Image x:Name="img_newConnection" Height="46" Width="46" Source="imgs/newConnection.png" Stretch="None"/>
                             <TextBlock x:Name="txtB_newConnection" Text="Nuova connessione" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Button>
                     <Button x:Name="btn_disconnectAll" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" DockPanel.Dock="Right" Click="btn_disconnectAll_Click">
                         <StackPanel>
-                            <Image x:Name="img_disconnectAll" Height="46" Width="46" Source="imgs/disconnectAll.png"/>
+                            <Image x:Name="img_disconnectAll" Height="46" Width="46" Source="imgs/disconnectAll.png" Stretch="None"/>
                             <TextBlock x:Name="txtB_disconnectAll" Text="Disconnetti tutti" TextWrapping="Wrap" TextAlignment="Center"/>
                         </StackPanel>
                     </Button>
@@ -72,7 +72,7 @@
                     <ToolBarPanel DockPanel.Dock="Top" >
                         <Button x:Name="btn_sendKeyCombo" Width="100" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0">
                             <StackPanel>
-                                <Image x:Name="img_sendKeyCombo" Height="46" Width="46" Source="imgs/sendKeyCombo.png"/>
+                                <Image x:Name="img_sendKeyCombo" Height="46" Width="46" Source="imgs/sendKeyCombo.png" Stretch="None"/>
                                 <TextBlock x:Name="txtB_sendKeyCombo" Text="Invia combo di tasti a più server" TextWrapping="Wrap" TextAlignment="Center"/>
                             </StackPanel>
                         </Button>
@@ -91,9 +91,9 @@
                 </ToolBarPanel>
             </DockPanel>
         </WrapPanel>
-        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1">
-            <StackPanel x:Name="stackp_serverGrid" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" MinHeight="492">
-                <ItemsControl x:Name="ic_serverElements" MinHeight="492">
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" MinWidth="810" Padding="2,0">
+            <ScrollViewer x:Name="stackp_serverGrid" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" VerticalScrollBarVisibility="Auto" CanContentScroll="True" Margin="0">
+                <ItemsControl x:Name="ic_serverElements">
                     <!-- ItemsPanelTemplate -->
                     <ItemsControl.Resources>
                         <local:ColumnsConverter x:Key="ColumnsConv"/>
@@ -101,11 +101,10 @@
                     </ItemsControl.Resources>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <UniformGrid x:Name="uniGrid_servers" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                         Rows="{Binding ServerList.Count, Converter={StaticResource RowsConv}}"
-                                         Columns="{Binding ServerList.Count, Converter={StaticResource ColumnsConv}}"
+                            <UniformGrid x:Name="uniGrid_servers" 
+                                         Columns="{Binding Cols}"
+                                         Rows="{Binding Cols}"
                                          VerticalAlignment="Top"/>
-                                         
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <!-- ItemTemplate -->
@@ -115,10 +114,10 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </StackPanel>
+            </ScrollViewer>
         </Border>
-        <StatusBar x:Name="statusBar" Height="24" Margin="0,0,0,0" MinHeight="24">
+        <StatusBar x:Name="statusBar" Height="24" Margin="0,0,0,0" MinHeight="24" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
             <Label x:Name="lbl_status" Content="status" Padding="5,0" Height="18"/>
         </StatusBar>
-    </StackPanel>
+    </DockPanel>
 </Window>
