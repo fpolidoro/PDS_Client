@@ -4,8 +4,7 @@
              xmlns:local="clr-namespace:Client"
              Startup="Application_Startup"
              Exit="Application_Exit" ShutdownMode="OnMainWindowClose" SessionEnding="Application_SessionEnding">
-    
+
     <Application.Resources>
-         
     </Application.Resources>
 </Application>

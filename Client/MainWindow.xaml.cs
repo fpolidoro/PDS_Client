@@ -1,24 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Client
 {
@@ -55,11 +41,6 @@ namespace Client
         public int Cols {
             get { return _cols; }
         }
-
-        private int _rows;
-        public int Rows {
-            get { return _rows; }
-        }
         
         public MainWindow()
         {
@@ -95,10 +76,10 @@ namespace Client
         }
 
         public void UpdateStatusBar(string status) {
-            lbl_status.Content = status;
+            //lbl_status.Content = status;
         }
 
-        //GEstore evento di chiusura [X] della MainWindow
+        //Gestore evento di chiusura [X] della MainWindow
         public void OnClose(object sender, CancelEventArgs e)
         {
             if(ServerList.Count != 0)
@@ -149,6 +130,12 @@ namespace Client
                 _cols = (int)Math.Floor(stackp_serverGrid.ActualWidth / (ServerList.Count*200));
                 Debug.WriteLine("_cols = {0}", _cols);
             }
+        }
+
+        private void btn_sendKeyCombo_Click(object sender, RoutedEventArgs e)
+        {
+            tabItem_KeyCombos.Visibility = Visibility.Visible;
+            tabControl.SelectedIndex = 2;
         }
     }
 

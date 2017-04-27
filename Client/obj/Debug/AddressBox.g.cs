@@ -60,7 +60,7 @@ namespace Client {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/WpfApplication3;component/addressbox.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Client;component/addressbox.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\AddressBox.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

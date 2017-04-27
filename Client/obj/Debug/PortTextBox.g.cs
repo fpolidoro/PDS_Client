@@ -68,7 +68,7 @@ namespace Client {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/WpfApplication3;component/porttextbox.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Client;component/porttextbox.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\PortTextBox.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

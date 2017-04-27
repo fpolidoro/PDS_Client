@@ -1,110 +1,103 @@
-﻿<Window x:Name="mainWindow" x:Class="Client.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
+        xmlns:Client="clr-namespace:Client" x:Name="mainWindow" x:Class="Client.MainWindow"
         mc:Ignorable="d"
         Closing="OnClose"
-        Title="Client" Height ="610" Width="820" WindowStartupLocation="CenterScreen" MinWidth="810" MinHeight="610" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" SizeChanged="mainWindow_SizeChanged">
-    <DockPanel x:Name="stackp_base" Margin="0">
-        <!--<WrapPanel x:Name="wrap_menus" Height="18" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-            <Menu x:Name="menu_file" Height="24" Width="32">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_New" />
-                    <MenuItem Header="_Open" />
-                    <MenuItem Header="_Save" />
-                    <Separator />
-                    <MenuItem Header="_Quit" />
-                </MenuItem>
-            </Menu>
-            <Menu x:Name="menu_connection" Width="80">
-                <MenuItem Header="_Connections">
-                    <MenuItem Header="_New Connection"/>
-                    <Separator/>
-                    <MenuItem Header="_Disconnect All" />
-                    <MenuItem Header="_Send Key Combo" />
-                </MenuItem>
-            </Menu>
-            <Menu x:Name="menu_about" Width="18">
-                <MenuItem Header="_?">
-                    <MenuItem Header="_Guide" />
-                    <Separator/>
-                    <MenuItem Header="_About" />
-                </MenuItem>
-            </Menu>
-        </WrapPanel>
-        <DockPanel Height="32" DockPanel.Dock="Top" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-            <Button x:Name="btn_newConnection" Width="26" ToolTip="Setup new connection to server" Margin="10,0,0,0" Height="26" BorderThickness="0" MinWidth="26" MinHeight="26" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Click="btn_newConnection_Click">
-                <Image x:Name="img_newConnection" Source="imgs/24x24_newConnection.png"/>
-            </Button>
-            <Button x:Name="btn_disconnectAll" Width="26" Margin="4,0,0,0" ToolTip="Disconnect from all the servers" Height="26" BorderThickness="0" MinWidth="26" MinHeight="26" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-                <Image x:Name="img_disconnectAll" Source="imgs/24x24_discoAll.png"/>
-            </Button>
-            <Button x:Name="btn_sendKeyCombo" Width="26" ToolTip="Send key combination to all the server having the same application running" MinWidth="26" MinHeight="26" Margin="24,0,0,0" BorderThickness="0" Height="26" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-                <Image x:Name="img_sendKey" Source="imgs/24x24_sendKey.png" RenderTransformOrigin="0.167,0.083"/>
-            </Button>
-            <Button x:Name="btn_visualOption" Height="24" Width="24" ToolTip="Change the order of visualization of servers" DockPanel.Dock="Right" MinWidth="24" MinHeight="24" BorderThickness="0" Margin="0" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-                <Image x:Name="img_visualGrid" MinWidth="24" MinHeight="24" Source="imgs/22x22_squares.png" Stretch="None"/>
-            </Button>
-            <Rectangle Fill="#FFF4F4F5" Stroke="Black" Width="500" Opacity="0"/>
-        </DockPanel>-->
-        <WrapPanel Margin="2,2" MaxHeight="110" VerticalAlignment="Top" DockPanel.Dock="Top" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" >
-            <DockPanel>
-                <ToolBarPanel Height="84" VerticalAlignment="Top" Orientation="Horizontal" DockPanel.Dock="Top">
-                    <Button x:Name="btn_newConnection" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_newConnection_Click">
-                        <StackPanel>
-                            <Image x:Name="img_newConnection" Height="46" Width="46" Source="imgs/newConnection.png" Stretch="None"/>
-                            <TextBlock x:Name="txtB_newConnection" Text="Nuova connessione" TextWrapping="Wrap" TextAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <Button x:Name="btn_disconnectAll" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" DockPanel.Dock="Right" Click="btn_disconnectAll_Click">
-                        <StackPanel>
-                            <Image x:Name="img_disconnectAll" Height="46" Width="46" Source="imgs/disconnectAll.png" Stretch="None"/>
-                            <TextBlock x:Name="txtB_disconnectAll" Text="Disconnetti tutti" TextWrapping="Wrap" TextAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                </ToolBarPanel>
-                <Label Content="Connessioni" DockPanel.Dock="Bottom" HorizontalContentAlignment="Center" Panel.ZIndex="1"/>
-            </DockPanel>
-            <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1,0">
-                <DockPanel>
-                    <ToolBarPanel DockPanel.Dock="Top" >
-                        <Button x:Name="btn_sendKeyCombo" Width="100" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0">
-                            <StackPanel>
-                                <Image x:Name="img_sendKeyCombo" Height="46" Width="46" Source="imgs/sendKeyCombo.png" Stretch="None"/>
-                                <TextBlock x:Name="txtB_sendKeyCombo" Text="Invia combo di tasti a più server" TextWrapping="Wrap" TextAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </ToolBarPanel>
-                    <Label DockPanel.Dock="Bottom" Content="Combinazioni" HorizontalContentAlignment="Center" />
-                </DockPanel>
-            </Border>
-            <DockPanel>
-                <ToolBarPanel>
-                    <Button x:Name="btn_help" Width="60" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0">
-                        <StackPanel>
-                            <Image x:Name="img_help" Height="46" Width="46" Source="imgs/help.png"/>
-                            <TextBlock x:Name="txtB_help" Text="Aiuto" TextWrapping="Wrap" TextAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                </ToolBarPanel>
-            </DockPanel>
-        </WrapPanel>
-        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" MinWidth="810" Padding="2,0">
+        Title="Client" Height ="610" Width="830"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="810" MinHeight="610" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+        SizeChanged="mainWindow_SizeChanged"
+        >
+
+    <DockPanel x:Name="stackp_base" Margin="0" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}">
+        <TabControl x:Name="tabControl" DockPanel.Dock="Top" Margin="4,2" MaxHeight="140" SelectedIndex="1">
+            <TabItem x:Name="tabItem_File" Background="#FF80397B" BorderBrush="#FF80397B" Padding="0" Margin="0">
+                <TabItem.Header>
+                    <Menu Background="#FF80397B" BorderBrush="#FF80397B">
+                        <MenuItem Header="_FILE" Foreground="White">
+                            <MenuItem Header="_Quit" Foreground="Black"/>
+                        </MenuItem>
+                    </Menu>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem x:Name="tabItem_Home" Header="HOME"  Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Margin="4,-2,-6,0">
+                <WrapPanel Margin="4,2" MaxHeight="110" VerticalAlignment="Top"  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" >
+                    <DockPanel>
+                        <ToolBarPanel Height="84" VerticalAlignment="Top" Orientation="Horizontal" DockPanel.Dock="Top">
+                            <Button x:Name="btn_newConnection" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_newConnection_Click">
+                                <StackPanel>
+                                    <Image x:Name="img_newConnection" Height="46" Width="46" Source="imgs/newConnection.png" Stretch="None"/>
+                                    <TextBlock x:Name="txtB_newConnection" Text="Nuova connessione" TextWrapping="Wrap" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="btn_disconnectAll" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" DockPanel.Dock="Right" Click="btn_disconnectAll_Click">
+                                <StackPanel>
+                                    <Image x:Name="img_disconnectAll" Height="46" Width="46" Source="imgs/disconnectAll.png" Stretch="None"/>
+                                    <TextBlock x:Name="txtB_disconnectAll" Text="Disconnetti tutti" TextWrapping="Wrap" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </ToolBarPanel>
+                        <Label Content="Connessioni" DockPanel.Dock="Bottom" HorizontalContentAlignment="Center" Panel.ZIndex="1" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    </DockPanel>
+                    <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1,0">
+                        <DockPanel>
+                            <ToolBarPanel DockPanel.Dock="Top" >
+                                <Button x:Name="btn_sendKeyCombo" Width="100" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_sendKeyCombo_Click">
+                                    <StackPanel>
+                                        <Image x:Name="img_sendKeyCombo" Height="46" Width="46" Source="imgs/sendKeyCombo.png" Stretch="None"/>
+                                        <TextBlock x:Name="txtB_sendKeyCombo" Text="Invia combo di tasti a più server" TextWrapping="Wrap" TextAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </ToolBarPanel>
+                            <Label DockPanel.Dock="Bottom" Content="Combinazioni" HorizontalContentAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </DockPanel>
+                    </Border>
+                    <DockPanel>
+                        <ToolBarPanel>
+                            <Button x:Name="btn_help" Width="60" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0">
+                                <StackPanel>
+                                    <Image x:Name="img_help" Height="46" Width="46" Source="imgs/help.png"/>
+                                    <TextBlock x:Name="txtB_help" Text="Aiuto" TextWrapping="Wrap" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </ToolBarPanel>
+                    </DockPanel>
+                </WrapPanel>
+            </TabItem>
+            <TabItem x:Name="tabItem_KeyCombos" Background="#FFF6F1FC" BorderBrush="#FFF6F1FC" Margin="6,-2,-6,0" Header="TASTI">
+                <Grid MaxHeight="112" MinHeight="112">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <DockPanel >
+                        <local:ListBoxWithButtons x:Name="listBoxWButtons_activeProcesses"   DockPanel.Dock="Top" Margin="4,6,6,0"/>
+                        <TextBlock TextWrapping="Wrap" Text="Selezione processo" HorizontalAlignment="Center" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"  Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Height="22"/>
+                    </DockPanel>
+                    <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1,0" Grid.Column="1">
+                        <DockPanel >
+                            <TextBox  DockPanel.Dock="Top" Margin="6,6,4,0" Width="140"/>
+                            <TextBlock TextWrapping="Wrap" Text="Combinazione di tasti" HorizontalAlignment="Center" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"  Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Height="22"/>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Padding="0" Margin="4,0" DockPanel.Dock="Bottom">
             <ScrollViewer x:Name="stackp_serverGrid" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" VerticalScrollBarVisibility="Auto" CanContentScroll="True" Margin="0">
                 <ItemsControl x:Name="ic_serverElements">
                     <!-- ItemsPanelTemplate -->
-                    <ItemsControl.Resources>
-                        <local:ColumnsConverter x:Key="ColumnsConv"/>
-                        <local:RowsConverter x:Key="RowsConv"/>
-                    </ItemsControl.Resources>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <UniformGrid x:Name="uniGrid_servers" 
-                                         Columns="{Binding Cols}"
-                                         Rows="{Binding Cols}"
-                                         VerticalAlignment="Top"/>
+								Columns="{Binding Cols}"
+								Rows="{Binding Cols}"
+								VerticalAlignment="Top"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <!-- ItemTemplate -->
@@ -116,8 +109,8 @@
                 </ItemsControl>
             </ScrollViewer>
         </Border>
-        <StatusBar x:Name="statusBar" Height="24" Margin="0,0,0,0" MinHeight="24" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
+        <!--<StatusBar x:Name="statusBar" Height="24" Margin="0,0,0,0" MinHeight="24" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
             <Label x:Name="lbl_status" Content="status" Padding="5,0" Height="18"/>
-        </StatusBar>
+        </StatusBar>-->
     </DockPanel>
 </Window>

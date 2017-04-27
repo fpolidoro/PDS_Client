@@ -1,0 +1,11 @@
+U:\Documenti\Malnati\Client\CustomMUILibrary\bin\Debug\CustomMUILibrary.dll
+U:\Documenti\Malnati\Client\CustomMUILibrary\bin\Debug\CustomMUILibrary.pdb
+U:\Documenti\Malnati\Client\CustomMUILibrary\obj\Debug\GeneratedInternalTypeHelper.g.cs
+U:\Documenti\Malnati\Client\CustomMUILibrary\obj\Debug\CustomMUILibrary_MarkupCompile.cache
+U:\Documenti\Malnati\Client\CustomMUILibrary\obj\Debug\CustomMUILibrary_MarkupCompile.lref
+U:\Documenti\Malnati\Client\CustomMUILibrary\obj\Debug\Themes\Generic.baml
+U:\Documenti\Malnati\Client\CustomMUILibrary\obj\Debug\CustomMUILibrary.g.resources
+U:\Documenti\Malnati\Client\CustomMUILibrary\obj\Debug\CustomMUILibrary.Properties.Resources.resources
+U:\Documenti\Malnati\Client\CustomMUILibrary\obj\Debug\CustomMUILibrary.csproj.GenerateResource.Cache
+U:\Documenti\Malnati\Client\CustomMUILibrary\obj\Debug\CustomMUILibrary.dll
+U:\Documenti\Malnati\Client\CustomMUILibrary\obj\Debug\CustomMUILibrary.pdb
