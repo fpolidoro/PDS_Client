@@ -6,9 +6,14 @@
              xmlns:local="clr-namespace:Client"
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="180">
-    <StackPanel Orientation="Horizontal" Height="26">
-        <Image x:Name="img_OpenWindowIcon" Width="26" Height="26"/>
-        <TextBlock x:Name="txtb_ProcessName" TextTrimming="WordEllipsis" VerticalAlignment="Center" Width="120" Margin="4,0,0,0" />
-        <TextBlock x:Name="txtb_ProcessTimeFocused" Margin="4,0,0,0" Width="26" VerticalAlignment="Center"/>
-    </StackPanel>
+    <Grid Height="26">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="26"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="0.3*" />
+        </Grid.ColumnDefinitions>
+        <Image x:Name="img_OpenWindowIcon" Grid.Column="0" Width="26" Height="26" HorizontalAlignment="Left"/>
+        <TextBlock x:Name="txtb_ProcessName" Grid.Column="1" TextTrimming="WordEllipsis" VerticalAlignment="Center" Margin="4,0,0,0" HorizontalAlignment="Center" />
+        <TextBlock x:Name="txtb_ProcessTimeFocused" Grid.Column="2" Margin="4,0,0,0" Width="26" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+    </Grid>
 </UserControl>

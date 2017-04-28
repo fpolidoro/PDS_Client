@@ -55,9 +55,10 @@
                 </ListBox.ItemTemplate>-->
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Vertical" 
-                           Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=ActualHeight}"
-                           Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=ActualWidth}"/>
+                            <WrapPanel Orientation="Vertical"
+                             Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=ActualHeight}"/>
+                            <!--
+                           Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=ActualWidth}"-->
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>

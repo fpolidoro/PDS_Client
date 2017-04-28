@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,7 +36,7 @@ namespace Client
         public string IconaBase64 { get { return _base64string; }
             set { if (!value.Equals(""))
                     _base64string = value;
-                    }
+            }
         }
         private string _base64string;
 
@@ -50,9 +52,14 @@ namespace Client
 
         public int ID { get; set; }
 
+        public TimeSpan FocusTime{
+            get{return _hasFocusTime; }
+            set{ _hasFocusTime = _hasFocusTime.Add(value); }
+        }
+
         private event PropertyChangedEventHandler PropertyChanged;
         private string _status;
-        //private TimeSpan _hasFocusTime;
+        private TimeSpan _hasFocusTime;
 
         public OpenWindow()
         {
@@ -62,7 +69,7 @@ namespace Client
 
         public void Initialize()
         {
-            //_hasFocusTime = new TimeSpan();
+            _hasFocusTime = TimeSpan.Zero;  //azzero il timespan di permanenza in focus
             if (!IconaBase64.Equals(""))    //i json successivi al NewWindow non avranno l'icona, quindi arriverà una stringa vuota
             {
                 img_OpenWindowIcon.Source = Base64ToBitmapImage(IconaBase64);
@@ -178,6 +185,20 @@ namespace Client
             }
         }
 
-
+        public void ComputeFocusPercentage(TimeSpan focusTimeOfAll) {
+            if (!focusTimeOfAll.Equals(TimeSpan.Zero)) {
+                double focusPercentage = _hasFocusTime.TotalMilliseconds / focusTimeOfAll.TotalMilliseconds;
+                txtb_ProcessTimeFocused.Text = focusPercentage.ToString("##0.0#%", CultureInfo.InvariantCulture);
+                //Nota: non ho bisogno di moltiplicare per 100 in focusPercentage perchè lo fa già il metodo ToString qui sopra,
+                //grazie al simbolo %: # indica una cifra (se non presente, nulla visualizzato), 0 indica una cifra, se non presente, visualizza 0
+                Debug.WriteLine(ProcName + ": " + focusPercentage + "*100 = " + focusPercentage*100 + "%");
+                Debug.WriteLine(ProcName + ": hasFocusTime=" + _hasFocusTime.TotalMilliseconds + " totalMs=" + focusTimeOfAll.TotalMilliseconds);
+            }
+            else
+            {
+                Debug.WriteLine(ProcName + ": focusTimeOfAll is ZERO");
+                txtb_ProcessTimeFocused.Text = "0.0%";
+            }
+        }
     }
 }

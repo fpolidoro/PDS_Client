@@ -30,11 +30,12 @@ namespace Client
         private Uri _uriDisconnectedByUs;
         private Uri _uriLostConnection;
         private Dictionary<int, OpenWindow> _openWindows;
-        //private static int _RECLIMIT = 3;
-        //private int _reconnAttempts;
+        private SortedDictionary<float, OpenWindow> _focusTimeOfWindows;
         private Thread _receiveThread;
         private object _lock;
         private OpenWindow _currentlyOnFocus;
+        private OpenWindow _hasLostFocus;
+        private DateTime _lastFocusUpdate;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -59,7 +60,11 @@ namespace Client
             _srv.SetGUIParentElement(this);
             txtb_serverAddress.Text = _srv.Name();
 
+            _lastFocusUpdate = _srv.ConnectionTime;
+            _hasLostFocus = null;
+            _currentlyOnFocus = null;
             _openWindows = new Dictionary<int, OpenWindow>();
+            _focusTimeOfWindows = new SortedDictionary<float, OpenWindow>();
             pendingJSONs = new ObservableCollection<string>();
             _lock = new object();
             Debug.Assert(pendingJSONs != null, "pendingJSONs == NULL");
@@ -114,16 +119,27 @@ namespace Client
                                 Debug.WriteLine(" has focus now", winToUpdate.ProcName);
                                 if (_currentlyOnFocus != null) {
                                     Debug.WriteLine(" has lost focus", _currentlyOnFocus.ProcName);
-                                    _currentlyOnFocus.Status = "NotOnFocus";
+                                    _currentlyOnFocus.Status = "HasLostFocus";
+                                    _hasLostFocus = _currentlyOnFocus;
                                     //la finestra non più in focus va messa in lista in base al suo tempo di permanenza in focus
                                 }
                                 _currentlyOnFocus = winToUpdate;
                                 listBox_OpenWindows.Items.Remove(winToUpdate);  //rimuovo dalla posizione attuale
                                 listBox_OpenWindows.Items.Insert(0, winToUpdate);   //reinserisco in cima
+                                RecomputeFocusPercentage();
                             }
                             if (winToUpdate.Status.Equals("Closed"))
                             {
                                 listBox_OpenWindows.Items.Remove(winToUpdate);
+                                if (_currentlyOnFocus.ID.Equals(winToUpdate.ID)) {  //la finestra che sto chiudendo era currently on focus
+                                    _currentlyOnFocus = null;
+                                    RecomputeFocusPercentage();
+                                }
+                            }
+                            if (winToUpdate.Status.Equals("HasLostFocus")) {  //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
+                                _currentlyOnFocus = null;
+                                _hasLostFocus = winToUpdate;
+                                RecomputeFocusPercentage();
                             }
                         }
                         else {  //la finestra non esisteva ancora, quindi creo l'oggetto
@@ -260,6 +276,30 @@ namespace Client
             _parent = parent;
             _parent.PropertyChanged += this.OnPropertyChanged;
             Debug.WriteLine("SERVER_ELEMENT: subscribed to MAIN_WINDOW's property changed");
+        }
+
+        private void RecomputeFocusPercentage() {
+            DateTime now = DateTime.Now;  //ottengo l'ora attuale
+            TimeSpan focusTimeOfAll = TimeSpan.Zero;
+            
+            if (_hasLostFocus != null) {
+                //ottengo TimeSpan da Now-TempoDiConnessione, con l'uguale in realtà aggiungo
+                _hasLostFocus.FocusTime = now.Subtract(_lastFocusUpdate);
+                Debug.WriteLine("_hasLostFocus.FocusTime: {0}", _hasLostFocus.FocusTime.ToString(@"ss\.fff"));
+            }
+            _lastFocusUpdate = DateTime.Now;
+
+            if (_openWindows.Count > 0)
+            {
+                //ricalcolo tutte le percentuali
+                foreach (var item in _openWindows.Values)
+                {
+                    focusTimeOfAll = focusTimeOfAll.Add(item.FocusTime);
+                }
+                foreach (var item in _openWindows.Values) {
+                    item.ComputeFocusPercentage(focusTimeOfAll);
+                }
+            }
         }
 
         //Collegato al metodo OnPropertyChanged della MainWindow per ascoltare quando viene premuto disconnectAll

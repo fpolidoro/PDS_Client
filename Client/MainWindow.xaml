@@ -71,20 +71,22 @@
             <TabItem x:Name="tabItem_KeyCombos" Background="#FFF6F1FC" BorderBrush="#FFF6F1FC" Margin="6,-2,-6,0" Header="TASTI">
                 <Grid MaxHeight="112" MinHeight="112">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="57" />
+                        <ColumnDefinition Width="135"/>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <DockPanel >
-                        <local:ListBoxWithButtons x:Name="listBoxWButtons_activeProcesses"   DockPanel.Dock="Top" Margin="4,6,6,0"/>
+                    <StackPanel Grid.ColumnSpan="2">
+                        <local:ListBoxWithButtons x:Name="listBoxWButtons_activeProcesses"   DockPanel.Dock="Top" Margin="6,6,6,0"/>
+                        <TextBox  DockPanel.Dock="Top" Margin="6,6,6,0" Width="180"/>
                         <TextBlock TextWrapping="Wrap" Text="Selezione processo" HorizontalAlignment="Center" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"  Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Height="22"/>
-                    </DockPanel>
-                    <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1,0" Grid.Column="1">
-                        <DockPanel >
-                            <TextBox  DockPanel.Dock="Top" Margin="6,6,4,0" Width="140"/>
-                            <TextBlock TextWrapping="Wrap" Text="Combinazione di tasti" HorizontalAlignment="Center" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"  Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Height="22"/>
-                        </DockPanel>
-                    </Border>
+                    </StackPanel>
+                    <Button x:Name="btn_sendKey" Width="65" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_sendKey_Click" Grid.Column="2" HorizontalAlignment="Center" Margin="0,0,0,14" VerticalAlignment="Center">
+                        <StackPanel>
+                            <Image x:Name="img_sendKey" Height="46" Width="46" Source="imgs/SendKey.png"/>
+                            <TextBlock x:Name="txtB_sendKey" Text="Invia" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </Grid>
             </TabItem>
         </TabControl>

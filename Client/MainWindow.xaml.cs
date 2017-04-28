@@ -137,6 +137,10 @@ namespace Client
             tabItem_KeyCombos.Visibility = Visibility.Visible;
             tabControl.SelectedIndex = 2;
         }
+
+        private void btn_sendKey_Click(object sender, RoutedEventArgs e) {
+
+        }
     }
 
 }

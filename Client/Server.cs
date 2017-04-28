@@ -24,6 +24,10 @@ namespace Client
         private ServerElement _parentGUIElement;
         private ManualResetEvent CloseEvent = new ManualResetEvent(false); //permette di fermare la ricezione
 
+        public DateTime ConnectionTime {
+            get { return _connectionTime; }
+        }
+
         public Server()
         {
             IsValid = false;
