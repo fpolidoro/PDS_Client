@@ -29,8 +29,8 @@ namespace Client
         private Uri _uriDisconnectedBadly;
         private Uri _uriDisconnectedByUs;
         private Uri _uriLostConnection;
-        private Dictionary<int, OpenWindow> _openWindows;
-        private SortedDictionary<float, OpenWindow> _focusTimeOfWindows;
+        private Dictionary<int, OpenWindow> _openWindows;   //(int)windowID, OpenWindow
+        private SortedDictionary<float, OpenWindow> _focusTimeOfWindows; //(float) Focus%, OpenWindow
         private Thread _receiveThread;
         private object _lock;
         private OpenWindow _currentlyOnFocus;
@@ -131,10 +131,12 @@ namespace Client
                             if (winToUpdate.Status.Equals("Closed"))
                             {
                                 listBox_OpenWindows.Items.Remove(winToUpdate);
+                                _openWindows.Remove(winToUpdate.ID);
                                 if (_currentlyOnFocus.ID.Equals(winToUpdate.ID)) {  //la finestra che sto chiudendo era currently on focus
                                     _currentlyOnFocus = null;
                                     RecomputeFocusPercentage();
                                 }
+                                
                             }
                             if (winToUpdate.Status.Equals("HasLostFocus")) {  //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
                                 _currentlyOnFocus = null;

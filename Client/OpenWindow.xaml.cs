@@ -76,7 +76,8 @@ namespace Client
             }
             ID = Convert.ToInt32(WindowID);
             txtb_ProcessName.Text = ProcName;
-            PropertyChanged += new PropertyChangedEventHandler(HighlightWindowOnFocus);          
+            PropertyChanged += new PropertyChangedEventHandler(HighlightWindowOnFocus);
+            txtb_ProcessTimeFocused.Text = "0.0%";
         }
         public bool HasFocus()
         {
