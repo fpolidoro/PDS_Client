@@ -14,7 +14,7 @@
         >
 
     <DockPanel x:Name="stackp_base" Margin="0" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}">
-        <TabControl x:Name="tabControl" DockPanel.Dock="Top" Margin="4,2" MaxHeight="140" SelectedIndex="1">
+        <TabControl x:Name="tabControl" DockPanel.Dock="Top" Margin="0,2,0,0" MaxHeight="140" SelectedIndex="1" BorderThickness="1,1,1,0">
             <TabItem x:Name="tabItem_File" Background="#FF80397B" BorderBrush="#FF80397B" Padding="0" Margin="0">
                 <TabItem.Header>
                     <Menu Background="#FF80397B" BorderBrush="#FF80397B">
@@ -90,7 +90,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Padding="0" Margin="4,0" DockPanel.Dock="Bottom">
+        <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Padding="0" Margin="0" DockPanel.Dock="Bottom">
             <ScrollViewer x:Name="stackp_serverGrid" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" VerticalScrollBarVisibility="Auto" CanContentScroll="True" Margin="0">
                 <ItemsControl x:Name="ic_serverElements">
                     <!-- ItemsPanelTemplate -->

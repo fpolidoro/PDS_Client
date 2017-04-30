@@ -13,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using WpfAnimatedGif;
 using System.Collections.Specialized;
+using System.Windows.Threading;
 
 namespace Client
 {
@@ -30,7 +31,7 @@ namespace Client
         private Uri _uriDisconnectedByUs;
         private Uri _uriLostConnection;
         private Dictionary<int, OpenWindow> _openWindows;   //(int)windowID, OpenWindow
-        private SortedDictionary<float, OpenWindow> _focusTimeOfWindows; //(float) Focus%, OpenWindow
+        private List<OpenWindow> _sortedWindowList; //lista da cui prenderò gli elementi da visualizzare nella listbox
         private Thread _receiveThread;
         private object _lock;
         private OpenWindow _currentlyOnFocus;
@@ -64,14 +65,14 @@ namespace Client
             _hasLostFocus = null;
             _currentlyOnFocus = null;
             _openWindows = new Dictionary<int, OpenWindow>();
-            _focusTimeOfWindows = new SortedDictionary<float, OpenWindow>();
+            _sortedWindowList = new List<OpenWindow>();
             pendingJSONs = new ObservableCollection<string>();
             _lock = new object();
             Debug.Assert(pendingJSONs != null, "pendingJSONs == NULL");
             Debug.Assert(_lock != null, "_lock is NULL");
             Debug.Assert(_srv != null, "_srv is NULL");
             BindingOperations.EnableCollectionSynchronization(pendingJSONs, _lock);
-            pendingJSONs.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(CollectionChanged);
+            pendingJSONs.CollectionChanged += new NotifyCollectionChangedEventHandler(CollectionChanged);
             _receiveThread = new Thread(_srv.Receive);
             _receiveThread.Start();
             try
@@ -121,11 +122,8 @@ namespace Client
                                     Debug.WriteLine(" has lost focus", _currentlyOnFocus.ProcName);
                                     _currentlyOnFocus.Status = "HasLostFocus";
                                     _hasLostFocus = _currentlyOnFocus;
-                                    //la finestra non più in focus va messa in lista in base al suo tempo di permanenza in focus
                                 }
                                 _currentlyOnFocus = winToUpdate;
-                                listBox_OpenWindows.Items.Remove(winToUpdate);  //rimuovo dalla posizione attuale
-                                listBox_OpenWindows.Items.Insert(0, winToUpdate);   //reinserisco in cima
                                 RecomputeFocusPercentage();
                             }
                             if (winToUpdate.Status.Equals("Closed"))
@@ -141,7 +139,7 @@ namespace Client
                             if (winToUpdate.Status.Equals("HasLostFocus")) {  //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
                                 _currentlyOnFocus = null;
                                 _hasLostFocus = winToUpdate;
-                                RecomputeFocusPercentage();
+                                
                             }
                         }
                         else {  //la finestra non esisteva ancora, quindi creo l'oggetto
@@ -149,7 +147,6 @@ namespace Client
                             {
                                 win.Initialize();
                                 _openWindows.Add(win.ID, win);
-                                listBox_OpenWindows.Items.Add(win);
                                 Debug.WriteLine("aggiunto l'item win");
                             }
                             else
@@ -165,6 +162,32 @@ namespace Client
                             {
                                 _openWindows.Add(win.ID, win);
                             }
+                        }
+                        if (_openWindows.Count != 0) {
+                            listBox_OpenWindows.Items.Clear();
+                            int i = 0;
+                            if (_openWindows.Count > 1)
+                            {
+                                if (_currentlyOnFocus != null)
+                                {
+                                    listBox_OpenWindows.Items.Add(_currentlyOnFocus);
+                                    _openWindows.Remove(_currentlyOnFocus.ID);
+                                    i = 1;
+                                }
+                                _sortedWindowList = _openWindows.Values.OrderByDescending(x => x.FocusTime).ToList(); //ordino per focustime
+                                if (_currentlyOnFocus != null) _openWindows.Add(_currentlyOnFocus.ID, _currentlyOnFocus);
+                            }
+                            else _sortedWindowList = _openWindows.Values.ToList();  //ho un solo elemento, è inutile fare il sort
+                            
+                            Debug.WriteLine("listBox.Count = " + listBox_OpenWindows.Items.Count); 
+                            
+                            foreach (var w in _sortedWindowList) {
+                                Debug.WriteLine(i + ": " + w.WindowID + " " + w.FocusTime.Milliseconds);
+                                listBox_OpenWindows.Items.Insert(i, w);
+                                i++;
+                            }
+                            //listBox_OpenWindows.Items.SortDescriptions.Add(new SortDescription("OpenWindow", ListSortDirection.Descending));
+                            Debug.WriteLine("listBox.Count = " + listBox_OpenWindows.Items.Count);
                         }
                         //else if (listBox_OpenWindows.Visibility == Visibility.Visible && _openWindows.Count == 1 /*&& _openWindows.First*/)
                         /*{
