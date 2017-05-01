@@ -52,19 +52,24 @@ namespace Client
 
         public int ID { get; set; }
 
-        public TimeSpan FocusTime{
+        /*public TimeSpan FocusTime{
             get{return _hasFocusTime; }
             set{ _hasFocusTime = _hasFocusTime.Add(value); }
+        }*/
+        public TimeSpan FocusTime {
+            get { return _focusStopWatch.Elapsed; }
         }
 
         private event PropertyChangedEventHandler PropertyChanged;
         private string _status;
         private TimeSpan _hasFocusTime;
+        private Stopwatch _focusStopWatch;
 
         public OpenWindow()
         {
             InitializeComponent();
             _status = "";
+            
         }
 
         public void Initialize()
@@ -78,6 +83,7 @@ namespace Client
             txtb_ProcessName.Text = ProcName;
             PropertyChanged += new PropertyChangedEventHandler(HighlightWindowOnFocus);
             txtb_ProcessTimeFocused.Text = "0.0%";
+            _focusStopWatch = new Stopwatch();
         }
         public bool HasFocus()
         {
@@ -100,10 +106,12 @@ namespace Client
                 if (Status.Equals("OnFocus"))
                 {   //lo evidenzio cambiando colore di sfondo
                     this.Background = Brushes.Wheat;
+                    _focusStopWatch.Start();
                 }
                 else
                 {   //qualcun altro è in focus, tolgo il colore di sfondo
                     this.ClearValue(BackgroundProperty);
+                    _focusStopWatch.Stop();
                 }
             }
         }
@@ -188,12 +196,12 @@ namespace Client
 
         public void ComputeFocusPercentage(TimeSpan focusTimeOfAll) {
             if (!focusTimeOfAll.Equals(TimeSpan.Zero)) {
-                double focusPercentage = _hasFocusTime.TotalMilliseconds / focusTimeOfAll.TotalMilliseconds;
+                double focusPercentage = _focusStopWatch.ElapsedMilliseconds / focusTimeOfAll.TotalMilliseconds;
                 txtb_ProcessTimeFocused.Text = focusPercentage.ToString("##0.0#%", CultureInfo.InvariantCulture);
                 //Nota: non ho bisogno di moltiplicare per 100 in focusPercentage perchè lo fa già il metodo ToString qui sopra,
                 //grazie al simbolo %: # indica una cifra (se non presente, nulla visualizzato), 0 indica una cifra, se non presente, visualizza 0
                 Debug.WriteLine(ProcName + ": " + focusPercentage + "*100 = " + focusPercentage*100 + "%");
-                Debug.WriteLine(ProcName + ": hasFocusTime=" + _hasFocusTime.TotalMilliseconds + " totalMs=" + focusTimeOfAll.TotalMilliseconds);
+                Debug.WriteLine(ProcName + ": hasFocusTime=" + _focusStopWatch.ElapsedMilliseconds + " totalMs=" + focusTimeOfAll.TotalMilliseconds);
             }
             else
             {

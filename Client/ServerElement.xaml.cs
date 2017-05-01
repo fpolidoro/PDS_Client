@@ -37,6 +37,8 @@ namespace Client
         private OpenWindow _currentlyOnFocus;
         private OpenWindow _hasLostFocus;
         private DateTime _lastFocusUpdate;
+        private DispatcherTimer _timer;
+        private Stopwatch _stopWatch;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -61,6 +63,8 @@ namespace Client
             _srv.SetGUIParentElement(this);
             txtb_serverAddress.Text = _srv.Name();
 
+            
+
             _lastFocusUpdate = _srv.ConnectionTime;
             _hasLostFocus = null;
             _currentlyOnFocus = null;
@@ -73,6 +77,14 @@ namespace Client
             Debug.Assert(_srv != null, "_srv is NULL");
             BindingOperations.EnableCollectionSynchronization(pendingJSONs, _lock);
             pendingJSONs.CollectionChanged += new NotifyCollectionChangedEventHandler(CollectionChanged);
+
+            //questi sono i timer per calcolare le percentuali di focus
+            _stopWatch = new Stopwatch();   //per calcolare il tempo dalla connessione del server
+            _stopWatch.Start();
+            _timer = new DispatcherTimer(); //a intervalli regolari aggiorna le percentuali (se esiste focus)
+            _timer.Tick += new EventHandler(UpdatePercentages_Tick);
+            _timer.Interval = new TimeSpan(0, 0, 2);
+
             _receiveThread = new Thread(_srv.Receive);
             _receiveThread.Start();
             try
@@ -124,7 +136,8 @@ namespace Client
                                     _hasLostFocus = _currentlyOnFocus;
                                 }
                                 _currentlyOnFocus = winToUpdate;
-                                RecomputeFocusPercentage();
+                                OnPropertyChanged("_currentlyOnFocus");
+                                //RecomputeFocusPercentage();
                             }
                             if (winToUpdate.Status.Equals("Closed"))
                             {
@@ -132,12 +145,14 @@ namespace Client
                                 _openWindows.Remove(winToUpdate.ID);
                                 if (_currentlyOnFocus.ID.Equals(winToUpdate.ID)) {  //la finestra che sto chiudendo era currently on focus
                                     _currentlyOnFocus = null;
-                                    RecomputeFocusPercentage();
+                                    OnPropertyChanged("_currentlyOnFocus");
+                                    //RecomputeFocusPercentage();
                                 }
                                 
                             }
                             if (winToUpdate.Status.Equals("HasLostFocus")) {  //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
                                 _currentlyOnFocus = null;
+                                OnPropertyChanged("_currentlyOnFocus");
                                 _hasLostFocus = winToUpdate;
                                 
                             }
@@ -147,6 +162,7 @@ namespace Client
                             {
                                 win.Initialize();
                                 _openWindows.Add(win.ID, win);
+                                listBox_OpenWindows.Items.Add(win);
                                 Debug.WriteLine("aggiunto l'item win");
                             }
                             else
@@ -163,7 +179,7 @@ namespace Client
                                 _openWindows.Add(win.ID, win);
                             }
                         }
-                        if (_openWindows.Count != 0) {
+                        /*if (_openWindows.Count != 0) {
                             listBox_OpenWindows.Items.Clear();
                             int i = 0;
                             if (_openWindows.Count > 1)
@@ -188,7 +204,7 @@ namespace Client
                             }
                             //listBox_OpenWindows.Items.SortDescriptions.Add(new SortDescription("OpenWindow", ListSortDirection.Descending));
                             Debug.WriteLine("listBox.Count = " + listBox_OpenWindows.Items.Count);
-                        }
+                        }*/
                         //else if (listBox_OpenWindows.Visibility == Visibility.Visible && _openWindows.Count == 1 /*&& _openWindows.First*/)
                         /*{
                             //se ho un solo elemento nella lista che sta venendo chiuso, collasso la lista, ma va messo un msg tipo "no finestre aperte"
@@ -239,6 +255,7 @@ namespace Client
                 if(mitem_reconnect.IsEnabled)
                     mitem_reconnect.IsEnabled = false;
                 mitem_close.Visibility = Visibility.Visible;
+                _stopWatch.Stop();
             }
             else if (value.Equals("SocketGentlyDisposed"))
             {
@@ -255,6 +272,7 @@ namespace Client
                 if (mitem_reconnect.IsEnabled)
                     mitem_reconnect.IsEnabled = false;
                 mitem_close.Visibility = Visibility.Visible;
+                _stopWatch.Stop();
             }
             else if (value.Equals("Connected"))
             {
@@ -270,6 +288,7 @@ namespace Client
                     mitem_reconnect.IsEnabled = false;
                 if(mitem_close.Visibility == Visibility.Visible)
                     mitem_close.Visibility = Visibility.Collapsed;
+                _stopWatch.Start(); //faccio ripartire il timer del tempo
             }
             else if (value.Equals("ReconnectionLimitExceeded"))
             {
@@ -292,6 +311,7 @@ namespace Client
                 mitem_disconnect.Visibility = Visibility.Collapsed;
                 mitem_reconnect.IsEnabled = true;
                 mitem_close.Visibility = Visibility.Visible;
+                _stopWatch.Stop(); //fermo il timer del tempo di connessione
             }
         }
 
@@ -303,16 +323,48 @@ namespace Client
             Debug.WriteLine("SERVER_ELEMENT: subscribed to MAIN_WINDOW's property changed");
         }
 
+        private void UpdatePercentages_Tick(object sender, EventArgs e)
+        {
+            RecomputeFocusPercentage();
+            if (_openWindows.Count != 0)
+            {
+                listBox_OpenWindows.Items.Clear();
+                int i = 0;
+                if (_openWindows.Count > 1)
+                {
+                    if (_currentlyOnFocus != null)
+                    {
+                        listBox_OpenWindows.Items.Add(_currentlyOnFocus);
+                        _openWindows.Remove(_currentlyOnFocus.ID);
+                        i = 1;
+                        Debug.WriteLine(i + ": " + _currentlyOnFocus.WindowID + " " + _currentlyOnFocus.FocusTime.Milliseconds);
+                    }
+                    _sortedWindowList = _openWindows.Values.OrderByDescending(x => x.FocusTime).ToList(); //ordino per focustime
+                    if (_currentlyOnFocus != null) _openWindows.Add(_currentlyOnFocus.ID, _currentlyOnFocus);
+                }
+                else _sortedWindowList = _openWindows.Values.ToList();  //ho un solo elemento, è inutile fare il sort
+
+                //Debug.WriteLine("listBox.Count = " + listBox_OpenWindows.Items.Count);
+
+                foreach (var w in _sortedWindowList)
+                {
+                    Debug.WriteLine(i + ": " + w.WindowID + " " + w.FocusTime.Milliseconds);
+                    listBox_OpenWindows.Items.Insert(i, w);
+                    i++;
+                }
+            }
+        }
+
         private void RecomputeFocusPercentage() {
-            DateTime now = DateTime.Now;  //ottengo l'ora attuale
+            //DateTime now = DateTime.Now;  //ottengo l'ora attuale
             TimeSpan focusTimeOfAll = TimeSpan.Zero;
             
             if (_hasLostFocus != null) {
                 //ottengo TimeSpan da Now-TempoDiConnessione, con l'uguale in realtà aggiungo
-                _hasLostFocus.FocusTime = now.Subtract(_lastFocusUpdate);
+                //_hasLostFocus.FocusTime = now.Subtract(_lastFocusUpdate);
                 Debug.WriteLine("_hasLostFocus.FocusTime: {0}", _hasLostFocus.FocusTime.ToString(@"ss\.fff"));
             }
-            _lastFocusUpdate = DateTime.Now;
+            //_lastFocusUpdate = DateTime.Now;
 
             if (_openWindows.Count > 0)
             {
@@ -330,12 +382,35 @@ namespace Client
         //Collegato al metodo OnPropertyChanged della MainWindow per ascoltare quando viene premuto disconnectAll
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "DisconnectAll")
+            if (e.PropertyName.Equals("DisconnectAll"))
             {   //bottone premuto, disconnetto questo server
                 Debug.WriteLine("SERVER_ELEMENT: OnPropertyChanged stopping the servers");
                 _srv.StopReceive();
                 _srv.Close();
                 _parent.ServerList.Remove(this);
+            }
+        }
+
+        protected void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+            if (propertyName.Equals("_currentlyOnFocus"))
+            {
+                if (_currentlyOnFocus == null)
+                {
+                    _timer.Stop();
+                    Debug.WriteLine("_timer has been stopped.");
+                }
+                else { _timer.Start();
+                    Debug.WriteLine("_timer has been restarted.");
+                }
             }
         }
 

@@ -97,8 +97,8 @@ namespace Client
             Debug.WriteLine("MAIN_WINDOW: OnPropertyChanged");
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-                DisconnectAll = false; //riporto la proprietà a false, perchè ormai l'evento è andato
-            }
+            DisconnectAll = false; //riporto la proprietà a false, perchè ormai l'evento è andato
+        }
 
 
         private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
