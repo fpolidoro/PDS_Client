@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Client.CatchKeyTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Client"
+             mc:Ignorable="d" 
+             d:DesignHeight="22" d:DesignWidth="180">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid Grid.Row="1">
+        <!--Per far stare textblock sopra a textbox-->
+        <TextBlock Text="Inserire combinazione di tasti"
+                        Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" Visibility="{Binding ElementName=txtB_captureKeyCombo, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0" />
+        <!-- enter term here -->
+        <TextBox x:Name="txtB_captureKeyCombo" Width="180" Background="Transparent" PreviewKeyDown="txtB_captureKeyCombo_PreviewKeyDown" SelectionBrush="#FFE0BFDE" ContextMenuOpening="txtB_captureKeyCombo_ContextMenuOpening" LostFocus="txtB_captureKeyCombo_LostFocus">
+            <TextBox.ContextMenu>
+                <ContextMenu x:Name="cntxtMenu_captureKeyCombo" Visibility="Hidden" IsEnabled="False"/>
+            </TextBox.ContextMenu>
+
+        </TextBox>
+    </Grid>
+</UserControl>

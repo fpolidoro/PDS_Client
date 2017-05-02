@@ -75,7 +75,7 @@ namespace Client
             set { SetValue(AddressProperty, value); }
         }
 
-
+        /*e.Handled = true fa in modo che l'evento KeyDown non venga scatenato, poichè già gestito da PreviewKeyDown*/
         private void UIElement_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (!(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && DigitKeys.Contains(e.Key))

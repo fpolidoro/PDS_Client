@@ -12,14 +12,41 @@
         MinWidth="810" MinHeight="610" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
         SizeChanged="mainWindow_SizeChanged"
         >
-
     <DockPanel x:Name="stackp_base" Margin="0" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}">
         <TabControl x:Name="tabControl" DockPanel.Dock="Top" Margin="0,2,0,0" MaxHeight="140" SelectedIndex="1" BorderThickness="1,1,1,0">
-            <TabItem x:Name="tabItem_File" Background="#FF80397B" BorderBrush="#FF80397B" Padding="0" Margin="0">
-                <TabItem.Header>
-                    <Menu Background="#FF80397B" BorderBrush="#FF80397B">
-                        <MenuItem Header="_FILE" Foreground="White">
-                            <MenuItem Header="_Quit" Foreground="Black"/>
+            <TabItem x:Name="tabItem_File" Background="#FF80397B" BorderBrush="#FF80397B" Padding="0" Margin="0" Height="20">
+                <TabItem.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="TextElement.Foreground"
+                        Value="White" />
+                        <Setter Property="TextElement.FontSize"
+                        Value="16" />
+                        <Setter Property="Background"
+                        Value="#363636" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter ContentSource="Header"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected"
+                                         Value="true">
+                                            <Setter Property="TextElement.Foreground"
+                                            Value="Black" />
+                                            <Setter Property="Background"
+                                            Value="White" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabItem.Resources>
+                    <TabItem.Header>
+                    <Menu Background="#FF80397B" BorderBrush="#FF80397B" >
+                        <MenuItem Header="FILE" Foreground="White">
+                            <MenuItem Header="Quit" Foreground="Black"/>
                         </MenuItem>
                     </Menu>
                 </TabItem.Header>
@@ -78,7 +105,7 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.ColumnSpan="2">
                         <local:ListBoxWithButtons x:Name="listBoxWButtons_activeProcesses"   DockPanel.Dock="Top" Margin="6,6,6,0"/>
-                        <TextBox  DockPanel.Dock="Top" Margin="6,6,6,0" Width="180"/>
+                        <local:CatchKeyTextBox DockPanel.Dock="Top" Margin="6,6,6,0" />
                         <TextBlock TextWrapping="Wrap" Text="Selezione processo" HorizontalAlignment="Center" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"  Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Height="22"/>
                     </StackPanel>
                     <Button x:Name="btn_sendKey" Width="65" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_sendKey_Click" Grid.Column="2" HorizontalAlignment="Center" Margin="0,0,0,14" VerticalAlignment="Center">

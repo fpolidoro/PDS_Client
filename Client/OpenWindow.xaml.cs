@@ -106,11 +106,15 @@ namespace Client
                 if (Status.Equals("OnFocus"))
                 {   //lo evidenzio cambiando colore di sfondo
                     this.Background = Brushes.Wheat;
+                    cntxtMenu_SendKeyToThisWindow.IsEnabled = true;
+                    cntxtMenu_SendKeyToThisWindow.Visibility = Visibility.Visible;
                     _focusStopWatch.Start();
                 }
                 else
                 {   //qualcun altro è in focus, tolgo il colore di sfondo
                     this.ClearValue(BackgroundProperty);
+                    cntxtMenu_SendKeyToThisWindow.IsEnabled = false;
+                    cntxtMenu_SendKeyToThisWindow.Visibility = Visibility.Hidden;
                     _focusStopWatch.Stop();
                 }
             }

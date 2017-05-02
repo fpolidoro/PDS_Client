@@ -197,19 +197,19 @@ namespace Client
                 } 
                 ConnectionLabel = "Connecting";
                 _srv.SetAddressAndPort(_address, _port);
-                Action<string> actionUpdateStatusBar = _parentWindow.UpdateStatusBar;
+                //Action<string> actionUpdateStatusBar = _parentWindow.UpdateStatusBar;
                 StringBuilder connectingTo = new StringBuilder("Trying to connect to ");
                 connectingTo.Append(_address);
                 connectingTo.Append(":");
                 connectingTo.Append(_port);
-                _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
+                //_parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
                 ConnectionLabel = await Task.Run(() => _srv.Startup());
                 if (ConnectionLabel.Equals("Connected"))
                 {
                     connectingTo.Clear();
                     connectingTo.Append("Connected to ");
                     connectingTo.Append(_address);
-                    _parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
+                    //_parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
                 }
                     //animazione della gui
          //   }

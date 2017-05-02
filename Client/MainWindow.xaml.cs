@@ -5,6 +5,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Client
 {
@@ -32,16 +34,20 @@ namespace Client
             }
         }
 
-        public ObservableCollection<ServerElement> ServerList {
+        public ObservableCollection<ServerElement> ServerList
+        {
             get;
             set;
         }
 
         private int _cols;
-        public int Cols {
+
+
+        public int Cols
+        {
             get { return _cols; }
         }
-        
+
         public MainWindow()
         {
             ServerList = new ObservableCollection<ServerElement>();
@@ -63,7 +69,7 @@ namespace Client
             {
                 var serverWin = new ServerElement(srv);
                 serverWin.SetParent(this);
-                 //serverWin.Srv = srv;
+                //serverWin.Srv = srv;
                 _serverAddressList.AddLast(srv.GetAddress());
                 ServerList.Add(serverWin);
             }
@@ -75,14 +81,15 @@ namespace Client
             DisconnectAll = true;
         }
 
-        public void UpdateStatusBar(string status) {
+        public void UpdateStatusBar(string status)
+        {
             //lbl_status.Content = status;
         }
 
         //Gestore evento di chiusura [X] della MainWindow
         public void OnClose(object sender, CancelEventArgs e)
         {
-            if(ServerList.Count != 0)
+            if (ServerList.Count != 0)
             {
                 DisconnectAll = true;
                 //qua credo che la finestra si chiuda, ma i thread dei server continuino
@@ -103,7 +110,8 @@ namespace Client
 
         private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            if (args.OldItems != null) {
+            if (args.OldItems != null)
+            {
                 _serverAddressList.RemoveLast();
             }
             /*if (ServerList.Count > 6) {
@@ -125,9 +133,10 @@ namespace Client
         //Evento scatenato quando si fa il resize della finestra principale
         private void mainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (ServerList.Count != 0 && ServerList.Count > 3) {
+            if (ServerList.Count != 0 && ServerList.Count > 3)
+            {
                 Debug.WriteLine("width = {0} srv.Count = {1}", stackp_serverGrid.ActualWidth, ServerList.Count);
-                _cols = (int)Math.Floor(stackp_serverGrid.ActualWidth / (ServerList.Count*200));
+                _cols = (int)Math.Floor(stackp_serverGrid.ActualWidth / (ServerList.Count * 200));
                 Debug.WriteLine("_cols = {0}", _cols);
             }
         }
@@ -138,9 +147,10 @@ namespace Client
             tabControl.SelectedIndex = 2;
         }
 
-        private void btn_sendKey_Click(object sender, RoutedEventArgs e) {
+        private void btn_sendKey_Click(object sender, RoutedEventArgs e)
+        {
 
         }
-    }
 
+    }
 }

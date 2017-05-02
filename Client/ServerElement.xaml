@@ -16,27 +16,27 @@
                         <MenuItem.Header>
                             <Image x:Name="image" Source="imgs/22x22_menuLines.png" Stretch="Fill"/>
                         </MenuItem.Header>
-                        <MenuItem x:Name="mitem_reconnect" Header="_Reconnect" Click="mitem_reconnect_Click" IsEnabled="False" >
+                        <MenuItem x:Name="mitem_reconnect" Header="Riconnetti" Click="mitem_reconnect_Click" IsEnabled="False" >
                             <MenuItem.Icon>
                                 <Image Source="imgs/reconnect16x16.png" Stretch="None"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem x:Name="mitem_disconnect" Header="_Disconnect" Click="mitem_disconnect_Click">
+                        <MenuItem x:Name="mitem_disconnect" Header="Disconnetti" Click="mitem_disconnect_Click">
                             <MenuItem.Icon>
                                 <Image Source="imgs/16x16_disconnect.png"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem x:Name="mitem_close" Header="_Close" Visibility ="Collapsed" Click="mitem_close_Click">
+                        <MenuItem x:Name="mitem_close" Header="Close" Visibility ="Collapsed" Click="mitem_close_Click">
                             <MenuItem.Icon>
                                 <Image Source="imgs/closeServerElement16x16.png" Stretch="None"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Header="_Send Key Combo">
+                        <MenuItem Header="Invia combinazione di tasti">
                             <MenuItem.Icon>
                                 <Image Source="imgs/SendKeyCombo16x16.png" Stretch="None"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem x:Name="mitem_requestWinList" Header="_Request Windows List" />
+                        <MenuItem x:Name="mitem_requestWinList" Header="Richiedi elenco finestre" />
                         
                     </MenuItem>
                     
