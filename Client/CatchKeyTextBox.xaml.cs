@@ -42,38 +42,62 @@ namespace Client
             Debug.Assert(_keys != null);
             Key key = e.Key;
 
+            /*
             if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                 if (!_keys.Contains("CTRL")) _keys.Add("CTRL");
-            //if (Keyboard.IsKeyDown(Key.System)) {
-            /*if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) { 
-                Debug.WriteLine("ALT was pressed");
-                //if (e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt)
-                    if (!_keys.Contains("ALT")) _keys.Add("ALT");
-            }       */         
-            if(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            if(Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
+                if (!_keys.Contains("ALT")) _keys.Add("ALT");
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                 if (!_keys.Contains("SHIFT")) _keys.Add("SHIFT");
             if(Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin))
-                if (!_keys.Contains("WINDOWS")) _keys.Add("WINDOWS");
+                if (!_keys.Contains("WINDOWS")) _keys.Add("WINDOWS");*/
 
             /*if (_altKeyPressed) { 
                 key = e.SystemKey;
                 _altKeyPressed = false;
                 if (!_keys.Contains("ALT")) _keys.Add("ALT");
-            }else key = e.Key;*/
+            }*/
 
-            if (e.SystemKey != Key.None)
+            if (_altKeyPressed)
             {
-                if (e.SystemKey == Key.F10)
-                {
+                key = e.SystemKey;
+            }
+
+            //CASO #1
+            //questo trova tutte le combinazioni eccetto alt+modificatore+qualcosa, alt+qualcosa
+            if ((e.KeyboardDevice.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
+                if (!_keys.Contains("ALT")) _keys.Add("ALT");
+            if ((e.KeyboardDevice.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+                if (!_keys.Contains("CTRL")) _keys.Add("CTRL");
+            if ((e.KeyboardDevice.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
+                if (!_keys.Contains("SHIFT")) _keys.Add("SHIFT");
+            if ((e.KeyboardDevice.Modifiers & ModifierKeys.Windows) == ModifierKeys.Windows)
+                if (!_keys.Contains("WINDOWS")) _keys.Add("WINDOWS");
+
+            if (e.SystemKey == Key.F10) //questo trova quando premo F10, che è una special key per windows
+            {
                     keyString = e.SystemKey.ToString();
                     Debug.WriteLine("F10 pressed");
-                }else if (e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt)
-                {
-                    //_altKeyPressed = true;
+            }// CASO #2
+            else if (e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt)    //per trovare alt+qualcosa
+            {
                     if (!_keys.Contains("ALT")) _keys.Add("ALT");
-                }
+                    //controllo di non essere nel caso #1
+                    if((!_keys.Contains("CTRL") || !_keys.Contains("SHIFT") || !_keys.Contains("WINDOWS"))&& _keys.IndexOf("ALT") == 0)
+                        _altKeyPressed = true;
             }
-   
+
+            // CASO #3 - ho premuto ALT+modificatore+qualcosa, e quando premo il modificatore, poi "qualcosa" ritorna in e.Key (da e.SystemKey)
+            if (e.SystemKey == Key.None)
+            {
+                if (e.Key == Key.None)
+                {
+                    _keys.Clear();
+                    return;
+                }
+                else key = e.Key;
+            }
+
             if (SpecialKeys.Contains(key)) //ho premuto un tasto corrispondente a INS, PAGEUP, e simili
             {
                 if (Keyboard.IsKeyDown(Key.Apps))
@@ -83,20 +107,24 @@ namespace Client
                 else if (Keyboard.IsKeyDown(Key.Tab))
                     e.Handled = true;
                 keyString = key.ToString();
+                if (_altKeyPressed) _altKeyPressed = false;
             }
             else if (DigitKeys.Contains(key)) //ho premuto un numero
             {
                 if (e.Key.ToString().Contains("D"))
                     keyString = key.ToString().Replace("D", string.Empty);
                 else keyString = key.ToString().Replace("NumPad", string.Empty);
+                if (_altKeyPressed) _altKeyPressed = false;
             }
             else if (FunctionKeys.Contains(key)) //ho premuto un tasto tra F1 ed F12
             {
                 keyString = key.ToString();
+                if(_altKeyPressed) _altKeyPressed = false;
             }
             else if (!ModKeys.Contains(key))//ho premuto una lettera
             {
                 keyString = key.ToString();
+                if(_altKeyPressed) _altKeyPressed = false;
             }
             else e.Handled = true;
 
@@ -115,8 +143,6 @@ namespace Client
                 _keys.Add(keyString);
                 //txtComb.Text = string.Join(" + ", keys);
                 txtB_captureKeyCombo.Text = string.Join("+", _keys);                   
-                
-                Debug.WriteLine("");
                 _keys.Clear();
                 e.Handled = true;
             }
