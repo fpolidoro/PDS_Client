@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Client"
              mc:Ignorable="d" 
-             d:DesignHeight="64" d:DesignWidth="180">
-    <DockPanel MaxHeight="64" MaxWidth="180">
-        <ListBox x:Name="listBox_focusedProcesses" Width="164" DockPanel.Dock="Left" BorderThickness="1,1,0,1"/>
+             d:DesignHeight="64" d:DesignWidth="224">
+    <DockPanel MaxHeight="64" MaxWidth="224">
+        <ListBox x:Name="listBox_focusedProcesses" Width="202" DockPanel.Dock="Left" BorderThickness="1,1,0,1"/>
         <StackPanel DockPanel.Dock="Right">
             <Button x:Name="btn_up" FontFamily="Segoe UI Symbol" Content="&#xE010;" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Height="22" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Click="btn_up_Click" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
             <Button x:Name="btn_down" FontFamily="Segoe UI Symbol" Content="&#xE011;" Height="22" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,-1,0,0" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Click="btn_down_Click" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />

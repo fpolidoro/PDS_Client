@@ -5,20 +5,36 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Client"
              mc:Ignorable="d" 
-             d:DesignHeight="22" d:DesignWidth="180">
+             d:DesignHeight="22" d:DesignWidth="200">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <!--Per far sì che anche il textbox abbia il trimming con i pallini quando il testo è troppo-->
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="false">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TextBox">
+                                <TextBlock Text="{TemplateBinding Text}"  TextTrimming="CharacterEllipsis"/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
+    <Border x:Name="border_UserControl" BorderBrush="#FFB4B4B4"  BorderThickness="1" LostFocus="Border_LostFocus" GotFocus="border_GotFocus">
     <Grid Grid.Row="1">
         <!--Per far stare textblock sopra a textbox-->
         <TextBlock Text="Inserire combinazione di tasti"
                         Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" Visibility="{Binding ElementName=txtB_captureKeyCombo, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0" />
         <!-- enter term here -->
-        <TextBox x:Name="txtB_captureKeyCombo" Width="180" Background="Transparent" PreviewKeyDown="txtB_captureKeyCombo_PreviewKeyDown" SelectionBrush="#FFE0BFDE" ContextMenuOpening="txtB_captureKeyCombo_ContextMenuOpening" LostFocus="txtB_captureKeyCombo_LostFocus">
+        <TextBox x:Name="txtB_captureKeyCombo" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" PreviewKeyDown="txtB_captureKeyCombo_PreviewKeyDown" SelectionBrush="{x:Null}" ContextMenuOpening="txtB_captureKeyCombo_ContextMenuOpening" MaxLines="1" MaxLength="256" BorderBrush="{x:Null}" HorizontalAlignment="Left" Width="200">
             <TextBox.ContextMenu>
                 <ContextMenu x:Name="cntxtMenu_captureKeyCombo" Visibility="Hidden" IsEnabled="False"/>
             </TextBox.ContextMenu>
-
         </TextBox>
-    </Grid>
+            <Image x:Name="img_okTick" DockPanel.Dock="Right" HorizontalAlignment="Right" Source="imgs/OkTick_16x16.png" Width="16" Height="16" Margin="3,0"/>
+        </Grid>
+    </Border>
 </UserControl>

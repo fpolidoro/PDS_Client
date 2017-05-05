@@ -152,5 +152,9 @@ namespace Client
 
         }
 
+        private void btn_clean_Click(object sender, RoutedEventArgs e)
+        {
+            cktxt_getKeyCombo.CleanValue();
+        }
     }
 }

@@ -98,22 +98,59 @@
             <TabItem x:Name="tabItem_KeyCombos" Background="#FFF6F1FC" BorderBrush="#FFF6F1FC" Margin="6,-2,-6,0" Header="TASTI">
                 <Grid MaxHeight="112" MinHeight="112">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="57" />
-                        <ColumnDefinition Width="135"/>
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel Grid.ColumnSpan="2">
-                        <local:ListBoxWithButtons x:Name="listBoxWButtons_activeProcesses"   DockPanel.Dock="Top" Margin="6,6,6,0"/>
-                        <local:CatchKeyTextBox DockPanel.Dock="Top" Margin="6,6,6,0" />
+                    <StackPanel Grid.Column="0" Width="224">
+                        <local:ListBoxWithButtons x:Name="listBoxWButtons_activeProcesses"   DockPanel.Dock="Top" Margin="0,4,0,0"/>
+                        <WrapPanel Margin="0,4,0,0" HorizontalAlignment="Center" >
+                            <local:CatchKeyTextBox x:Name="cktxt_getKeyCombo" DockPanel.Dock="Top" VerticalAlignment="Center" />
+                            <Button x:Name="btn_clean" Padding="0" Height="22" Width="22" BorderThickness="0" Background="{x:Null}" Click="btn_clean_Click" >
+                                <Image x:Name="img_clearCombo" Height="16" Width="16" Source="imgs/clear_16x16.png"/>
+                            </Button>
+                        </WrapPanel>
                         <TextBlock TextWrapping="Wrap" Text="Selezione processo" HorizontalAlignment="Center" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"  Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Height="22"/>
                     </StackPanel>
-                    <Button x:Name="btn_sendKey" Width="65" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_sendKey_Click" Grid.Column="2" HorizontalAlignment="Center" Margin="0,0,0,14" VerticalAlignment="Center">
+                    <Border Grid.Column="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1,0,1,0" Margin="4,0,4,0" Padding="3,0,3,0">
                         <StackPanel>
-                            <Image x:Name="img_sendKey" Height="46" Width="46" Source="imgs/SendKey.png"/>
-                            <TextBlock x:Name="txtB_sendKey" Text="Invia" TextWrapping="Wrap" TextAlignment="Center"/>
+                            <WrapPanel Height="94">
+                            <Button x:Name="btn_sendKey" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_sendKey_Click" Grid.Column="2" HorizontalAlignment="Center" Margin="0,6,0,0" VerticalAlignment="Center">
+                                <StackPanel>
+                                    <Image x:Name="img_sendKey" Height="46" Width="46" Source="imgs/sendSpecialCombo_48x48.png"/>
+                                    <TextBlock x:Name="txtB_sendKey" Text="Combinazione speciale" TextWrapping="Wrap" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <StackPanel Grid.Column ="1" Margin="4,0">
+                                    <Button x:Name="btn_sendALTF4" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,6,0,0">
+                                    <WrapPanel>
+                                        <Image Height="16" Width="16" Source="imgs/close16x16.png"/>
+                                        <TextBlock Text="Chiudi processo" Margin="4,0,0,0"/>
+                                    </WrapPanel>
+                                </Button>
+                                    <Button x:Name="btn_sendAltTab" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,4,0,0">
+                                    <WrapPanel>
+                                        <Image Height="16" Width="16" Source="imgs/altTab_16x16.png"/>
+                                        <TextBlock Text="Invia ALT+Tab" Margin="4,0,0,0"/>
+                                    </WrapPanel>
+                                </Button>
+                                    <Button x:Name="btn_sendAltTabRight" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,4,0,0">
+                                    <WrapPanel>
+                                        <Image Height="16" Width="16" Source="imgs/tabRight_16x16.png"/>
+                                        <TextBlock Text="Passa a finestra a destra" Margin="4,0,0,0"/>
+                                    </WrapPanel>
+                                </Button>
+                                    <Button x:Name="btn_sendAltTabLeft" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,4,0,0" >
+                                    <WrapPanel>
+                                        <Image Height="16" Width="16" Source="imgs/tabLeft_16x16.png"/>
+                                        <TextBlock Text="Passa a finestra a sinistra" Margin="4,0,0,0"/>
+                                    </WrapPanel>
+                                </Button>
+                            </StackPanel>
+                        </WrapPanel>
+                            <TextBlock Text="Combinazioni speciali" HorizontalAlignment="Center" TextWrapping="Wrap" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Height="22"/>
                         </StackPanel>
-                    </Button>
+                    </Border>
                 </Grid>
             </TabItem>
         </TabControl>

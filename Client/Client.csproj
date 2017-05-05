@@ -270,6 +270,19 @@
   <ItemGroup>
     <Resource Include="imgs\SendKey.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\clear_16x16.png" />
+    <Resource Include="imgs\close16x16.png" />
+    <Resource Include="imgs\sendSpecialCombo_48x48.png" />
+    <Resource Include="imgs\tabLeft_16x16.png" />
+    <Resource Include="imgs\tabRight_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\altTab_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\OkTick_16x16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/sendkey.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/oktick_16x16.png")]
 
 

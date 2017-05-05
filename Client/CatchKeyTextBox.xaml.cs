@@ -26,6 +26,7 @@ namespace Client
         private static readonly List<Key> DigitKeys = new List<Key> { Key.D0, Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9, Key.NumPad0, Key.NumPad1, Key.NumPad2, Key.NumPad3, Key.NumPad4, Key.NumPad5, Key.NumPad6, Key.NumPad7, Key.NumPad8, Key.NumPad9 };
         private static readonly List<Key> FunctionKeys = new List<Key> { Key.F1, Key.F2, Key.F3, Key.F4, Key.F5, Key.F6, Key.F7, Key.F8, Key.F9, Key.F10, Key.F11, Key.F12 };
         private static readonly List<Key> ModKeys = new List<Key> { Key.LeftCtrl, Key.RightCtrl, Key.RightAlt, Key.LeftAlt, Key.RightShift, Key.LeftShift, Key.RWin, Key.LWin, Key.System };
+        private static readonly List<Key> WinKeys = new List<Key> { Key.LWin, Key.RWin };
         private List<string> _keys;
         private bool _altKeyPressed;
 
@@ -40,32 +41,14 @@ namespace Client
         {
             string keyString = null;
             Debug.Assert(_keys != null);
-            Key key = e.Key;
+            Key key = (e.Key == Key.System ? e.SystemKey : e.Key);
 
-            /*
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-                if (!_keys.Contains("CTRL")) _keys.Add("CTRL");
-            if(Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
-                if (!_keys.Contains("ALT")) _keys.Add("ALT");
-            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-                if (!_keys.Contains("SHIFT")) _keys.Add("SHIFT");
-            if(Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin))
-                if (!_keys.Contains("WINDOWS")) _keys.Add("WINDOWS");*/
-
-            /*if (_altKeyPressed) { 
-                key = e.SystemKey;
-                _altKeyPressed = false;
-                if (!_keys.Contains("ALT")) _keys.Add("ALT");
-            }*/
-
-            if (_altKeyPressed)
-            {
-                key = e.SystemKey;
-            }
+            if (img_okTick.Visibility == Visibility.Visible)
+                hideOkTick();
 
             //CASO #1
             //questo trova tutte le combinazioni eccetto alt+modificatore+qualcosa, alt+qualcosa
-            if ((e.KeyboardDevice.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
+            if ((e.KeyboardDevice.Modifiers & (ModifierKeys.Alt)) == ModifierKeys.Alt)
                 if (!_keys.Contains("ALT")) _keys.Add("ALT");
             if ((e.KeyboardDevice.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
                 if (!_keys.Contains("CTRL")) _keys.Add("CTRL");
@@ -79,14 +62,15 @@ namespace Client
                     keyString = e.SystemKey.ToString();
                     Debug.WriteLine("F10 pressed");
             }// CASO #2
-            else if (e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt)    //per trovare alt+qualcosa
+            /*else if (e.SystemKey == Key.LeftAlt || e.SystemKey == Key.RightAlt)    //per trovare alt+qualcosa
             {
                     if (!_keys.Contains("ALT")) _keys.Add("ALT");
                     //controllo di non essere nel caso #1
                     if((!_keys.Contains("CTRL") || !_keys.Contains("SHIFT") || !_keys.Contains("WINDOWS"))&& _keys.IndexOf("ALT") == 0)
                         _altKeyPressed = true;
-            }
+            }*/
 
+            /*
             // CASO #3 - ho premuto ALT+modificatore+qualcosa, e quando premo il modificatore, poi "qualcosa" ritorna in e.Key (da e.SystemKey)
             if (e.SystemKey == Key.None)
             {
@@ -96,13 +80,11 @@ namespace Client
                     return;
                 }
                 else key = e.Key;
-            }
+            }*/
 
             if (SpecialKeys.Contains(key)) //ho premuto un tasto corrispondente a INS, PAGEUP, e simili
             {
                 if (Keyboard.IsKeyDown(Key.Apps))
-                    e.Handled = true;
-                else if (Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin))
                     e.Handled = true;
                 else if (Keyboard.IsKeyDown(Key.Tab))
                     e.Handled = true;
@@ -119,12 +101,15 @@ namespace Client
             else if (FunctionKeys.Contains(key)) //ho premuto un tasto tra F1 ed F12
             {
                 keyString = key.ToString();
-                if(_altKeyPressed) _altKeyPressed = false;
+                if (_altKeyPressed) _altKeyPressed = false;
+            }
+            else if (WinKeys.Contains(key)) {   //ho premuto WINDOWS
+                if (!_keys.Contains("WINDOWS")) _keys.Add("WINDOWS");
             }
             else if (!ModKeys.Contains(key))//ho premuto una lettera
             {
                 keyString = key.ToString();
-                if(_altKeyPressed) _altKeyPressed = false;
+                if (_altKeyPressed) _altKeyPressed = false;
             }
             else e.Handled = true;
 
@@ -155,9 +140,31 @@ namespace Client
             e.Handled = true;
         }
 
-        private void txtB_captureKeyCombo_LostFocus(object sender, RoutedEventArgs e)
-        {
+        public void CleanValue() {
             _keys.Clear();
+            txtB_captureKeyCombo.Text = "";
+        }
+
+        private void Border_LostFocus(object sender, RoutedEventArgs e)
+        {
+            border_UserControl.BorderBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFB4B4B4"));
+        }
+
+        private void border_GotFocus(object sender, RoutedEventArgs e)
+        {
+            border_UserControl.BorderBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF3399FF"));
+        }
+
+        public void showOkTick()
+        {
+            txtB_captureKeyCombo.Width = 172;
+            img_okTick.Visibility = Visibility.Visible;
+        }
+
+        public void hideOkTick()
+        {
+            txtB_captureKeyCombo.Width = 200;
+            img_okTick.Visibility = Visibility.Collapsed;
         }
     }
 

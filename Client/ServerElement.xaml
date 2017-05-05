@@ -28,7 +28,7 @@
                         </MenuItem>
                         <MenuItem x:Name="mitem_close" Header="Close" Visibility ="Collapsed" Click="mitem_close_Click">
                             <MenuItem.Icon>
-                                <Image Source="imgs/closeServerElement16x16.png" Stretch="None"></Image>
+                                <Image Source="imgs/closeServerElement16x16.png" Stretch="Uniform"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Invia combinazione di tasti">
