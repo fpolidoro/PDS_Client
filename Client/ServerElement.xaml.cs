@@ -44,6 +44,13 @@ namespace Client
 
         public ObservableCollection<string> pendingJSONs;
 
+        public OpenWindow CurrentlyOnFocus{
+            get { return _currentlyOnFocus; }
+            private set { _currentlyOnFocus = value;
+                OnPropertyChanged("CurrentlyOnFocus");
+            }
+        }
+
         public ServerElement(Server srv)
         {
             InitializeComponent();
@@ -130,29 +137,65 @@ namespace Client
                             }
                             if (winToUpdate.HasFocus()) {
                                 Debug.WriteLine(" has focus now", winToUpdate.ProcName);
-                                if (_currentlyOnFocus != null) {
-                                    Debug.WriteLine(" has lost focus", _currentlyOnFocus.ProcName);
-                                    _currentlyOnFocus.Status = "HasLostFocus";
+                                if (CurrentlyOnFocus != null) {
+                                    Debug.WriteLine(" has lost focus", CurrentlyOnFocus.ProcName);
+                                    CurrentlyOnFocus.Status = "HasLostFocus";
                                     _hasLostFocus = _currentlyOnFocus;
+                                    //tolgo questo serverElement dalla lista di serverElement con ProcName in focus
+                                    if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName)) {
+                                        List<ServerElement> values;
+                                        if(_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
+                                        {
+                                            if(values.Count == 2) //questo era il penultimo elemento della catena, quindi elimino proprio la voce
+                                            { //NOTA: elimino quando ho solo più 2 server perchè voglio mostrare solo liste con più di 2 elementi
+                                                //altrimenti uso il bottone apposito sul singolo serverElement per mandare la combo
+                                                _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
+                                            }else values.Remove(this);
+                                        }
+                                    }
                                 }
-                                _currentlyOnFocus = winToUpdate;
-                                OnPropertyChanged("_currentlyOnFocus");
-                                //RecomputeFocusPercentage();
+                                CurrentlyOnFocus = winToUpdate;
                             }
                             if (winToUpdate.Status.Equals("Closed"))
                             {
                                 listBox_OpenWindows.Items.Remove(winToUpdate);
                                 _openWindows.Remove(winToUpdate.ID);
-                                if (_currentlyOnFocus.ID.Equals(winToUpdate.ID)) {  //la finestra che sto chiudendo era currently on focus
-                                    _currentlyOnFocus = null;
-                                    OnPropertyChanged("_currentlyOnFocus");
+                                if (CurrentlyOnFocus.ID.Equals(winToUpdate.ID)) {  //la finestra che sto chiudendo era currently on focus
+                                    //la elimino dalla lista dei serverElement con in focus quel processo
+                                    if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
+                                    {
+                                        List<ServerElement> values;
+                                        if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
+                                        {
+                                            if (values.Count == 2) //questo era il penultimo elemento della catena, quindi elimino proprio la voce
+                                            { //NOTA: elimino quando ho solo più 2 server perchè voglio mostrare solo liste con più di 2 elementi
+                                              //altrimenti uso il bottone apposito sul singolo serverElement per mandare la combo
+                                                _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
+                                            }
+                                            else values.Remove(this);
+                                        }
+                                    }
+                                    CurrentlyOnFocus = null;
                                     //RecomputeFocusPercentage();
                                 }
                                 
                             }
                             if (winToUpdate.Status.Equals("HasLostFocus")) {  //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
-                                _currentlyOnFocus = null;
-                                OnPropertyChanged("_currentlyOnFocus");
+                                                                              //la elimino dalla lista dei serverElement con in focus quel processo
+                                if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
+                                {
+                                    List<ServerElement> values;
+                                    if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
+                                    {
+                                        if (values.Count == 1) //questo era il penultimo elemento della catena, quindi elimino proprio la voce
+                                        { //NOTA: elimino quando ho solo più 2 server perchè voglio mostrare solo liste con più di 2 elementi
+                                          //altrimenti uso il bottone apposito sul singolo serverElement per mandare la combo
+                                            _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
+                                        }
+                                        else values.Remove(this);
+                                    }
+                                }
+                                CurrentlyOnFocus = null;
                                 _hasLostFocus = winToUpdate;
                                 
                             }
@@ -256,6 +299,7 @@ namespace Client
                     mitem_reconnect.IsEnabled = false;
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop();
+                _timer.Stop();
             }
             else if (value.Equals("SocketGentlyDisposed"))
             {
@@ -273,6 +317,7 @@ namespace Client
                     mitem_reconnect.IsEnabled = false;
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop();
+                _timer.Stop();
             }
             else if (value.Equals("Connected"))
             {
@@ -289,6 +334,7 @@ namespace Client
                 if(mitem_close.Visibility == Visibility.Visible)
                     mitem_close.Visibility = Visibility.Collapsed;
                 _stopWatch.Start(); //faccio ripartire il timer del tempo
+                _timer.Start();
             }
             else if (value.Equals("ReconnectionLimitExceeded"))
             {
@@ -303,6 +349,8 @@ namespace Client
                 mitem_disconnect.Visibility = Visibility.Collapsed;
                 mitem_reconnect.IsEnabled = true;
                 mitem_close.Visibility = Visibility.Visible;
+                _stopWatch.Stop();
+                _timer.Stop();
             }
             else if (value.Equals("SocketClosedByUs")) {
                 //abbiamo ricevuto un json con dimensione brutta, chiuso il socket
@@ -312,6 +360,7 @@ namespace Client
                 mitem_reconnect.IsEnabled = true;
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop(); //fermo il timer del tempo di connessione
+                _timer.Stop();
             }
         }
 
@@ -332,15 +381,15 @@ namespace Client
                 int i = 0;
                 if (_openWindows.Count > 1)
                 {
-                    if (_currentlyOnFocus != null)
+                    if (CurrentlyOnFocus != null)
                     {
                         listBox_OpenWindows.Items.Add(_currentlyOnFocus);
                         _openWindows.Remove(_currentlyOnFocus.ID);
                         i = 1;
-                        Debug.WriteLine(i + ": " + _currentlyOnFocus.WindowID + " " + _currentlyOnFocus.FocusTime.Milliseconds);
+                        Debug.WriteLine(i + ": " + CurrentlyOnFocus.WindowID + " " + _currentlyOnFocus.FocusTime.Milliseconds);
                     }
                     _sortedWindowList = _openWindows.Values.OrderByDescending(x => x.FocusTime).ToList(); //ordino per focustime
-                    if (_currentlyOnFocus != null) _openWindows.Add(_currentlyOnFocus.ID, _currentlyOnFocus);
+                    if (CurrentlyOnFocus != null) _openWindows.Add(CurrentlyOnFocus.ID, CurrentlyOnFocus);
                 }
                 else _sortedWindowList = _openWindows.Values.ToList();  //ho un solo elemento, è inutile fare il sort
 
@@ -380,7 +429,7 @@ namespace Client
         }
 
         //Collegato al metodo OnPropertyChanged della MainWindow per ascoltare quando viene premuto disconnectAll
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        protected void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("DisconnectAll"))
             {   //bottone premuto, disconnetto questo server
@@ -391,31 +440,50 @@ namespace Client
             }
         }
 
-        protected void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-                handler(this, e);
-        }
-
+        /* Quando una finestra acquisisce il focus o una lo perde, vengono fermati i rispettivi timer che accumulano
+         * il tempo di permanenza in focus.
+         * Su questo evento si registra anche la MainWindow per aggiornare la lista di processi in focus
+         */
         protected void OnPropertyChanged(string propertyName)
         {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-            if (propertyName.Equals("_currentlyOnFocus"))
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            if (propertyName.Equals("CurrentlyOnFocus"))
             {
-                if (_currentlyOnFocus == null)
+                if (CurrentlyOnFocus == null)
                 {
                     _timer.Stop();
                     Debug.WriteLine("_timer has been stopped.");
                 }
-                else { _timer.Start();
+                else {
+                    _timer.Start();
                     Debug.WriteLine("_timer has been restarted.");
+                    //la inserisco nella lista dei serverElement con in focus quel processo
+                    if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
+                    {   // è già presente almeno 1 ServerElement con questo processo in focus
+                        List<ServerElement> values;
+                        if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
+                        {
+                            Debug.Assert(values != null);
+                            values.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        List<ServerElement> values = new List<ServerElement>();
+                        values.Add(this);
+                        _parent.WindowsOnFocus.Add(CurrentlyOnFocus.ProcName, values);
+                    }
                 }
             }
         }
 
         private void mitem_disconnect_Click(object sender, RoutedEventArgs e)
         {
+            if(_timer.IsEnabled)
+                _timer.Stop();
+            if (_stopWatch.IsRunning)
+                _stopWatch.Stop();
             Debug.WriteLine("Receive stopped.");
             _srv.StopReceive();
             Debug.WriteLine("Thread joined.");
@@ -450,6 +518,8 @@ namespace Client
 
         private void mitem_close_Click(object sender, RoutedEventArgs e)
         {
+            if (_timer.IsEnabled) _timer.Stop();
+            if (_stopWatch.IsRunning) _stopWatch.Stop();
             _parent.ServerList.Remove(this);
         }
 

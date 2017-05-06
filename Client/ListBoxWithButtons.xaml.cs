@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Controls;
 
 namespace Client
 {
@@ -10,6 +11,11 @@ namespace Client
         public ListBoxWithButtons()
         {
             InitializeComponent();
+        }
+
+        public void SetItemSource(ObservableCollection<string> source)
+        {
+            listBox_focusedProcesses.ItemsSource = source;
         }
 
         private void btn_down_Click(object sender, System.Windows.RoutedEventArgs e)

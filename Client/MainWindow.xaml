@@ -122,25 +122,25 @@
                                 </StackPanel>
                             </Button>
                             <StackPanel Grid.Column ="1" Margin="4,0">
-                                    <Button x:Name="btn_sendALTF4" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,6,0,0">
+                                    <Button x:Name="btn_sendALTF4" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,6,0,0" Click="btn_sendALTF4_Click">
                                     <WrapPanel>
                                         <Image Height="16" Width="16" Source="imgs/close16x16.png"/>
                                         <TextBlock Text="Chiudi processo" Margin="4,0,0,0"/>
                                     </WrapPanel>
                                 </Button>
-                                    <Button x:Name="btn_sendAltTab" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,4,0,0">
+                                    <Button x:Name="btn_sendAltTab" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,4,0,0" Click="btn_sendAltTab_Click">
                                     <WrapPanel>
                                         <Image Height="16" Width="16" Source="imgs/altTab_16x16.png"/>
                                         <TextBlock Text="Invia ALT+Tab" Margin="4,0,0,0"/>
                                     </WrapPanel>
                                 </Button>
-                                    <Button x:Name="btn_sendAltTabRight" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,4,0,0">
+                                    <Button x:Name="btn_sendAltTabRight" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,4,0,0" Click="btn_sendAltTabRight_Click">
                                     <WrapPanel>
                                         <Image Height="16" Width="16" Source="imgs/tabRight_16x16.png"/>
                                         <TextBlock Text="Passa a finestra a destra" Margin="4,0,0,0"/>
                                     </WrapPanel>
                                 </Button>
-                                    <Button x:Name="btn_sendAltTabLeft" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,4,0,0" >
+                                <Button x:Name="btn_sendAltTabLeft" Background="{x:Null}"  BorderThickness="0" HorizontalAlignment="Left" Margin="0,4,0,0" Click="btn_sendAltTabLeft_Click" >
                                     <WrapPanel>
                                         <Image Height="16" Width="16" Source="imgs/tabLeft_16x16.png"/>
                                         <TextBlock Text="Passa a finestra a sinistra" Margin="4,0,0,0"/>

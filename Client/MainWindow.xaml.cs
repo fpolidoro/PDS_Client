@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -34,7 +35,22 @@ namespace Client
             }
         }
 
-        public ObservableCollection<ServerElement> ServerList
+        //collezione thread-safe, perchè anche i ServerElement accedono in scrittura
+        public AsyncObservableCollection<ServerElement> ServerList
+        {
+            get;
+            set;
+        }
+
+
+        //dizionario thread-safe, Key=nomeProcessoInFocus, value=lista dei server con quel processo attualmente in focus
+        public ObservableConcurrentDictionary<string, List<ServerElement>> WindowsOnFocus
+        {
+            get;
+            set;
+        }
+
+        public ObservableCollection<string> WindowsToShow
         {
             get;
             set;
@@ -50,12 +66,16 @@ namespace Client
 
         public MainWindow()
         {
-            ServerList = new ObservableCollection<ServerElement>();
+            ServerList = new AsyncObservableCollection<ServerElement>();
             _serverAddressList = new LinkedList<string>();
+            WindowsOnFocus = new ObservableConcurrentDictionary<string, List<ServerElement>>(); 
+            WindowsToShow = new ObservableCollection<string>();
             InitializeComponent();
-            //ItemsSource = "{Binding Source=ServerList}"
             ic_serverElements.ItemsSource = ServerList;
-            ServerList.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(CollectionChanged);
+            listBoxWButtons_activeProcesses.SetItemSource(WindowsToShow);
+            ServerList.CollectionChanged += new NotifyCollectionChangedEventHandler(CollectionChanged);
+            WindowsOnFocus.CollectionChanged += new NotifyCollectionChangedEventHandler(ProcessesOnFocusCollectionChanged);
+            WindowsToShow.CollectionChanged += new NotifyCollectionChangedEventHandler(ProcessesToShowCollectionChanged);
             DisconnectAll = false;
             _cols = 0;
         }
@@ -130,6 +150,31 @@ namespace Client
             }*/
         }
 
+        private void ProcessesOnFocusCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            List<ServerElement> values = new List<ServerElement>();
+            foreach(var v in WindowsOnFocus.Keys)
+            {
+                if (WindowsOnFocus.TryGetValue(v, out values))
+                {
+                    if (values.Count > 1)//se ho almeno due elementi, aggiungo il nome processo alla lista
+                    {
+                        if (!WindowsToShow.Contains(v))
+                            WindowsToShow.Add(v);
+                    }
+                    else {  //se ne ho uno solo (o 0, ma non dovrebbe accadere) ed era in lista, lo rimuovo
+                        if (WindowsToShow.Contains(v))
+                            WindowsToShow.Remove(v);
+                    }
+                }
+            }
+        }
+
+        private void ProcessesToShowCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //boh
+        }
+
         //Evento scatenato quando si fa il resize della finestra principale
         private void mainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -155,6 +200,36 @@ namespace Client
         private void btn_clean_Click(object sender, RoutedEventArgs e)
         {
             cktxt_getKeyCombo.CleanValue();
+        }
+
+        private void btn_sendALTF4_Click(object sender, RoutedEventArgs e)
+        {
+            List<int> keys = new List<int>();
+            keys.Add((int)Key.LeftAlt);
+            keys.Add((int)Key.F4);
+        }
+
+        private void btn_sendAltTab_Click(object sender, RoutedEventArgs e)
+        {
+            List<int> keys = new List<int>();
+            keys.Add((int)Key.LeftAlt);
+            keys.Add((int)Key.Tab);
+        }
+
+        private void btn_sendAltTabRight_Click(object sender, RoutedEventArgs e)
+        {
+            List<int> keys = new List<int>();
+            keys.Add((int)Key.LeftAlt);
+            keys.Add((int)Key.Tab);
+            keys.Add((int)Key.Right);
+        }
+
+        private void btn_sendAltTabLeft_Click(object sender, RoutedEventArgs e)
+        {
+            List<int> keys = new List<int>();
+            keys.Add((int)Key.LeftAlt);
+            keys.Add((int)Key.Tab);
+            keys.Add((int)Key.Left);
         }
     }
 }

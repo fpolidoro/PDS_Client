@@ -83,6 +83,8 @@
     <Compile Include="ListBoxWithButtons.xaml.cs">
       <DependentUpon>ListBoxWithButtons.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AsyncObservableCollection.cs" />
+    <Compile Include="ObservableConcurrentDictionary.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="PortTextBox.xaml.cs">
       <DependentUpon>PortTextBox.xaml</DependentUpon>
