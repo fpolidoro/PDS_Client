@@ -43,3 +43,5 @@ U:\Documenti\Malnati\Client\Client\obj\Debug\Client.Properties.Resources.resourc
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csproj.GenerateResource.Cache
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.exe
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.pdb
+U:\Documenti\Malnati\Client\Client\obj\Debug\ElementToShow.g.cs
+U:\Documenti\Malnati\Client\Client\obj\Debug\ElementToShow.baml

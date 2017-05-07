@@ -183,7 +183,7 @@ namespace Client
                                 
                             }
                             if (winToUpdate.Status.Equals("HasLostFocus")) {  //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
-                                                                              //la elimino dalla lista dei serverElement con in focus quel processo
+                                //la elimino dalla lista dei serverElement con in focus quel processo
                                 if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
                                 {
                                     ObservableCollection<ServerElement> values;

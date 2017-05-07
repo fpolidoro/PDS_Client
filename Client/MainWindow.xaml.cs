@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -50,7 +51,7 @@ namespace Client
             set;
         }
 
-        public ObservableCollection<string> WindowsToShow
+        public ObservableCollection<ElementToShow> WindowsToShow
         {
             get;
             set;
@@ -69,13 +70,11 @@ namespace Client
             ServerList = new AsyncObservableCollection<ServerElement>();
             _serverAddressList = new LinkedList<string>();
             WindowsOnFocus = new ObservableConcurrentDictionary<string, ObservableCollection<ServerElement>>(); 
-            WindowsToShow = new ObservableCollection<string>();
+            WindowsToShow = new ObservableCollection<ElementToShow>();
             InitializeComponent();
             ic_serverElements.ItemsSource = ServerList;
-            DataContext = WindowsToShow;    //binding per lo user control ListBoxWithButtons
             ServerList.CollectionChanged += new NotifyCollectionChangedEventHandler(CollectionChanged);
             WindowsOnFocus.CollectionChanged += new NotifyCollectionChangedEventHandler(ProcessesOnFocusCollectionChanged);
-            WindowsToShow.CollectionChanged += new NotifyCollectionChangedEventHandler(ProcessesToShowCollectionChanged);
             DisconnectAll = false;
             _cols = 0;
         }
@@ -157,29 +156,34 @@ namespace Client
             {
                 if (WindowsOnFocus.TryGetValue(v, out values))
                 {
+                    Debug.Assert(values.Count != 0);
                     if (values.Count > 1)//se ho almeno due elementi, aggiungo il nome processo alla lista
                     {
-                        if (!WindowsToShow.Contains(v))
-                            WindowsToShow.Add(v);
+                        ElementToShow el = new ElementToShow(v, values[0].CurrentlyOnFocus.Icona);
+                        if (!WindowsToShow.Any(p => p.ProcName.Equals(v)))
+                        {
+                            WindowsToShow.Add(el);
+                            listBoxWButtons_activeProcesses.listBox_focusedProcesses.Items.Add(el);
+                        }
                     }
                     else {  //se ne ho uno solo (o 0, ma non dovrebbe accadere) ed era in lista, lo rimuovo
-                        if (WindowsToShow.Contains(v))
-                            WindowsToShow.Remove(v);
+                        if (WindowsToShow.Any(p => p.ProcName.Equals(v)))
+                        {
+                            ElementToShow el = WindowsToShow.FirstOrDefault(p => p.ProcName.Equals(v));
+                            WindowsToShow.Remove(el);
+                            listBoxWButtons_activeProcesses.listBox_focusedProcesses.Items.Remove(el);
+                        }
                     }
                     
                 }
             }
-            Debug.WriteLine("WindowsToShow:");
+            Debug.WriteLine("WindowsToShow: " + listBoxWButtons_activeProcesses.listBox_focusedProcesses.Items.Count);
             foreach(var v in WindowsToShow)
             {
-                Debug.WriteLine(" -" + v);
+                Debug.WriteLine(" -" + v.ProcName);
             }
         }
 
-        private void ProcessesToShowCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            //boh
-        }
 
         //Evento scatenato quando si fa il resize della finestra principale
         private void mainWindow_SizeChanged(object sender, SizeChangedEventArgs e)

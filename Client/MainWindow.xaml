@@ -167,11 +167,11 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <!-- ItemTemplate -->
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
+                    <!--<ItemsControl.ItemTemplate>
+                        <DataTemplate>-->
                             <!--<local:ServerElement BorderBrush="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" BorderThickness="1"/>-->
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
+                        <!--</DataTemplate>
+                    </ItemsControl.ItemTemplate>-->
                 </ItemsControl>
             </ScrollViewer>
         </Border>

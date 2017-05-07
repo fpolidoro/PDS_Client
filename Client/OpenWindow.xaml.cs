@@ -64,6 +64,7 @@ namespace Client
         private string _status;
         private TimeSpan _hasFocusTime;
         private Stopwatch _focusStopWatch;
+        public BitmapImage Icona { get; private set; }
 
         public OpenWindow()
         {
@@ -77,7 +78,8 @@ namespace Client
             _hasFocusTime = TimeSpan.Zero;  //azzero il timespan di permanenza in focus
             if (!IconaBase64.Equals(""))    //i json successivi al NewWindow non avranno l'icona, quindi arriverà una stringa vuota
             {
-                img_OpenWindowIcon.Source = Base64ToBitmapImage(IconaBase64);
+                Icona = Base64ToBitmapImage(IconaBase64);
+                img_OpenWindowIcon.Source = Icona;
             }
             ID = Convert.ToInt32(WindowID);
             txtb_ProcessName.Text = ProcName;
