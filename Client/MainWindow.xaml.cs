@@ -44,7 +44,7 @@ namespace Client
 
 
         //dizionario thread-safe, Key=nomeProcessoInFocus, value=lista dei server con quel processo attualmente in focus
-        public ObservableConcurrentDictionary<string, List<ServerElement>> WindowsOnFocus
+        public ObservableConcurrentDictionary<string, ObservableCollection<ServerElement>> WindowsOnFocus
         {
             get;
             set;
@@ -68,11 +68,11 @@ namespace Client
         {
             ServerList = new AsyncObservableCollection<ServerElement>();
             _serverAddressList = new LinkedList<string>();
-            WindowsOnFocus = new ObservableConcurrentDictionary<string, List<ServerElement>>(); 
+            WindowsOnFocus = new ObservableConcurrentDictionary<string, ObservableCollection<ServerElement>>(); 
             WindowsToShow = new ObservableCollection<string>();
             InitializeComponent();
             ic_serverElements.ItemsSource = ServerList;
-            listBoxWButtons_activeProcesses.SetItemSource(WindowsToShow);
+            DataContext = WindowsToShow;    //binding per lo user control ListBoxWithButtons
             ServerList.CollectionChanged += new NotifyCollectionChangedEventHandler(CollectionChanged);
             WindowsOnFocus.CollectionChanged += new NotifyCollectionChangedEventHandler(ProcessesOnFocusCollectionChanged);
             WindowsToShow.CollectionChanged += new NotifyCollectionChangedEventHandler(ProcessesToShowCollectionChanged);
@@ -150,9 +150,9 @@ namespace Client
             }*/
         }
 
-        private void ProcessesOnFocusCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public void ProcessesOnFocusCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            List<ServerElement> values = new List<ServerElement>();
+            ObservableCollection<ServerElement> values = new ObservableCollection<ServerElement>();
             foreach(var v in WindowsOnFocus.Keys)
             {
                 if (WindowsOnFocus.TryGetValue(v, out values))
@@ -166,7 +166,13 @@ namespace Client
                         if (WindowsToShow.Contains(v))
                             WindowsToShow.Remove(v);
                     }
+                    
                 }
+            }
+            Debug.WriteLine("WindowsToShow:");
+            foreach(var v in WindowsToShow)
+            {
+                Debug.WriteLine(" -" + v);
             }
         }
 

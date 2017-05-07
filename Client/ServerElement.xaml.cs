@@ -110,10 +110,10 @@ namespace Client
             //aggiunto un item
             if (e.NewItems != null)
             {
-                Debug.WriteLine("Items added: ");
+                //Debug.WriteLine("Items added: ");
                 foreach (var item in e.NewItems)
                 {
-                    Debug.WriteLine(item);
+                    //Debug.WriteLine(item);
                     //rimuovo il tooltip
                     if (gif_retrievingList.Visibility == Visibility.Visible)
                     {
@@ -143,12 +143,13 @@ namespace Client
                                     _hasLostFocus = _currentlyOnFocus;
                                     //tolgo questo serverElement dalla lista di serverElement con ProcName in focus
                                     if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName)) {
-                                        List<ServerElement> values;
+                                        ObservableCollection<ServerElement> values;
                                         if(_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
                                         {
-                                            if(values.Count == 2) //questo era il penultimo elemento della catena, quindi elimino proprio la voce
-                                            { //NOTA: elimino quando ho solo più 2 server perchè voglio mostrare solo liste con più di 2 elementi
-                                                //altrimenti uso il bottone apposito sul singolo serverElement per mandare la combo
+                                            if(values.Count == 1) //questo era l'ultimo elemento della catena, quindi elimino proprio la voce
+                                            {
+                                              //tolgo il listener per le modifiche alla lista
+                                                values.CollectionChanged -= _parent.ProcessesOnFocusCollectionChanged;
                                                 _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
                                             }else values.Remove(this);
                                         }
@@ -164,14 +165,15 @@ namespace Client
                                     //la elimino dalla lista dei serverElement con in focus quel processo
                                     if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
                                     {
-                                        List<ServerElement> values;
+                                        ObservableCollection<ServerElement> values;
                                         if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
                                         {
-                                            if (values.Count == 2) //questo era il penultimo elemento della catena, quindi elimino proprio la voce
-                                            { //NOTA: elimino quando ho solo più 2 server perchè voglio mostrare solo liste con più di 2 elementi
-                                              //altrimenti uso il bottone apposito sul singolo serverElement per mandare la combo
+                                            if (values.Count == 1) //questo era l'ultimo elemento della catena, quindi elimino proprio la voce
+                                            {
+                                                //tolgo il listener per le modifiche alla lista
+                                                values.CollectionChanged -= _parent.ProcessesOnFocusCollectionChanged;
                                                 _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
-                                            }
+                                            }//altrimenti rimuovo solo l'elemento dalla lista
                                             else values.Remove(this);
                                         }
                                     }
@@ -184,12 +186,13 @@ namespace Client
                                                                               //la elimino dalla lista dei serverElement con in focus quel processo
                                 if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
                                 {
-                                    List<ServerElement> values;
+                                    ObservableCollection<ServerElement> values;
                                     if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
                                     {
-                                        if (values.Count == 1) //questo era il penultimo elemento della catena, quindi elimino proprio la voce
-                                        { //NOTA: elimino quando ho solo più 2 server perchè voglio mostrare solo liste con più di 2 elementi
-                                          //altrimenti uso il bottone apposito sul singolo serverElement per mandare la combo
+                                        if (values.Count == 1) //questo era l'ultimo elemento della catena, quindi elimino proprio la voce
+                                        {
+                                          //tolgo il listener per le modifiche alla lista
+                                            values.CollectionChanged -= _parent.ProcessesOnFocusCollectionChanged;
                                             _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
                                         }
                                         else values.Remove(this);
@@ -206,7 +209,7 @@ namespace Client
                                 win.Initialize();
                                 _openWindows.Add(win.ID, win);
                                 listBox_OpenWindows.Items.Add(win);
-                                Debug.WriteLine("aggiunto l'item win");
+                                //Debug.WriteLine("aggiunto l'item win");
                             }
                             else
                             {
@@ -273,12 +276,12 @@ namespace Client
 
             //rimosso un item
             if (e.OldItems != null)
-            {
+            {/*
                 Debug.WriteLine("Items removed: ");
                 foreach (var item in e.OldItems)
                 {
                     Debug.WriteLine(item);
-                }
+                }*/
             }
         }
 
@@ -369,7 +372,7 @@ namespace Client
         {
             _parent = parent;
             _parent.PropertyChanged += this.OnPropertyChanged;
-            Debug.WriteLine("SERVER_ELEMENT: subscribed to MAIN_WINDOW's property changed");
+            //Debug.WriteLine("SERVER_ELEMENT: subscribed to MAIN_WINDOW's property changed");
         }
 
         private void UpdatePercentages_Tick(object sender, EventArgs e)
@@ -386,7 +389,7 @@ namespace Client
                         listBox_OpenWindows.Items.Add(_currentlyOnFocus);
                         _openWindows.Remove(_currentlyOnFocus.ID);
                         i = 1;
-                        Debug.WriteLine(i + ": " + CurrentlyOnFocus.WindowID + " " + _currentlyOnFocus.FocusTime.Milliseconds);
+                        //Debug.WriteLine(i + ": " + CurrentlyOnFocus.WindowID + " " + _currentlyOnFocus.FocusTime.Milliseconds);
                     }
                     _sortedWindowList = _openWindows.Values.OrderByDescending(x => x.FocusTime).ToList(); //ordino per focustime
                     if (CurrentlyOnFocus != null) _openWindows.Add(CurrentlyOnFocus.ID, CurrentlyOnFocus);
@@ -397,7 +400,7 @@ namespace Client
 
                 foreach (var w in _sortedWindowList)
                 {
-                    Debug.WriteLine(i + ": " + w.WindowID + " " + w.FocusTime.Milliseconds);
+                    //Debug.WriteLine(i + ": " + w.WindowID + " " + w.FocusTime.Milliseconds);
                     listBox_OpenWindows.Items.Insert(i, w);
                     i++;
                 }
@@ -411,7 +414,7 @@ namespace Client
             if (_hasLostFocus != null) {
                 //ottengo TimeSpan da Now-TempoDiConnessione, con l'uguale in realtà aggiungo
                 //_hasLostFocus.FocusTime = now.Subtract(_lastFocusUpdate);
-                Debug.WriteLine("_hasLostFocus.FocusTime: {0}", _hasLostFocus.FocusTime.ToString(@"ss\.fff"));
+                //Debug.WriteLine("_hasLostFocus.FocusTime: {0}", _hasLostFocus.FocusTime.ToString(@"ss\.fff"));
             }
             //_lastFocusUpdate = DateTime.Now;
 
@@ -461,7 +464,7 @@ namespace Client
                     //la inserisco nella lista dei serverElement con in focus quel processo
                     if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
                     {   // è già presente almeno 1 ServerElement con questo processo in focus
-                        List<ServerElement> values;
+                        ObservableCollection<ServerElement> values;
                         if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
                         {
                             Debug.Assert(values != null);
@@ -470,8 +473,9 @@ namespace Client
                     }
                     else
                     {
-                        List<ServerElement> values = new List<ServerElement>();
+                        ObservableCollection<ServerElement> values = new ObservableCollection<ServerElement>();
                         values.Add(this);
+                        values.CollectionChanged += new NotifyCollectionChangedEventHandler(_parent.ProcessesOnFocusCollectionChanged);
                         _parent.WindowsOnFocus.Add(CurrentlyOnFocus.ProcName, values);
                     }
                 }

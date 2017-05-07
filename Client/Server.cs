@@ -203,7 +203,7 @@ namespace Client
                             length = BitConverter.ToInt32(bufferLength, 0);
                             if (length < 10000 && length > 0)
                             {
-                                Debug.WriteLine("length = {0}", length);
+                                //Debug.WriteLine("length = {0}", length);
                                 buffer = new byte[length];
                                 read = 0;
                                 while (totalRead < buffer.Length)
@@ -215,7 +215,7 @@ namespace Client
                                 }
                                 _parentGUIElement.Dispatcher.BeginInvoke(addToList, json.ToString());
                                 json.Clear();   //ripulisco la stringa contenente il json
-                                Debug.WriteLine("pendingJSONs ha {0} elementi.", _parentGUIElement.pendingJSONs.Count);
+                                Debug.WriteLine("pendingJSONs ha" + _parentGUIElement.pendingJSONs.Count + "elementi.");
                             }
                             else
                             {   //la dimensione del json è eccessivamente grande o negativa, quindi chiudo il socket

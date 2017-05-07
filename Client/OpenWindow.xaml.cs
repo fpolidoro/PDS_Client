@@ -204,12 +204,12 @@ namespace Client
                 txtb_ProcessTimeFocused.Text = focusPercentage.ToString("##0.0#%", CultureInfo.InvariantCulture);
                 //Nota: non ho bisogno di moltiplicare per 100 in focusPercentage perchè lo fa già il metodo ToString qui sopra,
                 //grazie al simbolo %: # indica una cifra (se non presente, nulla visualizzato), 0 indica una cifra, se non presente, visualizza 0
-                Debug.WriteLine(ProcName + ": " + focusPercentage + "*100 = " + focusPercentage*100 + "%");
-                Debug.WriteLine(ProcName + ": hasFocusTime=" + _focusStopWatch.ElapsedMilliseconds + " totalMs=" + focusTimeOfAll.TotalMilliseconds);
+                //Debug.WriteLine(ProcName + ": " + focusPercentage + "*100 = " + focusPercentage*100 + "%");
+                //Debug.WriteLine(ProcName + ": hasFocusTime=" + _focusStopWatch.ElapsedMilliseconds + " totalMs=" + focusTimeOfAll.TotalMilliseconds);
             }
             else
             {
-                Debug.WriteLine(ProcName + ": focusTimeOfAll is ZERO");
+                //Debug.WriteLine(ProcName + ": focusTimeOfAll is ZERO");
                 txtb_ProcessTimeFocused.Text = "0.0%";
             }
         }
