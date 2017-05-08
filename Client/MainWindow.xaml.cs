@@ -77,6 +77,7 @@ namespace Client
             WindowsOnFocus.CollectionChanged += new NotifyCollectionChangedEventHandler(ProcessesOnFocusCollectionChanged);
             DisconnectAll = false;
             _cols = 0;
+            listBoxWButtons_activeProcesses.SetParent(this);
         }
 
         private void btn_newConnection_Click(object sender, RoutedEventArgs e)
@@ -152,7 +153,7 @@ namespace Client
         public void ProcessesOnFocusCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             ObservableCollection<ServerElement> values = new ObservableCollection<ServerElement>();
-            foreach(var v in WindowsOnFocus.Keys)
+            foreach (var v in WindowsOnFocus.Keys)
             {
                 if (WindowsOnFocus.TryGetValue(v, out values))
                 {
@@ -163,7 +164,7 @@ namespace Client
                         if (!WindowsToShow.Any(p => p.ProcName.Equals(v)))
                         {
                             WindowsToShow.Add(el);
-                            listBoxWButtons_activeProcesses.listBox_focusedProcesses.Items.Add(el);
+                            listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Add(el);
                         }
                     }
                     else {  //se ne ho uno solo (o 0, ma non dovrebbe accadere) ed era in lista, lo rimuovo
@@ -171,13 +172,13 @@ namespace Client
                         {
                             ElementToShow el = WindowsToShow.FirstOrDefault(p => p.ProcName.Equals(v));
                             WindowsToShow.Remove(el);
-                            listBoxWButtons_activeProcesses.listBox_focusedProcesses.Items.Remove(el);
+                            listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Remove(el);
                         }
                     }
                     
                 }
             }
-            Debug.WriteLine("WindowsToShow: " + listBoxWButtons_activeProcesses.listBox_focusedProcesses.Items.Count);
+            Debug.WriteLine("WindowsToShow: " + listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Count);
             foreach(var v in WindowsToShow)
             {
                 Debug.WriteLine(" -" + v.ProcName);

@@ -52,7 +52,7 @@
                 </TabItem.Header>
             </TabItem>
             <TabItem x:Name="tabItem_Home" Header="HOME"  Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Margin="4,-2,-6,0">
-                <WrapPanel Margin="4,2" MaxHeight="110" VerticalAlignment="Top"  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" >
+                <WrapPanel Margin="4,2" MinHeight="112" MaxHeight="112" VerticalAlignment="Top"  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" >
                     <DockPanel>
                         <ToolBarPanel Height="84" VerticalAlignment="Top" Orientation="Horizontal" DockPanel.Dock="Top">
                             <Button x:Name="btn_newConnection" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_newConnection_Click">
@@ -80,7 +80,7 @@
                                     </StackPanel>
                                 </Button>
                             </ToolBarPanel>
-                            <Label DockPanel.Dock="Bottom" Content="Combinazioni" HorizontalContentAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            <Label DockPanel.Dock="Bottom" Content="Combinazioni" HorizontalContentAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Padding="5,5,5,0"/>
                         </DockPanel>
                     </Border>
                     <DockPanel>

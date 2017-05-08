@@ -142,18 +142,7 @@ namespace Client
                                     CurrentlyOnFocus.Status = "HasLostFocus";
                                     _hasLostFocus = _currentlyOnFocus;
                                     //tolgo questo serverElement dalla lista di serverElement con ProcName in focus
-                                    if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName)) {
-                                        ObservableCollection<ServerElement> values;
-                                        if(_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
-                                        {
-                                            if(values.Count == 1) //questo era l'ultimo elemento della catena, quindi elimino proprio la voce
-                                            {
-                                              //tolgo il listener per le modifiche alla lista
-                                                values.CollectionChanged -= _parent.ProcessesOnFocusCollectionChanged;
-                                                _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
-                                            }else values.Remove(this);
-                                        }
-                                    }
+                                    removeFromFocusList();
                                 }
                                 CurrentlyOnFocus = winToUpdate;
                             }
@@ -163,20 +152,7 @@ namespace Client
                                 _openWindows.Remove(winToUpdate.ID);
                                 if (CurrentlyOnFocus.ID.Equals(winToUpdate.ID)) {  //la finestra che sto chiudendo era currently on focus
                                     //la elimino dalla lista dei serverElement con in focus quel processo
-                                    if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
-                                    {
-                                        ObservableCollection<ServerElement> values;
-                                        if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
-                                        {
-                                            if (values.Count == 1) //questo era l'ultimo elemento della catena, quindi elimino proprio la voce
-                                            {
-                                                //tolgo il listener per le modifiche alla lista
-                                                values.CollectionChanged -= _parent.ProcessesOnFocusCollectionChanged;
-                                                _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
-                                            }//altrimenti rimuovo solo l'elemento dalla lista
-                                            else values.Remove(this);
-                                        }
-                                    }
+                                    removeFromFocusList();
                                     CurrentlyOnFocus = null;
                                     //RecomputeFocusPercentage();
                                 }
@@ -184,20 +160,7 @@ namespace Client
                             }
                             if (winToUpdate.Status.Equals("HasLostFocus")) {  //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
                                 //la elimino dalla lista dei serverElement con in focus quel processo
-                                if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
-                                {
-                                    ObservableCollection<ServerElement> values;
-                                    if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
-                                    {
-                                        if (values.Count == 1) //questo era l'ultimo elemento della catena, quindi elimino proprio la voce
-                                        {
-                                          //tolgo il listener per le modifiche alla lista
-                                            values.CollectionChanged -= _parent.ProcessesOnFocusCollectionChanged;
-                                            _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
-                                        }
-                                        else values.Remove(this);
-                                    }
-                                }
+                                removeFromFocusList();
                                 CurrentlyOnFocus = null;
                                 _hasLostFocus = winToUpdate;
                                 
@@ -303,6 +266,12 @@ namespace Client
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop();
                 _timer.Stop();
+                if (CurrentlyOnFocus != null)
+                {
+                    removeFromFocusList();
+                    _hasLostFocus = CurrentlyOnFocus;
+                    CurrentlyOnFocus = null;
+                }
             }
             else if (value.Equals("SocketGentlyDisposed"))
             {
@@ -321,6 +290,12 @@ namespace Client
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop();
                 _timer.Stop();
+                if (CurrentlyOnFocus != null)
+                {
+                    removeFromFocusList();
+                    _hasLostFocus = CurrentlyOnFocus;
+                    CurrentlyOnFocus = null;
+                }
             }
             else if (value.Equals("Connected"))
             {
@@ -354,6 +329,12 @@ namespace Client
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop();
                 _timer.Stop();
+                if (CurrentlyOnFocus != null)
+                {
+                    removeFromFocusList();
+                    _hasLostFocus = CurrentlyOnFocus;
+                    CurrentlyOnFocus = null;
+                }
             }
             else if (value.Equals("SocketClosedByUs")) {
                 //abbiamo ricevuto un json con dimensione brutta, chiuso il socket
@@ -364,9 +345,33 @@ namespace Client
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop(); //fermo il timer del tempo di connessione
                 _timer.Stop();
+                if (CurrentlyOnFocus != null)
+                {
+                    removeFromFocusList();
+                    _hasLostFocus = CurrentlyOnFocus;
+                    CurrentlyOnFocus = null;
+                }
             }
         }
 
+        public void removeFromFocusList()
+        {
+            //tolgo questo serverElement dalla lista di serverElement con ProcName in focus
+            if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
+            {
+                ObservableCollection<ServerElement> values;
+                if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
+                {
+                    if (values.Count == 1) //questo era l'ultimo elemento della catena, quindi elimino proprio la voce
+                    {
+                        //tolgo il listener per le modifiche alla lista
+                        values.CollectionChanged -= _parent.ProcessesOnFocusCollectionChanged;
+                        _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
+                    }
+                    else values.Remove(this);
+                }
+            }
+        }
 
         public void SetParent(MainWindow parent)
         {
