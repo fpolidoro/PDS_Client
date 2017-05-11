@@ -170,16 +170,20 @@ namespace Client
                             ElementToShow el = new ElementToShow(v, win.Icona);
                             if (!WindowsToShow.Any(p => p.ProcName.Equals(v)))
                             {
-                                WindowsToShow.Add(el);
+                            var le = new ElementToShow(v, win.Icona);    //necessario perchè non posso aggiungere lo stesso elemento wpf due volte (altrimenti System.InvalidOperationException - Element already has a logical parent)
+                            WindowsToShow.Add(el);
                                 listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Add(el);
+                                listBoxWButtons_activeProcesses.listBox_showAllProcesses.Items.Add(le);
                             }
                     }else
                     {
                         var el = WindowsToShow.FirstOrDefault(p => p.ProcName.Equals(v));
                         if (el != null)
                         {
+                            var le = WindowsToShow.FirstOrDefault(p => p.ProcName.Equals(v)); //necessario perchè non posso aggiungere lo stesso elemento wpf due volte
                             WindowsToShow.Remove(el);
                             listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Remove(el);
+                            listBoxWButtons_activeProcesses.listBox_showAllProcesses.Items.Remove(le);
                         }
                     }
                     }

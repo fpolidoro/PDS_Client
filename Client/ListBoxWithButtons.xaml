@@ -36,14 +36,20 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Border BorderThickness="1" BorderBrush="#FFABABAB" Padding="0,0,1,0">
-    <DockPanel MaxHeight="64" MaxWidth="224">
-        <ListView x:Name="listView_focusedProcesses" Width="202" DockPanel.Dock="Left" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
-        <StackPanel DockPanel.Dock="Right">
+    <Border BorderThickness="1" BorderBrush="#FFABABAB" Padding="0,0,1,0" MaxHeight="64">
+        <DockPanel MaxHeight="64" MaxWidth="224">
+            <ListView x:Name="listView_focusedProcesses" Width="202" DockPanel.Dock="Left" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.ScrollChanged="ListView_ScrollChanged"/>
+            <StackPanel DockPanel.Dock="Right">
+                <Popup x:Name="popup" HorizontalOffset="-204" VerticalOffset="-66" PlacementTarget="{Binding ElementName=btn_showPopup}"
+                    PopupAnimation="Slide" AllowsTransparency="True" Focusable="True" StaysOpen="False" Margin="0" Placement="Bottom">
+                    <ListBox x:Name="listBox_showAllProcesses" Width="228" Margin="0" MaxHeight="256" MinHeight="66" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Top">
+                    </ListBox>
+                </Popup>
                 <Button x:Name="btn_up" Height="21" FontFamily="Segoe UI Symbol" Content="&#xE010;" BorderThickness="1,0,0,0.5" IsEnabled="False" Margin="0,0,-1,0" Click="btn_up_Click"/>
                 <Button x:Name="btn_down" Height="21" FontFamily="Segoe UI Symbol" Content="&#xE011;" BorderThickness="1,0.5,0,0" IsEnabled="False" Margin="0,0,-1,0" Click="btn_down_Click"  />
-                <Button x:Name="btn_showAll" Content="&#x25BE;" FontFamily="Segoe UI Symbol" Height="21" Margin="0,0,-1,0" BorderThickness="1,1,0,0" BorderBrush="#FFABABAB" Foreground="#FF696969" Background="White"/>
-        </StackPanel>
-    </DockPanel>
+                <Button x:Name="btn_showPopup" FontFamily="Segoe UI Symbol" Content="&#x25BE;" Height="21" Margin="0,0,-1,0" BorderThickness="1,1,0,0" BorderBrush="#FFABABAB" Foreground="#FF696969" Background="White" Click="buttonShowPopup_Click"  Panel.ZIndex="1"/>
+                <!--<ToggleButton x:Name="ShowPopup" Width="20" Height="21" Click="buttonShowPopup_Click"  Panel.ZIndex="1" />-->
+            </StackPanel>
+        </DockPanel>
     </Border>
 </UserControl>

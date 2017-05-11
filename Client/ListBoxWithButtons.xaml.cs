@@ -20,6 +20,7 @@ namespace Client
         public ListBoxWithButtons()
         {
             InitializeComponent();
+            popup.Closed += popup_Closed;
         }
 
         public void SetParent(MainWindow parent)
@@ -37,12 +38,13 @@ namespace Client
 
             if(e.NewItems != null)
             {
-                //ElementToShow el = _parent.WindowsToShow.FirstOrDefault();
                 if(listView_focusedProcesses.Items.Count >= _NoOfItemsInView)
                 {
                     btn_down.IsEnabled = true;
                     btn_up.IsEnabled = true;
-                }
+                }/*
+                foreach (var v in e.NewItems)
+                    listBox_showAllProcesses.Items.Add(v);*/
             }
 
             if(e.OldItems != null)
@@ -52,18 +54,9 @@ namespace Client
                     btn_down.IsEnabled = false;
                     btn_up.IsEnabled = false;
                 }
+                /*foreach (var v in e.OldItems)
+                    listBox_showAllProcesses.Items.Remove(v);*/
             }
-
-            /*if (listView_focusedProcesses.Items.Count <= _NoOfItemsInView)
-            {
-                btn_down.IsEnabled = false;
-                btn_up.IsEnabled = false;
-            }
-            else
-            {
-                btn_down.IsEnabled = true;
-                btn_up.IsEnabled = true;
-            }*/
         }
 
         private void btn_up_Click(object sender, RoutedEventArgs e)
@@ -74,11 +67,6 @@ namespace Client
             {
                 // Logical Scrolling by Item
                 scrollViewer.LineUp();
-                if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
-                    btn_up.IsEnabled = false;
-                else if (!btn_up.IsEnabled) btn_up.IsEnabled = true;
-                // Physical Scrolling by Offset
-                //scrollViwer.ScrollToVerticalOffset(scrollViwer.VerticalOffset + 3);
             }
     }
 
@@ -90,16 +78,24 @@ namespace Client
             {
                 // Logical Scrolling by Item
                 scrollViewer.LineDown();
-                if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
-                    btn_down.IsEnabled = false;
-                else if (!btn_down.IsEnabled) btn_down.IsEnabled = true;
-                // Physical Scrolling by Offset
-                //scrollViwer.ScrollToVerticalOffset(scrollViwer.VerticalOffset + 3);
+            }
+        }
+    
+        /*  Per abilitare/disabilitare i bottoni di scroll
+        */
+        private void ListView_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var scrollViewer = e.OriginalSource as ScrollViewer;
+            if (scrollViewer != null)
+            {
+                btn_up.IsEnabled = scrollViewer.ScrollableHeight > 0 && scrollViewer.VerticalOffset > 0;
+                btn_down.IsEnabled = scrollViewer.ScrollableHeight > 0 &&
+                      scrollViewer.VerticalOffset + scrollViewer.ViewportHeight < scrollViewer.ExtentHeight;
             }
         }
 
         //helper to get the ScrollViwer component of something like a ListBox, ListView, etc
-        public static DependencyObject GetScrollViewer(DependencyObject o)
+        private static DependencyObject GetScrollViewer(DependencyObject o)
         {
             // Return the DependencyObject if it is a ScrollViewer
             if (o is ScrollViewer)
@@ -116,6 +112,21 @@ namespace Client
             return null;
         }
 
+       /* private void ClosePopupPopup_Click(object sender, RoutedEventArgs e)
+        {
+            popup.IsOpen = false;
+        }*/
+        private void buttonShowPopup_Click(object sender, RoutedEventArgs e)
+        {
+            popup.IsOpen = true;
+            //ClosePopup.SetValue(Canvas.ZIndexProperty, 1);
+            btn_showPopup.SetValue(Canvas.ZIndexProperty, 0);
+        }
 
+        void popup_Closed(object sender, EventArgs e)
+        {
+            btn_showPopup.SetValue(Canvas.ZIndexProperty, 1);
+            //ClosePopup.SetValue(Canvas.ZIndexProperty, 0);
+        }
     }
 }
