@@ -1,6 +1,8 @@
-﻿using System;
+﻿#define DEBUG
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,7 +30,31 @@ namespace Client
 
         private void ProcessesToShowCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if(listView_focusedProcesses.Items.Count <= _NoOfItemsInView)
+            #if DEBUG
+            Debug.WriteLine("CollectionChanged in listbox");
+            Debug.WriteLine("listbox.Count = " + listView_focusedProcesses.Items.Count);
+            #endif
+
+            if(e.NewItems != null)
+            {
+                //ElementToShow el = _parent.WindowsToShow.FirstOrDefault();
+                if(listView_focusedProcesses.Items.Count >= _NoOfItemsInView)
+                {
+                    btn_down.IsEnabled = true;
+                    btn_up.IsEnabled = true;
+                }
+            }
+
+            if(e.OldItems != null)
+            {
+                if (listView_focusedProcesses.Items.Count <= _NoOfItemsInView)
+                {
+                    btn_down.IsEnabled = false;
+                    btn_up.IsEnabled = false;
+                }
+            }
+
+            /*if (listView_focusedProcesses.Items.Count <= _NoOfItemsInView)
             {
                 btn_down.IsEnabled = false;
                 btn_up.IsEnabled = false;
@@ -37,17 +63,7 @@ namespace Client
             {
                 btn_down.IsEnabled = true;
                 btn_up.IsEnabled = true;
-            }
-
-            if(e.NewItems != null)
-            {
-                ElementToShow el = _parent.WindowsToShow.FirstOrDefault();
-            }
-
-            if(e.OldItems != null)
-            {
-
-            }
+            }*/
         }
 
         private void btn_up_Click(object sender, RoutedEventArgs e)
@@ -58,6 +74,9 @@ namespace Client
             {
                 // Logical Scrolling by Item
                 scrollViewer.LineUp();
+                if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+                    btn_up.IsEnabled = false;
+                else if (!btn_up.IsEnabled) btn_up.IsEnabled = true;
                 // Physical Scrolling by Offset
                 //scrollViwer.ScrollToVerticalOffset(scrollViwer.VerticalOffset + 3);
             }
@@ -71,6 +90,9 @@ namespace Client
             {
                 // Logical Scrolling by Item
                 scrollViewer.LineDown();
+                if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+                    btn_down.IsEnabled = false;
+                else if (!btn_down.IsEnabled) btn_down.IsEnabled = true;
                 // Physical Scrolling by Offset
                 //scrollViwer.ScrollToVerticalOffset(scrollViwer.VerticalOffset + 3);
             }

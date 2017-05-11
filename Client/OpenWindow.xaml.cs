@@ -26,13 +26,15 @@ namespace Client
     /// </summary>
     public partial class OpenWindow : UserControl
     {
-        [JsonProperty(PropertyName = "WindowID")]
-        public string WindowID { get; set; }
+        public enum UpdateType { NewWindow = 0, OnFocus = 1, Closed = 2, HasLostFocus = 3};
 
-        [JsonProperty(PropertyName = "WindowName")]
-        public string ProcName { get; set; }
+        [JsonProperty(PropertyName = "wndId")]
+        public int WindowID { get; set; }
 
-        [JsonProperty(PropertyName = "Icon")]
+        [JsonProperty(PropertyName = "wndName")]
+        public string WinName { get; set; }
+
+        [JsonProperty(PropertyName = "wndIcon")]
         public string IconaBase64 { get { return _base64string; }
             set { if (!value.Equals(""))
                     _base64string = value;
@@ -40,37 +42,32 @@ namespace Client
         }
         private string _base64string;
 
-        [JsonProperty(PropertyName = "Status")]
-        public String Status { get { return _status; }
+        [JsonProperty(PropertyName = "type")]
+        public UpdateType Status { get { return _status; }
             set {
-                if (!_status.Equals(value))
+                if (_status != value)
                 {
                     _status = value;
                     OnPropertyChanged("Status");
                 }
             } }
 
-        public int ID { get; set; }
+        [JsonProperty(PropertyName = "procName")]
+        public string ProcName { get; set; }
 
-        /*public TimeSpan FocusTime{
-            get{return _hasFocusTime; }
-            set{ _hasFocusTime = _hasFocusTime.Add(value); }
-        }*/
         public TimeSpan FocusTime {
             get { return _focusStopWatch.Elapsed; }
         }
 
         private event PropertyChangedEventHandler PropertyChanged;
-        private string _status;
+        private UpdateType _status;
         private TimeSpan _hasFocusTime;
         private Stopwatch _focusStopWatch;
         public BitmapImage Icona { get; private set; }
 
         public OpenWindow()
         {
-            InitializeComponent();
-            _status = "";
-            
+            InitializeComponent();          
         }
 
         public void Initialize()
@@ -81,15 +78,15 @@ namespace Client
                 Icona = Base64ToBitmapImage(IconaBase64);
                 img_OpenWindowIcon.Source = Icona;
             }
-            ID = Convert.ToInt32(WindowID);
-            txtb_ProcessName.Text = ProcName;
+
+            txtb_ProcessName.Text = WinName;
             PropertyChanged += new PropertyChangedEventHandler(HighlightWindowOnFocus);
             txtb_ProcessTimeFocused.Text = "0.0%";
             _focusStopWatch = new Stopwatch();
         }
         public bool HasFocus()
         {
-            if (Status == "OnFocus")
+            if (Status == UpdateType.OnFocus)
                 return true;
             return false;
         }
@@ -105,7 +102,7 @@ namespace Client
         //imposta il colore di background dell'elemento in focus
         public void HighlightWindowOnFocus(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName.Equals("Status")) {
-                if (Status.Equals("OnFocus"))
+                if (Status == UpdateType.OnFocus)
                 {   //lo evidenzio cambiando colore di sfondo
                     this.Background = Brushes.Wheat;
                     cntxtMenu_SendKeyToThisWindow.IsEnabled = true;
@@ -194,7 +191,7 @@ namespace Client
             txtb_ProcessName.Foreground = Brushes.Gray;
             txtb_ProcessTimeFocused.Foreground = Brushes.Gray;
             //se questo oggetto corrisponde ad una finestra in focus, trasformo lo sfondo da giallo a grigio chiaro
-            if (Status.Equals("OnFocus"))
+            if (Status == UpdateType.OnFocus)
             {
                 Background = Brushes.LightGray;
             }

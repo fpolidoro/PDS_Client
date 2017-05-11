@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define DEBUG
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -45,7 +47,7 @@ namespace Client
 
 
         //dizionario thread-safe, Key=nomeProcessoInFocus, value=lista dei server con quel processo attualmente in focus
-        public ObservableConcurrentDictionary<string, ObservableCollection<ServerElement>> WindowsOnFocus
+        public ObservableConcurrentDictionary<string, ObservableCollection<ServerElement>> AllProcesses
         {
             get;
             set;
@@ -69,12 +71,12 @@ namespace Client
         {
             ServerList = new AsyncObservableCollection<ServerElement>();
             _serverAddressList = new LinkedList<string>();
-            WindowsOnFocus = new ObservableConcurrentDictionary<string, ObservableCollection<ServerElement>>(); 
+            AllProcesses = new ObservableConcurrentDictionary<string, ObservableCollection<ServerElement>>(); 
             WindowsToShow = new ObservableCollection<ElementToShow>();
             InitializeComponent();
             ic_serverElements.ItemsSource = ServerList;
             ServerList.CollectionChanged += new NotifyCollectionChangedEventHandler(CollectionChanged);
-            WindowsOnFocus.CollectionChanged += new NotifyCollectionChangedEventHandler(ProcessesOnFocusCollectionChanged);
+            AllProcesses.CollectionChanged += new NotifyCollectionChangedEventHandler(AllProcessesCollectionChanged);
             DisconnectAll = false;
             _cols = 0;
             listBoxWButtons_activeProcesses.SetParent(this);
@@ -150,39 +152,45 @@ namespace Client
             }*/
         }
 
-        public void ProcessesOnFocusCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        /*  Dizionario accessibile a tutti i server element. Ciascuno aggiunge/rimuove se stesso dalla lista di server
+         *  su cui è in esecuzione il processo il cui nome è usato come chiave
+         */
+        public void AllProcessesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            ObservableCollection<ServerElement> values = new ObservableCollection<ServerElement>();
-            foreach (var v in WindowsOnFocus.Keys)
-            {
-                if (WindowsOnFocus.TryGetValue(v, out values))
+                ObservableCollection<ServerElement> values = new ObservableCollection<ServerElement>();
+                foreach (var v in AllProcesses.Keys)
                 {
-                    Debug.Assert(values.Count != 0);
-                    if (values.Count > 1)//se ho almeno due elementi, aggiungo il nome processo alla lista
+                    if (AllProcesses.TryGetValue(v, out values))
                     {
-                        ElementToShow el = new ElementToShow(v, values[0].CurrentlyOnFocus.Icona);
-                        if (!WindowsToShow.Any(p => p.ProcName.Equals(v)))
+                        if (values.Count > 0)//se ho almeno due elementi, aggiungo il nome processo alla lista
                         {
-                            WindowsToShow.Add(el);
-                            listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Add(el);
-                        }
-                    }
-                    else {  //se ne ho uno solo (o 0, ma non dovrebbe accadere) ed era in lista, lo rimuovo
-                        if (WindowsToShow.Any(p => p.ProcName.Equals(v)))
+                            //estraggo l'icona
+                            var win = values[0].OpenWindowsValues.FirstOrDefault(p => p.ProcName.Equals(v));
+                            Debug.Assert(win != null);
+                            ElementToShow el = new ElementToShow(v, win.Icona);
+                            if (!WindowsToShow.Any(p => p.ProcName.Equals(v)))
+                            {
+                                WindowsToShow.Add(el);
+                                listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Add(el);
+                            }
+                    }else
+                    {
+                        var el = WindowsToShow.FirstOrDefault(p => p.ProcName.Equals(v));
+                        if (el != null)
                         {
-                            ElementToShow el = WindowsToShow.FirstOrDefault(p => p.ProcName.Equals(v));
                             WindowsToShow.Remove(el);
                             listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Remove(el);
                         }
                     }
-                    
+                    }
                 }
-            }
-            Debug.WriteLine("WindowsToShow: " + listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Count);
-            foreach(var v in WindowsToShow)
-            {
-                Debug.WriteLine(" -" + v.ProcName);
-            }
+#if (DEBUG)
+                Debug.WriteLine("WindowsToShow: " + listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Count);
+                foreach (var v in WindowsToShow)
+                {
+                    Debug.WriteLine(" -" + v.ProcName);
+                }
+#endif
         }
 
 
@@ -191,9 +199,13 @@ namespace Client
         {
             if (ServerList.Count != 0 && ServerList.Count > 3)
             {
-                Debug.WriteLine("width = {0} srv.Count = {1}", stackp_serverGrid.ActualWidth, ServerList.Count);
+#if(DEBUG)
+                Debug.WriteLine("width = " + stackp_serverGrid.ActualWidth + " srv.Count = " + ServerList.Count);
+#endif
                 _cols = (int)Math.Floor(stackp_serverGrid.ActualWidth / (ServerList.Count * 200));
+#if(DEBUG)
                 Debug.WriteLine("_cols = {0}", _cols);
+#endif
             }
         }
 

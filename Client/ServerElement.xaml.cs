@@ -50,27 +50,26 @@ namespace Client
                 OnPropertyChanged("CurrentlyOnFocus");
             }
         }
+        public List<OpenWindow> OpenWindowsValues {
+            get { return new List<OpenWindow>(_openWindows.Values); }
+        }
 
         public ServerElement(Server srv)
         {
             InitializeComponent();
             _uriRetrieving = new Uri(@"pack://application:,,,/imgs/32x32_RetrievingList.gif");
-            /*_uriDisconnected = new Uri("pack://application:,,,/imgs/16x16_disconnected.png");
-            _uriConnected = new Uri("pack://application:,,,/imgs/16x16_Connected.png");*/
             _uriDisconnected = new Uri("pack://application:,,,/imgs/disconnectedGently16x16.png");
             _uriLostConnection = new Uri("pack://application:,,,/imgs/lostConnection16x16.png");
             _uriDisconnectedBadly = new Uri("pack://application:,,,/imgs/disconnectedBadly16x16.png");
             _uriConnected = new Uri("pack://application:,,,/imgs/connected16x16.png");
             _uriDisconnectedByUs = new Uri("pack://application:,,,/imgs/disconnectedByUs16x16.png");
-            //qui devo avviare il task asincrono che gestisca la receive o comunque l'ascolto
-            //_reconnAttempts = 0;
 
             //assegno Server a questo ServerElement
             _srv = srv;
             _srv.SetGUIParentElement(this);
             txtb_serverAddress.Text = _srv.Name();
 
-            
+
 
             _lastFocusUpdate = _srv.ConnectionTime;
             _hasLostFocus = null;
@@ -127,7 +126,7 @@ namespace Client
                     {
                         var win = JsonConvert.DeserializeObject<OpenWindow>(pendingJSONs.First());
                         Debug.Assert(win != null, "win == NULL");
-                        var winID = Convert.ToInt32(win.WindowID);
+                        var winID = win.WindowID;
                         if (_openWindows.ContainsKey(winID))   //la finestra era già stata aperta in precedenza, ora cambia solo stato
                         {
                             OpenWindow winToUpdate;
@@ -136,43 +135,39 @@ namespace Client
                                 winToUpdate.Status = win.Status;
                             }
                             if (winToUpdate.HasFocus()) {
-                                Debug.WriteLine(" has focus now", winToUpdate.ProcName);
+                                Debug.WriteLine(" has focus now", winToUpdate.WinName);
                                 if (CurrentlyOnFocus != null) {
-                                    Debug.WriteLine(" has lost focus", CurrentlyOnFocus.ProcName);
-                                    CurrentlyOnFocus.Status = "HasLostFocus";
+                                    Debug.WriteLine(" has lost focus", CurrentlyOnFocus.WinName);
+                                    CurrentlyOnFocus.Status = OpenWindow.UpdateType.HasLostFocus;
                                     _hasLostFocus = _currentlyOnFocus;
-                                    //tolgo questo serverElement dalla lista di serverElement con ProcName in focus
-                                    removeFromFocusList();
+                                    //tolgo questo serverElement dalla lista di serverElement con WinName in focus
                                 }
                                 CurrentlyOnFocus = winToUpdate;
                             }
-                            if (winToUpdate.Status.Equals("Closed"))
+                            if (winToUpdate.Status == OpenWindow.UpdateType.Closed)
                             {
                                 listBox_OpenWindows.Items.Remove(winToUpdate);
-                                _openWindows.Remove(winToUpdate.ID);
-                                if (CurrentlyOnFocus.ID.Equals(winToUpdate.ID)) {  //la finestra che sto chiudendo era currently on focus
-                                    //la elimino dalla lista dei serverElement con in focus quel processo
-                                    removeFromFocusList();
+                                _openWindows.Remove(winToUpdate.WindowID);
+                                if (CurrentlyOnFocus.WindowID == winToUpdate.WindowID) {  //la finestra che sto chiudendo era currently on focus
                                     CurrentlyOnFocus = null;
-                                    //RecomputeFocusPercentage();
                                 }
-                                
+                                //la rimuovo dalla lista generale dei processi attivi
+                                RemoveFromAllProcessesList(winToUpdate.ProcName);
                             }
-                            if (winToUpdate.Status.Equals("HasLostFocus")) {  //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
-                                //la elimino dalla lista dei serverElement con in focus quel processo
-                                removeFromFocusList();
+                            if (winToUpdate.Status == OpenWindow.UpdateType.HasLostFocus) {  //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
                                 CurrentlyOnFocus = null;
                                 _hasLostFocus = winToUpdate;
                                 
                             }
                         }
                         else {  //la finestra non esisteva ancora, quindi creo l'oggetto
-                            if (win.Status.Equals("NewWindow"))
+                            if (win.Status == OpenWindow.UpdateType.NewWindow)
                             {
                                 win.Initialize();
-                                _openWindows.Add(win.ID, win);
+                                _openWindows.Add(win.WindowID, win);
                                 listBox_OpenWindows.Items.Add(win);
                                 //Debug.WriteLine("aggiunto l'item win");
+                                AddToAllProcessesList(win.ProcName);
                             }
                             else
                             {
@@ -183,42 +178,11 @@ namespace Client
                         if (listBox_OpenWindows.Visibility == Visibility.Collapsed)
                         {
                             listBox_OpenWindows.Visibility = Visibility.Visible;
-                            if (win.Status == "NewWindow")
+                            if (win.Status == OpenWindow.UpdateType.NewWindow)
                             {
-                                _openWindows.Add(win.ID, win);
+                                _openWindows.Add(win.WindowID, win);
                             }
                         }
-                        /*if (_openWindows.Count != 0) {
-                            listBox_OpenWindows.Items.Clear();
-                            int i = 0;
-                            if (_openWindows.Count > 1)
-                            {
-                                if (_currentlyOnFocus != null)
-                                {
-                                    listBox_OpenWindows.Items.Add(_currentlyOnFocus);
-                                    _openWindows.Remove(_currentlyOnFocus.ID);
-                                    i = 1;
-                                }
-                                _sortedWindowList = _openWindows.Values.OrderByDescending(x => x.FocusTime).ToList(); //ordino per focustime
-                                if (_currentlyOnFocus != null) _openWindows.Add(_currentlyOnFocus.ID, _currentlyOnFocus);
-                            }
-                            else _sortedWindowList = _openWindows.Values.ToList();  //ho un solo elemento, è inutile fare il sort
-                            
-                            Debug.WriteLine("listBox.Count = " + listBox_OpenWindows.Items.Count); 
-                            
-                            foreach (var w in _sortedWindowList) {
-                                Debug.WriteLine(i + ": " + w.WindowID + " " + w.FocusTime.Milliseconds);
-                                listBox_OpenWindows.Items.Insert(i, w);
-                                i++;
-                            }
-                            //listBox_OpenWindows.Items.SortDescriptions.Add(new SortDescription("OpenWindow", ListSortDirection.Descending));
-                            Debug.WriteLine("listBox.Count = " + listBox_OpenWindows.Items.Count);
-                        }*/
-                        //else if (listBox_OpenWindows.Visibility == Visibility.Visible && _openWindows.Count == 1 /*&& _openWindows.First*/)
-                        /*{
-                            //se ho un solo elemento nella lista che sta venendo chiuso, collasso la lista, ma va messo un msg tipo "no finestre aperte"
-                            listBox_OpenWindows.Visibility = Visibility.Collapsed;
-                        }*/
                     }
                     catch (JsonException jsone)
                     {
@@ -266,17 +230,17 @@ namespace Client
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop();
                 _timer.Stop();
-                if (CurrentlyOnFocus != null)
+                if (_openWindows.Values.Count != 0)
                 {
-                    removeFromFocusList();
-                    _hasLostFocus = CurrentlyOnFocus;
-                    CurrentlyOnFocus = null;
+                    //tolgo questo ServerElement dalle liste di ciascun processo, nel dizionario del main
+                    foreach (var v in _openWindows.Values)
+                        RemoveFromAllProcessesList(v.ProcName);
                 }
             }
             else if (value.Equals("SocketGentlyDisposed"))
             {
                 //il socket ha chiuso la connessione in modo corretto
-                //dovrei trasformare le finestre da colori in grayscale per far capire che la connessione è andata
+                //trasformo le finestre da colori in grayscale per far capire che la connessione è andata
                 img_ConnectionStatus.Source = new BitmapImage(_uriDisconnected);
                 img_ConnectionStatus.ToolTip = "The counterpart closed the connection (gently).";
                 foreach (var openWin in _openWindows.Values)
@@ -290,11 +254,11 @@ namespace Client
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop();
                 _timer.Stop();
-                if (CurrentlyOnFocus != null)
+                if (_openWindows.Values.Count != 0)
                 {
-                    removeFromFocusList();
-                    _hasLostFocus = CurrentlyOnFocus;
-                    CurrentlyOnFocus = null;
+                    //tolgo questo ServerElement dalle liste di ciascun processo, nel dizionario del main
+                    foreach (var v in _openWindows.Values)
+                        RemoveFromAllProcessesList(v.ProcName);
                 }
             }
             else if (value.Equals("Connected"))
@@ -329,11 +293,11 @@ namespace Client
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop();
                 _timer.Stop();
-                if (CurrentlyOnFocus != null)
+                if (_openWindows.Values.Count != 0)
                 {
-                    removeFromFocusList();
-                    _hasLostFocus = CurrentlyOnFocus;
-                    CurrentlyOnFocus = null;
+                    //tolgo questo ServerElement dalle liste di ciascun processo, nel dizionario del main
+                    foreach (var v in _openWindows.Values)
+                        RemoveFromAllProcessesList(v.ProcName);
                 }
             }
             else if (value.Equals("SocketClosedByUs")) {
@@ -345,31 +309,54 @@ namespace Client
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop(); //fermo il timer del tempo di connessione
                 _timer.Stop();
-                if (CurrentlyOnFocus != null)
+                if (_openWindows.Values.Count != 0)
                 {
-                    removeFromFocusList();
-                    _hasLostFocus = CurrentlyOnFocus;
-                    CurrentlyOnFocus = null;
+                    //tolgo questo ServerElement dalle liste di ciascun processo, nel dizionario del main
+                    foreach (var v in _openWindows.Values)
+                        RemoveFromAllProcessesList(v.ProcName);
                 }
             }
         }
 
-        public void removeFromFocusList()
+        public void RemoveFromAllProcessesList(string procName)
         {
-            //tolgo questo serverElement dalla lista di serverElement con ProcName in focus
-            if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
+            //tolgo questo serverElement dalla lista di serverElement corrispondente alla coppia <K,V> con K == procName
+            if (_parent.AllProcesses.ContainsKey(procName))
             {
                 ObservableCollection<ServerElement> values;
-                if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
-                {
+                if (_parent.AllProcesses.TryGetValue(procName, out values))
+                {/*
                     if (values.Count == 1) //questo era l'ultimo elemento della catena, quindi elimino proprio la voce
                     {
                         //tolgo il listener per le modifiche alla lista
-                        values.CollectionChanged -= _parent.ProcessesOnFocusCollectionChanged;
-                        _parent.WindowsOnFocus.Remove(CurrentlyOnFocus.ProcName);
+                        values.CollectionChanged -= _parent.AllProcessesCollectionChanged;
+                        _parent.AllProcesses.Remove(procName);
                     }
-                    else values.Remove(this);
+                    else*/
+                    if(values.Contains(this)) values.Remove(this);
                 }
+            }
+        }
+
+        public void AddToAllProcessesList(string procName)
+        {
+            ObservableCollection<ServerElement> values;
+            if (_parent.AllProcesses.ContainsKey(procName))
+            {   // è già presente almeno 1 ServerElement con questo processo in esecuzione
+                if (_parent.AllProcesses.TryGetValue(procName, out values))
+                {   //aggiungo questo server alla lista solo se non è già presente (nel caso ci fossero due finestre che si riferiscono
+                    //allo stesso processo
+                    Debug.Assert(values != null);
+                    if(!values.Contains(this))
+                        values.Add(this);
+                }
+            }
+            else //non c'era ancora nessun ServeElement con questo processo in esecuzione, quindi lo aggiungo al dizionario
+            {
+                values = new ObservableCollection<ServerElement>();
+                values.Add(this);
+                values.CollectionChanged += new NotifyCollectionChangedEventHandler(_parent.AllProcessesCollectionChanged);
+                _parent.AllProcesses.Add(procName, values);
             }
         }
 
@@ -392,12 +379,12 @@ namespace Client
                     if (CurrentlyOnFocus != null)
                     {
                         listBox_OpenWindows.Items.Add(_currentlyOnFocus);
-                        _openWindows.Remove(_currentlyOnFocus.ID);
+                        _openWindows.Remove(_currentlyOnFocus.WindowID);
                         i = 1;
                         //Debug.WriteLine(i + ": " + CurrentlyOnFocus.WindowID + " " + _currentlyOnFocus.FocusTime.Milliseconds);
                     }
                     _sortedWindowList = _openWindows.Values.OrderByDescending(x => x.FocusTime).ToList(); //ordino per focustime
-                    if (CurrentlyOnFocus != null) _openWindows.Add(CurrentlyOnFocus.ID, CurrentlyOnFocus);
+                    if (CurrentlyOnFocus != null) _openWindows.Add(CurrentlyOnFocus.WindowID, CurrentlyOnFocus);
                 }
                 else _sortedWindowList = _openWindows.Values.ToList();  //ho un solo elemento, è inutile fare il sort
 
@@ -461,28 +448,15 @@ namespace Client
                 if (CurrentlyOnFocus == null)
                 {
                     _timer.Stop();
+#if(DEBUG)
                     Debug.WriteLine("_timer has been stopped.");
+#endif
                 }
                 else {
                     _timer.Start();
+#if(DEBUG)
                     Debug.WriteLine("_timer has been restarted.");
-                    //la inserisco nella lista dei serverElement con in focus quel processo
-                    if (_parent.WindowsOnFocus.ContainsKey(CurrentlyOnFocus.ProcName))
-                    {   // è già presente almeno 1 ServerElement con questo processo in focus
-                        ObservableCollection<ServerElement> values;
-                        if (_parent.WindowsOnFocus.TryGetValue(CurrentlyOnFocus.ProcName, out values))
-                        {
-                            Debug.Assert(values != null);
-                            values.Add(this);
-                        }
-                    }
-                    else
-                    {
-                        ObservableCollection<ServerElement> values = new ObservableCollection<ServerElement>();
-                        values.Add(this);
-                        values.CollectionChanged += new NotifyCollectionChangedEventHandler(_parent.ProcessesOnFocusCollectionChanged);
-                        _parent.WindowsOnFocus.Add(CurrentlyOnFocus.ProcName, values);
-                    }
+#endif
                 }
             }
         }
@@ -493,6 +467,12 @@ namespace Client
                 _timer.Stop();
             if (_stopWatch.IsRunning)
                 _stopWatch.Stop();
+            if (_openWindows.Values.Count != 0)
+            {
+                //tolgo questo ServerElement dalle liste di ciascun processo, nel dizionario del main
+                foreach (var v in _openWindows.Values)
+                    RemoveFromAllProcessesList(v.ProcName);
+            }
             Debug.WriteLine("Receive stopped.");
             _srv.StopReceive();
             Debug.WriteLine("Thread joined.");

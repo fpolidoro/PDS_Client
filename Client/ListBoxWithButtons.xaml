@@ -6,12 +6,44 @@
              xmlns:local="clr-namespace:Client"
              mc:Ignorable="d" 
              d:DesignHeight="64" d:DesignWidth="224">
+    <UserControl.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                                BorderThickness="1,1,0,1"
+                        Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FFFFFFFF" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#FFABABAB" />
+                                <Setter Property="Foreground" Value="#FF696969"/>
+
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Border" Property="Background" Value="#FFFFFFFF" />
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#FFF0F0F0" />
+                                <Setter Property="Foreground" Value="#FFC8C8C8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Border BorderThickness="1" BorderBrush="#FFABABAB" Padding="0,0,1,0">
     <DockPanel MaxHeight="64" MaxWidth="224">
-        <ListView x:Name="listView_focusedProcesses" Width="202" DockPanel.Dock="Left" BorderThickness="1,1,0,1" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+        <ListView x:Name="listView_focusedProcesses" Width="202" DockPanel.Dock="Left" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
         <StackPanel DockPanel.Dock="Right">
-            <Button x:Name="btn_up" FontFamily="Segoe UI Symbol" Content="&#xE010;" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Height="22" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Click="btn_up_Click" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
-            <Button x:Name="btn_down" FontFamily="Segoe UI Symbol" Content="&#xE011;" Height="22" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,-1,0,0" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Click="btn_down_Click" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
-            <Button x:Name="btn_showAll" Content="&#x25BE;" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Height="22" Margin="0,-1,0,0" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
+                <Button x:Name="btn_up" Height="21" FontFamily="Segoe UI Symbol" Content="&#xE010;" BorderThickness="1,0,0,0.5" IsEnabled="False" Margin="0,0,-1,0" Click="btn_up_Click"/>
+                <Button x:Name="btn_down" Height="21" FontFamily="Segoe UI Symbol" Content="&#xE011;" BorderThickness="1,0.5,0,0" IsEnabled="False" Margin="0,0,-1,0" Click="btn_down_Click"  />
+                <Button x:Name="btn_showAll" Content="&#x25BE;" FontFamily="Segoe UI Symbol" Height="21" Margin="0,0,-1,0" BorderThickness="1,1,0,0" BorderBrush="#FFABABAB" Foreground="#FF696969" Background="White"/>
         </StackPanel>
     </DockPanel>
+    </Border>
 </UserControl>
