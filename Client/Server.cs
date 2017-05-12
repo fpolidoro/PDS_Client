@@ -103,7 +103,9 @@ namespace Client
         private string TryReconnect() {
             bool tryAgain = true;
             string msg;
+#if (DEBUG)
             Debug.WriteLine("Dentro a TryReconnect");
+#endif
             while (tryAgain && _connectionsCounter < 4 && !CloseEvent.WaitOne(0))
             {
                 try
@@ -118,51 +120,62 @@ namespace Client
                     if (_connectionsCounter > 2)
                         Thread.Sleep(3000); //attendo un po' prima di riconnettere, per dare tempo all'altro eventualmente di tornare online
                     _socket.Connect(clientEndPoint);
-                    //_connectionTime = DateTime.Now;
                     tryAgain = false;
+#if (DEBUG)
                     Debug.WriteLine("Riconnessione OK");
+#endif
                 }
                 catch (SocketException)
                 {   //An error occurred while attempting to access the socket.
                     if (_socket != null) _socket.Close();
+#if (DEBUG)
                     Debug.WriteLine("TryReconnect: SocketException");
+#endif
                     tryAgain = true;
                 }
                 catch (ObjectDisposedException)
                 {   //The Socket has been closed
                     if (_socket != null) _socket.Close();
+#if (DEBUG)
                     Debug.WriteLine("TryReconnect: ObjectDisposedException");
+#endif
                     tryAgain = true; 
                 }
                 catch (Exception)
                 {
                     if (_socket != null) _socket.Close();
+#if (DEBUG)
                     Debug.WriteLine("TryReconnect: Exception");
+#endif
                     tryAgain = true;
                 }
                 _connectionsCounter++;
             }
             if (tryAgain) //vuol dire che ho superato il # di tentativi
             {
+#if (DEBUG)
                 Debug.WriteLine("TryReconnect: fuori dal while, ReconnectionLimitExceeded");
+#endif
                 msg = "ReconnectionLimitExceeded";
             }
             else
             {
                 _connectionsCounter = 1;
+#if (DEBUG)
                 Debug.WriteLine("TryReconnect: Connected");
+#endif
                 msg = "Connected";
             }
             return msg;
         }
 
-        /** Riceve una stringa json da cui estrae nome processo, icona e tipo di evento (nuova finestra, chiusura finestra, cambio focus)
-        *   Ritorna true se l'operazione e' andata a buon fine, false se ci sono errori
-        **/
 
         public void Receive()
         {
+#if (DEBUG)
             Debug.WriteLine("Receive è partita.");
+#endif
+            Action<string> notifySocketStatus = _parentGUIElement.SocketStatusChanged;
             try
             {
                 NetworkStream nws = new NetworkStream(_socket);
@@ -173,8 +186,7 @@ namespace Client
                 int length;
                 int totalRead;
                 int read;
-                Action<string> addToList = _parentGUIElement.pendingJSONs.Add;
-                Action<string> notifySocketStatus = _parentGUIElement.SocketStatusChanged;
+                Action<string> addToList = _parentGUIElement.pendingJSONs.Add;   
 
                 while (!CloseEvent.WaitOne(0))
                 {//ciclo fino a quando ricevo uno stop dall'esterno oppure ottengo un errore dal socket
@@ -215,23 +227,20 @@ namespace Client
                                 }
                                 _parentGUIElement.Dispatcher.BeginInvoke(addToList, json.ToString());
                                 json.Clear();   //ripulisco la stringa contenente il json
+#if (DEBUG)
                                 Debug.WriteLine("pendingJSONs ha" + _parentGUIElement.pendingJSONs.Count + "elementi.");
+#endif
                             }
                             else
                             {   //la dimensione del json è eccessivamente grande o negativa, quindi chiudo il socket
+#if (DEBUG)
                                 Debug.WriteLine("La dimensione del json è eccessivamente grande o negativa, quindi chiudo il socket");
+#endif
                                 _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "SocketClosedByUs");
                                 CloseEvent.Set();
                                 break;
                             }
                         }
-                        /*else
-                        {
-                            // The connection has closed gracefully, so stop the
-                            // thread.
-                            Debug.WriteLine("Connessione chiusa dalla controparte");
-                            CloseEvent.Set();
-                        }*/
                     }
                     catch (IOException ioe) //qui è probabile che sia crashato il server, quindi bisogna tentare le 3 riconnessioni
                     {   //càpita quando il timeout scade senza che siano stati ricevuti dati
@@ -273,17 +282,30 @@ namespace Client
                             continue;
                         }
                     }
+                    catch (Exception)
+                    {
+                        _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "GenericException");
+                        CloseEvent.Set();
+                        break;
+                    }
                 }
+#if (DEBUG)
                 Debug.WriteLine("uscito dal while.waitone");
+#endif
             }
             catch (Exception e)
             {
                 MsgException = e.Message;
+#if(DEBUG)
                 Debug.WriteLine("Eccezione nel try-catch esterno: {0}",MsgException);
+#endif
+                _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "GenericException");
             }
             finally
             {
+#if (DEBUG)
                 Debug.WriteLine("Finally");
+#endif
                 Close();
             }
             ////Debug.WriteLine("json = " + json.ToString());
@@ -292,6 +314,107 @@ namespace Client
 
         public void StopReceive() {
             CloseEvent.Set();
+        }
+
+        public async Task Send(string json)
+        {
+#if (DEBUG)
+            Debug.WriteLine("Send è partita.");
+#endif
+            Action<string> notifySocketStatus = _parentGUIElement.SocketStatusChanged;
+            try
+            {
+                NetworkStream nws = new NetworkStream(_socket);
+                string received;
+                byte[] bufferLength = new byte[4];
+                byte[] buffer;
+                byte[] concatBuffer;
+                int length;
+                int totalWritten;
+                int written;
+                
+
+                while (!CloseEvent.WaitOne(0))
+                {//ciclo fino a quando ricevo uno stop dall'esterno oppure ottengo un errore dal socket
+                    totalWritten = 0;
+                    length = 0;
+                    //Debug.WriteLine("Dentro al while di receive.");
+                    try
+                    {
+                        Debug.Assert(_socket.Connected, "_socket IS connected");
+                        /*if (!nws.DataAvailable)
+                        {
+                            Thread.Sleep(1);
+                        }
+                        else */
+                        buffer = Encoding.ASCII.GetBytes(json);
+                        bufferLength = BitConverter.GetBytes(json.Length);
+
+                        //concateno il buffer contenente il json al buffer contenente la dimensione del json
+                        var s = new MemoryStream();
+                        s.Write(bufferLength, 0, bufferLength.Length);
+                        s.Write(buffer, 0, buffer.Length);
+                        concatBuffer = s.ToArray();
+
+                        written = 0;
+                        totalWritten = 0;
+                        while (totalWritten < buffer.Length)
+                        {
+                            written = _socket.Send(concatBuffer, totalWritten, concatBuffer.Length - totalWritten, SocketFlags.None);
+                            totalWritten += written;
+                        }
+                        break;
+                    }
+                    catch (SocketException se) //errore del sistema operativo nel tentare di accedere al socket
+                    {   //chiudo tutto e metto in grigio la finestra
+                        MsgException = se.Message;
+                        Debug.WriteLine("Connessione chiusa per SocketException:\n" + MsgException);
+                        _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "SocketException");
+                        CloseEvent.Set();
+                        break;
+                    }
+                    catch (ObjectDisposedException ode)
+                    {
+                        MsgException = ode.Message;
+                        Debug.WriteLine("Connessione chiusa per objectDisposed:" + MsgException);
+                        _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "ObjectDisposedException");
+                        nws.Dispose();
+                        String msg = TryReconnect();
+                        if (msg.Equals("ReconnectionLimitExceeded"))
+                        {
+                            _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "ReconnectionLimitExceeded");
+                            CloseEvent.Set();
+                            break;
+                        }
+                        if (msg.Equals("Connected"))
+                        {
+                            _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "Connected");
+                            //CloseEvent.Reset();
+                            nws = new NetworkStream(_socket);
+                            continue;
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "GenericException");
+                        CloseEvent.Set();
+                        break;
+                    }
+                }
+#if (DEBUG)
+                Debug.WriteLine("uscito dal while.waitone Send");
+#endif
+            }
+            catch (Exception e)
+            {
+                MsgException = e.Message;
+#if (DEBUG)
+                Debug.WriteLine("Eccezione nel try-catch esterno: " + MsgException);
+#endif
+                _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "GenericException");
+            }
+
+            return;
         }
 
         /** Converte l'img codificata in base64 in oggetto Image

@@ -1,5 +1,6 @@
 ﻿#define DEBUG
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -127,6 +128,36 @@ namespace Client
         {
             btn_showPopup.SetValue(Canvas.ZIndexProperty, 1);
             //ClosePopup.SetValue(Canvas.ZIndexProperty, 0);
+        }
+
+        private void listView_focusedProcesses_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+#if(DEBUG)
+            Debug.WriteLine("Selection changed: ");
+            foreach (ElementToShow i in listView_focusedProcesses.SelectedItems)
+                Debug.WriteLine(i.ProcName);
+            Debug.WriteLine("-------------------");
+#endif
+            //fa in modo che quando (soprattutto dal popup) seleziono un elemento che in listView non è visibile,
+            //la listView venga scrollata fino all'item selezionato
+            listView_focusedProcesses.ScrollIntoView(listView_focusedProcesses.SelectedItem);
+        }
+
+        //Quando seleziono un elemento dal popup, devo renderlo selezionato anche nella lista
+        private void popup_LostFocus(object sender, RoutedEventArgs e)
+        {
+            listView_focusedProcesses.SelectedItems.Clear();
+            foreach (ElementToShow v in listBox_showAllProcesses.SelectedItems)
+            {
+                int index = listBox_showAllProcesses.SelectedIndex;
+                listView_focusedProcesses.SelectedIndex = index;
+            }
+#if (DEBUG)
+            Debug.WriteLine("Popup lost focus - listView selectedItems: ");
+            foreach (ElementToShow i in listView_focusedProcesses.SelectedItems)
+                Debug.WriteLine(i.ProcName);
+            Debug.WriteLine("-------------------");
+#endif
         }
     }
 }

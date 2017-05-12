@@ -1,5 +1,6 @@
 ﻿#define DEBUG
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -234,6 +235,16 @@ namespace Client
             List<int> keys = new List<int>();
             keys.Add((int)Key.LeftAlt);
             keys.Add((int)Key.F4);
+
+            //ottenere il nome processo selezionato, ottenere la lista di ServerElement con quel processo
+            //attivo
+
+            var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
+            string json = JsonConvert.SerializeObject(kmsg);
+
+            //controllo che string != null, altrimenti mando un msgBox di errore
+            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+
         }
 
         private void btn_sendAltTab_Click(object sender, RoutedEventArgs e)

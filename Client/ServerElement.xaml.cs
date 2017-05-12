@@ -300,7 +300,7 @@ namespace Client
                         RemoveFromAllProcessesList(v.ProcName);
                 }
             }
-            else if (value.Equals("SocketClosedByUs")) {
+            else if (value.Equals("SocketClosedByUs") || value.Equals("GenericException")) {
                 //abbiamo ricevuto un json con dimensione brutta, chiuso il socket
                 //mettiamo una icona con ! e lasciamo all'utente la possibilità di riconnettersi
                 img_ConnectionStatus.Source = new BitmapImage(_uriDisconnectedByUs);
@@ -313,7 +313,14 @@ namespace Client
                 {
                     //tolgo questo ServerElement dalle liste di ciascun processo, nel dizionario del main
                     foreach (var v in _openWindows.Values)
+                    {
                         RemoveFromAllProcessesList(v.ProcName);
+                        v.ConvertToGrayscale();
+                        if(value.Equals("SocketClosedByUs"))
+                            stackp_WindowsList.ToolTip = "Socket was closed due to an exception on the json length.";
+                        else
+                            stackp_WindowsList.ToolTip = "Socket was closed due to a generic exception. See debug for more details.";
+                    }
                 }
             }
         }
@@ -459,6 +466,12 @@ namespace Client
 #endif
                 }
             }
+        }
+
+        public void SendKeyCombo(string json)
+        {
+            Task.Run(() => _srv.Send(json));
+            //le eventuali eccezioni scatenate dalla send vengono notificate e gestite tramite SocketStatusChanged e Server.cs
         }
 
         private void mitem_disconnect_Click(object sender, RoutedEventArgs e)

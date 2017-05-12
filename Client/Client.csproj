@@ -83,6 +83,7 @@
     <Compile Include="ElementToShow.xaml.cs">
       <DependentUpon>ElementToShow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="KeyMessage.cs" />
     <Compile Include="ListBoxWithButtons.xaml.cs">
       <DependentUpon>ListBoxWithButtons.xaml</DependentUpon>
     </Compile>
