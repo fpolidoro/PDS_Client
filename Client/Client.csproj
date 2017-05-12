@@ -108,6 +108,9 @@
     <Compile Include="CatchKeyTextBox.xaml.cs">
       <DependentUpon>CatchKeyTextBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SpecialKeyComboDialog.xaml.cs">
+      <DependentUpon>SpecialKeyComboDialog.xaml</DependentUpon>
+    </Compile>
     <Page Include="ElementToShow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -156,6 +159,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CatchKeyTextBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpecialKeyComboDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

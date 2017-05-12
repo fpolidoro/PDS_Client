@@ -18,6 +18,12 @@ namespace Client
     {
         private MainWindow _parent;
         private static int _NoOfItemsInView = 3;
+
+        public string SelectedProcess
+        {
+            get;
+            private set;
+        }
         public ListBoxWithButtons()
         {
             InitializeComponent();
@@ -141,6 +147,9 @@ namespace Client
             //fa in modo che quando (soprattutto dal popup) seleziono un elemento che in listView non è visibile,
             //la listView venga scrollata fino all'item selezionato
             listView_focusedProcesses.ScrollIntoView(listView_focusedProcesses.SelectedItem);
+            if (listView_focusedProcesses.SelectedItem != null)
+                SelectedProcess = (listView_focusedProcesses.SelectedItem as ElementToShow).ProcName;
+            else SelectedProcess = null;
         }
 
         //Quando seleziono un elemento dal popup, devo renderlo selezionato anche nella lista

@@ -137,20 +137,6 @@ namespace Client
             {
                 _serverAddressList.RemoveLast();
             }
-            /*if (ServerList.Count > 6) {
-                _cols = 4;
-                decimal val = ServerList.Count / 4;
-                _rows = (int)Math.Ceiling(val);
-            }
-            else if (ServerList.Count >= 3 && ServerList.Count <= 6) {
-                _cols = 3;
-                _rows = 2;
-            }
-            else if (ServerList.Count <= 2)
-            {
-                _cols = 2;
-                _rows = 1;
-            }*/
         }
 
         /*  Dizionario accessibile a tutti i server element. Ciascuno aggiunge/rimuove se stesso dalla lista di server
@@ -220,9 +206,10 @@ namespace Client
             tabControl.SelectedIndex = 2;
         }
 
-        private void btn_sendKey_Click(object sender, RoutedEventArgs e)
+        private void btn_sendSpecialKey_Click(object sender, RoutedEventArgs e)
         {
-
+            var dialog = new SpecialKeyComboDialog();
+            dialog.Show();
         }
 
         private void btn_clean_Click(object sender, RoutedEventArgs e)
@@ -238,13 +225,31 @@ namespace Client
 
             //ottenere il nome processo selezionato, ottenere la lista di ServerElement con quel processo
             //attivo
+            string process = listBoxWButtons_activeProcesses.SelectedProcess;
+            if(process != null){
+                var kmsg = new KeyMessage(process, keys.Count, keys.ToArray());
+                string json = JsonConvert.SerializeObject(kmsg);
 
-            var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
-            string json = JsonConvert.SerializeObject(kmsg);
+                //controllo che string != null, altrimenti mando un msgBox di errore
+                //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+                if(json == null)
+                {
+                    MessageBox.Show("Error in serializing key combo into JSON", "Internal Error in btn_sendALTF4_Click", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                ObservableCollection<ServerElement> servers;
+                if (!AllProcesses.TryGetValue(process, out servers)) {
+                    MessageBox.Show("Error in retrieving list of servers", "Internal Error in btn_sendALTF4_Click", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                Debug.Assert(servers != null, "servers is NULL!");
+                foreach(ServerElement v in servers)
+                {
+                    v.SendKeyCombo(json);
+                }
+            }else MessageBox.Show("Occorre selezionare un processo per poter inviare la combinazione di tasti", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
 
-            //controllo che string != null, altrimenti mando un msgBox di errore
-            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
-
+            return;
         }
 
         private void btn_sendAltTab_Click(object sender, RoutedEventArgs e)
@@ -252,6 +257,37 @@ namespace Client
             List<int> keys = new List<int>();
             keys.Add((int)Key.LeftAlt);
             keys.Add((int)Key.Tab);
+
+            //ottenere il nome processo selezionato, ottenere la lista di ServerElement con quel processo
+            //attivo
+            string process = listBoxWButtons_activeProcesses.SelectedProcess;
+            if (process != null)
+            {
+                var kmsg = new KeyMessage(process, keys.Count, keys.ToArray());
+                string json = JsonConvert.SerializeObject(kmsg);
+
+                //controllo che string != null, altrimenti mando un msgBox di errore
+                //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+                if (json == null)
+                {
+                    MessageBox.Show("Error in serializing key combo into JSON", "Internal Error in btn_sendAltTab_Click", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                ObservableCollection<ServerElement> servers;
+                if (!AllProcesses.TryGetValue(process, out servers))
+                {
+                    MessageBox.Show("Error in retrieving list of servers", "Internal Error in btn_sendAltTab_Click", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                Debug.Assert(servers != null, "servers is NULL!");
+                foreach (ServerElement v in servers)
+                {
+                    v.SendKeyCombo(json);
+                }
+            }
+            else MessageBox.Show("Occorre selezionare un processo per poter inviare la combinazione di tasti", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            return;
         }
 
         private void btn_sendAltTabRight_Click(object sender, RoutedEventArgs e)
@@ -260,6 +296,37 @@ namespace Client
             keys.Add((int)Key.LeftAlt);
             keys.Add((int)Key.Tab);
             keys.Add((int)Key.Right);
+
+            //ottenere il nome processo selezionato, ottenere la lista di ServerElement con quel processo
+            //attivo
+            string process = listBoxWButtons_activeProcesses.SelectedProcess;
+            if (process != null)
+            {
+                var kmsg = new KeyMessage(process, keys.Count, keys.ToArray());
+                string json = JsonConvert.SerializeObject(kmsg);
+
+                //controllo che string != null, altrimenti mando un msgBox di errore
+                //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+                if (json == null)
+                {
+                    MessageBox.Show("Error in serializing key combo into JSON", "Internal Error in btn_sendAltTabRight", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                ObservableCollection<ServerElement> servers;
+                if (!AllProcesses.TryGetValue(process, out servers))
+                {
+                    MessageBox.Show("Error in retrieving list of servers", "Internal Error in btn_sendAltTabRight", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                Debug.Assert(servers != null, "servers is NULL!");
+                foreach (ServerElement v in servers)
+                {
+                    v.SendKeyCombo(json);
+                }
+            }
+            else MessageBox.Show("Occorre selezionare un processo per poter inviare la combinazione di tasti", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            return;
         }
 
         private void btn_sendAltTabLeft_Click(object sender, RoutedEventArgs e)
@@ -268,6 +335,37 @@ namespace Client
             keys.Add((int)Key.LeftAlt);
             keys.Add((int)Key.Tab);
             keys.Add((int)Key.Left);
+
+            //ottenere il nome processo selezionato, ottenere la lista di ServerElement con quel processo
+            //attivo
+            string process = listBoxWButtons_activeProcesses.SelectedProcess;
+            if (process != null)
+            {
+                var kmsg = new KeyMessage(process, keys.Count, keys.ToArray());
+                string json = JsonConvert.SerializeObject(kmsg);
+
+                //controllo che string != null, altrimenti mando un msgBox di errore
+                //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+                if (json == null)
+                {
+                    MessageBox.Show("Error in serializing key combo into JSON", "Internal Error in btn_sendAltTabLeft_Click", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                ObservableCollection<ServerElement> servers;
+                if (!AllProcesses.TryGetValue(process, out servers))
+                {
+                    MessageBox.Show("Error in retrieving list of servers", "Internal Error in btn_sendAltTabLeft_Click", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                Debug.Assert(servers != null, "servers is NULL!");
+                foreach (ServerElement v in servers)
+                {
+                    v.SendKeyCombo(json);
+                }
+            }
+            else MessageBox.Show("Occorre selezionare un processo per poter inviare la combinazione di tasti", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+            return;
         }
     }
 }

@@ -1,0 +1,50 @@
+﻿<Window x:Class="Client.SpecialKeyComboDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="Combinazione speciale" Height="140" Width="400" ResizeMode="NoResize">
+    <Window.Resources>
+        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Border" BorderThickness="1"
+                        Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FFF0DAEE"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#FFD5AAD2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FFF0DAEE"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#FFD5AAD2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" >
+        <StackPanel DockPanel.Dock="Top"  Orientation="Horizontal" Height="62" Margin="5" Background="White" HorizontalAlignment="Center">
+            <ToggleButton Content="CTRL" Width="60" Height="22" Background="{x:Null}" Margin="8,0,2,0"/>
+            <ToggleButton Content="ALT" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
+            <ToggleButton Content="SHIFT" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
+            <ToggleButton Content="WIN" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
+            <TextBox x:Name="txtB_GetKey" DockPanel.Dock="Bottom" Height="22" Width="110" Margin="2,0,8,0" PreviewKeyDown="txtB_GetKey_PreviewKeyDown">
+                <TextBox.ContextMenu>
+                    <ContextMenu x:Name="cntxtMenu_captureKeyCombo" Visibility="Hidden" IsEnabled="False"/>
+                </TextBox.ContextMenu>
+            </TextBox>
+        </StackPanel>
+            <Button x:Name="btn_Send" DockPanel.Dock="Bottom" Content="Invia" Width="60" Height="22" Margin="5,0" HorizontalAlignment="Right"/>
+        </DockPanel>
+</Window>

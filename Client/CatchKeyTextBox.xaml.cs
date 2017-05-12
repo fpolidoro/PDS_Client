@@ -81,6 +81,7 @@ namespace Client
                     e.Handled = true;
                 keyString = key.ToString();
                 if (_altKeyPressed) _altKeyPressed = false;
+                keyValue = (int)key;
             }
             else if (DigitKeys.Contains(key)) //ho premuto un numero
             {

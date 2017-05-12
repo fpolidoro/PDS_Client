@@ -115,7 +115,7 @@
                     <Border Grid.Column="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1,0,1,0" Margin="4,0,4,0" Padding="3,0,3,0">
                         <StackPanel>
                             <WrapPanel Height="94">
-                            <Button x:Name="btn_sendKey" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_sendKey_Click" Grid.Column="2" HorizontalAlignment="Center" Margin="0,6,0,0" VerticalAlignment="Center">
+                            <Button x:Name="btn_sendKey" Width="80" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" Height="84" BorderThickness="0" Click="btn_sendSpecialKey_Click" Grid.Column="2" HorizontalAlignment="Center" Margin="0,6,0,0" VerticalAlignment="Center">
                                 <StackPanel>
                                     <Image x:Name="img_sendKey" Height="46" Width="46" Source="imgs/sendSpecialCombo_48x48.png"/>
                                     <TextBlock x:Name="txtB_sendKey" Text="Combinazione speciale" TextWrapping="Wrap" TextAlignment="Center"/>
