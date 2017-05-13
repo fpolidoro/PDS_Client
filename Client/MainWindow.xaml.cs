@@ -208,8 +208,15 @@ namespace Client
 
         private void btn_sendSpecialKey_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new SpecialKeyComboDialog();
-            dialog.Show();
+            List<int> keyCodes;
+            var dialog = new SpecialKeyComboDialog(out keyCodes);
+            dialog.ShowDialog();
+            if (keyCodes.Count == 0) return;    //ho chiuso la finestra con [X]
+#if (DEBUG)
+            Debug.WriteLine("MAIN - keys:");
+            foreach (var v in keyCodes)
+                Debug.WriteLine(v);
+#endif
         }
 
         private void btn_clean_Click(object sender, RoutedEventArgs e)

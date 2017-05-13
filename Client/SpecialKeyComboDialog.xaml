@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Combinazione speciale" Height="140" Width="400" ResizeMode="NoResize">
+        Title="Combinazione speciale" Height="140" Width="400" ResizeMode="NoResize" Closing="Window_Closing">
     <Window.Resources>
         <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
             <Setter Property="SnapsToDevicePixels" Value="true"/>
@@ -35,16 +35,21 @@
 
     <DockPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" >
         <StackPanel DockPanel.Dock="Top"  Orientation="Horizontal" Height="62" Margin="5" Background="White" HorizontalAlignment="Center">
-            <ToggleButton Content="CTRL" Width="60" Height="22" Background="{x:Null}" Margin="8,0,2,0"/>
-            <ToggleButton Content="ALT" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
-            <ToggleButton Content="SHIFT" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
-            <ToggleButton Content="WIN" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
+            <ToggleButton x:Name="btn_ctrl" Content="CTRL" Width="60" Height="22" Background="{x:Null}" Margin="8,0,2,0"/>
+            <ToggleButton x:Name="btn_alt" Content="ALT" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
+            <ToggleButton x:Name="btn_shift" Content="SHIFT" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
+            <ToggleButton x:Name="btn_win" Content="WIN" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
             <TextBox x:Name="txtB_GetKey" DockPanel.Dock="Bottom" Height="22" Width="110" Margin="2,0,8,0" PreviewKeyDown="txtB_GetKey_PreviewKeyDown">
                 <TextBox.ContextMenu>
                     <ContextMenu x:Name="cntxtMenu_captureKeyCombo" Visibility="Hidden" IsEnabled="False"/>
                 </TextBox.ContextMenu>
             </TextBox>
         </StackPanel>
-            <Button x:Name="btn_Send" DockPanel.Dock="Bottom" Content="Invia" Width="60" Height="22" Margin="5,0" HorizontalAlignment="Right"/>
+        <DockPanel DockPanel.Dock="Bottom">
+            <Button x:Name="btn_Send" DockPanel.Dock="Right" Content="Invia" Width="60" Height="22" Margin="5,0" HorizontalAlignment="Right" Click="btn_Send_Click"/>
+            <Button x:Name="btn_reset" Padding="0" Height="22" Width="22" Margin="5,0" BorderThickness="0" HorizontalAlignment="Left" ToolTip="Reset combinazione" Click="btn_reset_Click">
+                <Image x:Name="img_clearCombo" Height="16" Width="16" Source="imgs/clear_16x16.png"/>
+            </Button>
         </DockPanel>
+    </DockPanel>
 </Window>

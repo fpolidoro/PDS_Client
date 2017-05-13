@@ -11,7 +11,7 @@ namespace Client
     {
         private string procName = null;
         private int nKeys = 0;
-        private int[] keys = { 0, 0, 0, 0 };
+        private int[] keys = { 0, 0, 0, 0, 0 };
 
         public KeyMessage(string procName, int nofKeys, int[] keys)
         {
