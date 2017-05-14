@@ -47,3 +47,5 @@ U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csproj.GenerateResource.Cach
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.exe
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.pdb
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
+U:\Documenti\Malnati\Client\Client\obj\Debug\PopupKeyComboToFocus.g.cs
+U:\Documenti\Malnati\Client\Client\obj\Debug\PopupKeyComboToFocus.baml

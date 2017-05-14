@@ -455,12 +455,14 @@ namespace Client
                 if (CurrentlyOnFocus == null)
                 {
                     _timer.Stop();
+                    mitem_sendKeyCombo.IsEnabled = false;
 #if(DEBUG)
                     Debug.WriteLine("_timer has been stopped.");
 #endif
                 }
                 else {
                     _timer.Start();
+                    mitem_sendKeyCombo.IsEnabled = true;
 #if(DEBUG)
                     Debug.WriteLine("_timer has been restarted.");
 #endif
@@ -468,9 +470,9 @@ namespace Client
             }
         }
 
-        public void SendKeyCombo(string json)
+        public async void SendKeyCombo(string json)
         {
-            Task.Run(() => _srv.Send(json));
+            await _srv.Send(json);
             //le eventuali eccezioni scatenate dalla send vengono notificate e gestite tramite SocketStatusChanged e Server.cs
         }
 
@@ -528,6 +530,15 @@ namespace Client
         private string Msg_RetrievingList()
         {
             return "Downloading the list of windows currently open";
+        }
+
+        private void mitem_sendKeyCombo_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentlyOnFocus != null)
+            {
+                CurrentlyOnFocus.cntxtMenu_SendKeyToThisWindow.PlacementTarget = CurrentlyOnFocus;
+                CurrentlyOnFocus.cntxtMenu_SendKeyToThisWindow.IsOpen = true;
+            }
         }
     }
 }

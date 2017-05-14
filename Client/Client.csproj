@@ -89,6 +89,9 @@
     </Compile>
     <Compile Include="AsyncObservableCollection.cs" />
     <Compile Include="ObservableConcurrentDictionary.cs" />
+    <Compile Include="PopupKeyComboToFocus.xaml.cs">
+      <DependentUpon>PopupKeyComboToFocus.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Server.cs" />
     <Compile Include="PortTextBox.xaml.cs">
       <DependentUpon>PortTextBox.xaml</DependentUpon>
@@ -138,6 +141,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PopupKeyComboToFocus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PortTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

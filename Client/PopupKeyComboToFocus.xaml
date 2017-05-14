@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="Client.PopupKeyComboToFocus"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Client"
+             mc:Ignorable="d" 
+             d:DesignHeight="80" d:DesignWidth="237">
+    <UserControl.Resources>
+        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Border" BorderThickness="1"
+                        Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FFF0DAEE"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#FFD5AAD2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FFF0DAEE"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#FFD5AAD2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Border x:Name="border_container" BorderThickness="1" BorderBrush="Gray" Height="80">
+    <DockPanel x:Name="dock_container" Background="White">
+        <StackPanel Margin="5" DockPanel.Dock="Top">
+            <WrapPanel >
+                <local:CatchKeyTextBox/>
+                <Button x:Name="btn_clean" Padding="0" Height="22" Width="22" BorderThickness="0" Background="{x:Null}" Click="btn_clean_Click" >
+                    <Image x:Name="img_clearCombo" Height="16" Width="16" Source="imgs/clear_16x16.png"/>
+                </Button>
+            </WrapPanel>
+            <StackPanel DockPanel.Dock="Bottom"  Orientation="Horizontal" Margin="0">
+                <Button x:Name="btn_sendALTF4" Background="{x:Null}" Height="22" Width="22" BorderThickness="0" HorizontalAlignment="Left" Margin="0" Click="btn_sendALTF4_Click" ToolTip="Chiudi processo" >
+                    <Image Height="16" Width="16" Source="imgs/close16x16.png"/>
+                </Button>
+                <Button x:Name="btn_sendAltTab" Background="{x:Null}" Height="22" Width="22" BorderThickness="0" HorizontalAlignment="Left" Margin="0" Click="btn_sendAltTab_Click" ToolTip="Invia ALT+Tab">
+                    <Image Height="16" Width="16" Source="imgs/altTab_16x16.png"/>
+                </Button>
+                <Button x:Name="btn_sendAltTabRight" Background="{x:Null}" Height="22" Width="22" BorderThickness="0" HorizontalAlignment="Left" Margin="0" Click="btn_sendAltTabRight_Click" ToolTip="Passa a finestra a destra, ALT+Tab+Right">
+                    <Image Height="16" Width="16" Source="imgs/tabRight_16x16.png"/>
+                </Button>
+                <Button x:Name="btn_sendAltTabLeft" Background="{x:Null}" Height="22" Width="22" BorderThickness="0" HorizontalAlignment="Left" Margin="0" Click="btn_sendAltTabLeft_Click" ToolTip="Passa a finestra a sinistra, ALT+Tab+Left">
+                    <Image Height="16" Width="16" Source="imgs/tabLeft_16x16.png"/>
+                </Button>
+                <Button x:Name="btn_sendPrintKey" Background="{x:Null}" Height="22" Width="22" BorderThickness="0" HorizontalAlignment="Left" Margin="0" Click="btn_sendPrint_Click" ToolTip="Invia tasto Stamp">
+                    <Image Height="16" Width="16" Source="imgs/tabLeft_16x16.png"/>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+        <Expander x:Name="exp_specialKey" Header="Combinazione speciale" Height="90" VerticalAlignment="Top" Collapsed="exp_specialKey_Collapsed" Expanded="exp_specialKey_Expanded">
+            <DockPanel Margin="5">
+                <StackPanel DockPanel.Dock="Left" Height="50">
+                    <StackPanel Orientation="Horizontal" Grid.Row="0">
+                        <ToggleButton x:Name="btn_ctrl" Content="CTRL" Width="35" Height="22" Background="{x:Null}" Margin="0,0,2,0" FontSize="10.667"/>
+                        <ToggleButton x:Name="btn_alt" Content="ALT" Width="35" Height="22" Background="{x:Null}" Margin="2,0" FontSize="10.667"/>
+                        <ToggleButton x:Name="btn_shift" Content="SHIFT" Width="35" Height="22" Background="{x:Null}" Margin="2,0" FontSize="10.667"/>
+                        <ToggleButton x:Name="btn_win" Content="WIN" Width="35" Height="22" Background="{x:Null}" Margin="2,0" FontSize="10.667"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <TextBox x:Name="txtB_GetKey" Height="22" Width="126" Margin="0,0,2,0" PreviewKeyDown="txtB_GetKey_PreviewKeyDown">
+                            <TextBox.ContextMenu>
+                                <ContextMenu x:Name="cntxtMenu_captureKeyCombo" Visibility="Hidden" IsEnabled="False"/>
+                            </TextBox.ContextMenu>
+                        </TextBox>
+                        <Button x:Name="btn_cleanSpecial" Padding="0" Height="22" Width="22" BorderThickness="0" Background="{x:Null}" Click="btn_cleanSpecial_Click" >
+                            <Image Height="16" Width="16" Source="imgs/clear_16x16.png"/>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+                <Button DockPanel.Dock="Right" BorderThickness="0" Width="48" Background="White" Height="48" Padding="0" HorizontalAlignment="Right">
+                    <WrapPanel>
+                        <Image Source="imgs/SendKey.png" Width="32"/>
+                        <TextBlock Text="Invia"/>
+                    </WrapPanel>
+                </Button>
+            </DockPanel>
+        </Expander>
+    </DockPanel>
+    </Border>
+</UserControl>

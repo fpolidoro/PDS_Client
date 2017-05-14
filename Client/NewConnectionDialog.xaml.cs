@@ -65,6 +65,8 @@ namespace Client
             _uriLoadCorrect = new Uri(@"pack://application:,,,/imgs/loadCorrect.gif");
             _uriLoadFailed = new Uri(@"pack://application:,,,/imgs/loadFailed.gif");
             _uriLoading = new Uri(@"pack://application:,,,/imgs/loadingBar.gif");
+            iptxt_IPaddress.Focus();
+            iptxt_IPaddress.SetFocus();
         }
 
         private void rdbtn_IPaddress_Checked(object sender, RoutedEventArgs e)
@@ -203,7 +205,8 @@ namespace Client
                 connectingTo.Append(":");
                 connectingTo.Append(_port);
                 //_parentWindow.Dispatcher.BeginInvoke(actionUpdateStatusBar, connectingTo.ToString());
-                ConnectionLabel = await Task.Run(() => _srv.Startup());
+                ConnectionLabel = await _srv.Startup(); //questo è un task I\O bound, quindi uso solo async (in Startup) e await qui
+            //se invece fosse CPU-bound allora dovrei fare Task.Run(() => _srv.Startup())
                 if (ConnectionLabel.Equals("Connected"))
                 {
                     connectingTo.Clear();

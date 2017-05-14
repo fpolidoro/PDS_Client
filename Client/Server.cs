@@ -325,11 +325,9 @@ namespace Client
             try
             {
                 NetworkStream nws = new NetworkStream(_socket);
-                string received;
                 byte[] bufferLength = new byte[4];
                 byte[] buffer;
                 byte[] concatBuffer;
-                int length;
                 int totalWritten;
                 int written;
                 
@@ -337,7 +335,6 @@ namespace Client
                 while (!CloseEvent.WaitOne(0))
                 {//ciclo fino a quando ricevo uno stop dall'esterno oppure ottengo un errore dal socket
                     totalWritten = 0;
-                    length = 0;
                     //Debug.WriteLine("Dentro al while di receive.");
                     try
                     {
@@ -394,7 +391,7 @@ namespace Client
                             continue;
                         }
                     }
-                    catch(Exception e)
+                    catch(Exception)
                     {
                         _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "GenericException");
                         CloseEvent.Set();

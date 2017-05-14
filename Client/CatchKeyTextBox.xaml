@@ -29,12 +29,11 @@
         <TextBlock Text="Inserire combinazione di tasti"
                         Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" Visibility="{Binding ElementName=txtB_captureKeyCombo, Path=Text.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0" />
         <!-- enter term here -->
-        <TextBox x:Name="txtB_captureKeyCombo" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" PreviewKeyDown="txtB_captureKeyCombo_PreviewKeyDown" SelectionBrush="{x:Null}" ContextMenuOpening="txtB_captureKeyCombo_ContextMenuOpening" MaxLines="1" MaxLength="256" BorderBrush="{x:Null}" HorizontalAlignment="Left" Width="200">
-            <TextBox.ContextMenu>
-                <ContextMenu x:Name="cntxtMenu_captureKeyCombo" Visibility="Hidden" IsEnabled="False"/>
-            </TextBox.ContextMenu>
-        </TextBox>
-            <Image x:Name="img_okTick" DockPanel.Dock="Right" HorizontalAlignment="Right" Source="imgs/OkTick_16x16.png" Width="16" Height="16" Margin="3,0"/>
+            <TextBox x:Name="txtB_captureKeyCombo" TextWrapping="Wrap" BorderThickness="0" Background="Transparent" PreviewKeyDown="txtB_captureKeyCombo_PreviewKeyDown" SelectionBrush="{x:Null}" ContextMenuOpening="txtB_captureKeyCombo_ContextMenuOpening" MaxLines="1" MaxLength="256" BorderBrush="{x:Null}" HorizontalAlignment="Left" Width="200">
+                <TextBox.ContextMenu>
+                    <ContextMenu x:Name="cntxtMenu_captureKeyCombo" Visibility="Hidden" IsEnabled="False"/>
+                </TextBox.ContextMenu>
+            </TextBox>
         </Grid>
     </Border>
 </UserControl>

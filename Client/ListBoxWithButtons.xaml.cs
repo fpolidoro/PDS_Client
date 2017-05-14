@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 
 namespace Client
@@ -38,14 +39,14 @@ namespace Client
 
         private void ProcessesToShowCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            #if DEBUG
+#if DEBUG
             Debug.WriteLine("CollectionChanged in listbox");
             Debug.WriteLine("listbox.Count = " + listView_focusedProcesses.Items.Count);
-            #endif
+#endif
 
-            if(e.NewItems != null)
+            if (e.NewItems != null)
             {
-                if(listView_focusedProcesses.Items.Count >= _NoOfItemsInView)
+                if (listView_focusedProcesses.Items.Count >= _NoOfItemsInView)
                 {
                     btn_down.IsEnabled = true;
                     btn_up.IsEnabled = true;
@@ -54,7 +55,7 @@ namespace Client
                     listBox_showAllProcesses.Items.Add(v);*/
             }
 
-            if(e.OldItems != null)
+            if (e.OldItems != null)
             {
                 if (listView_focusedProcesses.Items.Count <= _NoOfItemsInView)
                 {
@@ -75,7 +76,7 @@ namespace Client
                 // Logical Scrolling by Item
                 scrollViewer.LineUp();
             }
-    }
+        }
 
         private void btn_down_Click(object sender, RoutedEventArgs e)
         {
@@ -87,7 +88,7 @@ namespace Client
                 scrollViewer.LineDown();
             }
         }
-    
+
         /*  Per abilitare/disabilitare i bottoni di scroll
         */
         private void ListView_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -107,7 +108,7 @@ namespace Client
             // Return the DependencyObject if it is a ScrollViewer
             if (o is ScrollViewer)
             { return o; }
-        
+
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
             {
                 var child = VisualTreeHelper.GetChild(o, i);
@@ -119,10 +120,10 @@ namespace Client
             return null;
         }
 
-       /* private void ClosePopupPopup_Click(object sender, RoutedEventArgs e)
-        {
-            popup.IsOpen = false;
-        }*/
+        /* private void ClosePopupPopup_Click(object sender, RoutedEventArgs e)
+         {
+             popup.IsOpen = false;
+         }*/
         private void buttonShowPopup_Click(object sender, RoutedEventArgs e)
         {
             popup.IsOpen = true;

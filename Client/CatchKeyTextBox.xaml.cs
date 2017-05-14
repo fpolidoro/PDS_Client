@@ -28,8 +28,9 @@ namespace Client
         private static readonly List<Key> ModKeys = new List<Key> { Key.LeftCtrl, Key.RightCtrl, Key.RightAlt, Key.LeftAlt, Key.RightShift, Key.LeftShift, Key.RWin, Key.LWin, Key.System };
         private static readonly List<Key> WinKeys = new List<Key> { Key.LWin, Key.RWin };
         private List<string> _keys;
-        List<int> _keyCodes;
+        private List<int> _keyCodes;
         private bool _altKeyPressed;
+        private MainWindow _parent;
 
         public CatchKeyTextBox()
         {
@@ -39,15 +40,17 @@ namespace Client
             _altKeyPressed = false;
         }
 
+        public void SetParent(MainWindow p)
+        {
+            _parent = p;
+        }
+
         private void txtB_captureKeyCombo_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             string keyString = null;
             int keyValue = -1;
             Debug.Assert(_keys != null);
             Key key = (e.Key == Key.System ? e.SystemKey : e.Key);
-
-            if (img_okTick.Visibility == Visibility.Visible)
-                hideOkTick();
 
             //CASO #1
             //questo trova tutte le combinazioni eccetto alt+modificatore+qualcosa, alt+qualcosa
@@ -118,6 +121,9 @@ namespace Client
                 foreach (var k in _keyCodes)
                     Debug.Write(k + " ");
                 Debug.WriteLine("");
+
+                _parent.Send(_keyCodes);
+                
                 _keys.Clear();
                 _keyCodes.Clear();
                 e.Handled = true;
@@ -145,18 +151,6 @@ namespace Client
         private void border_GotFocus(object sender, RoutedEventArgs e)
         {
             border_UserControl.BorderBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF3399FF"));
-        }
-
-        public void showOkTick()
-        {
-            txtB_captureKeyCombo.Width = 172;
-            img_okTick.Visibility = Visibility.Visible;
-        }
-
-        public void hideOkTick()
-        {
-            txtB_captureKeyCombo.Width = 200;
-            img_okTick.Visibility = Visibility.Collapsed;
         }
     }
 

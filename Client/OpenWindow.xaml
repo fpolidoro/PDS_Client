@@ -7,15 +7,16 @@
              mc:Ignorable="d"
              d:MinWidth="180"
              >
-    <Grid Height="26" Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}">
+    <!-- Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"-->
+    <Grid x:Name="grid" Height="26">
         <Grid.ContextMenu>
             <ContextMenu x:Name="cntxtMenu_SendKeyToThisWindow" IsEnabled="False" Visibility="Hidden">
-                <MenuItem Header="Invia combinazione di tasti">
-                    <MenuItem.Icon>
-                        <Image Source="imgs/SendKeyCombo16x16.png" Stretch="None"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </ContextMenu>
+                <ContextMenu.Template>
+                    <ControlTemplate>
+                        <local:PopupKeyComboToFocus />
+                    </ControlTemplate>
+                </ContextMenu.Template>
+                </ContextMenu>
         </Grid.ContextMenu>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>
