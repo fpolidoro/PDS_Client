@@ -55,7 +55,7 @@
                     <Image Height="16" Width="16" Source="imgs/tabLeft_16x16.png"/>
                 </Button>
                 <Button x:Name="btn_sendPrintKey" Background="{x:Null}" Height="22" Width="22" BorderThickness="0" HorizontalAlignment="Left" Margin="0" Click="btn_sendPrint_Click" ToolTip="Invia tasto Stamp">
-                    <Image Height="16" Width="16" Source="imgs/tabLeft_16x16.png"/>
+                    <Image Height="16" Width="16" Source="imgs/print_16x16.png"/>
                 </Button>
             </StackPanel>
         </StackPanel>

@@ -129,7 +129,6 @@ namespace Client
             string json = JsonConvert.SerializeObject(kmsg);
 
             //controllo che string != null, altrimenti mando un msgBox di errore
-            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
             if (json == null)
             {
                 MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -149,7 +148,6 @@ namespace Client
             string json = JsonConvert.SerializeObject(kmsg);
 
             //controllo che string != null, altrimenti mando un msgBox di errore
-            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
             if (json == null)
             {
                 MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -170,7 +168,6 @@ namespace Client
             string json = JsonConvert.SerializeObject(kmsg);
 
             //controllo che string != null, altrimenti mando un msgBox di errore
-            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
             if (json == null)
             {
                 MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -191,7 +188,6 @@ namespace Client
             string json = JsonConvert.SerializeObject(kmsg);
 
             //controllo che string != null, altrimenti mando un msgBox di errore
-            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
             if (json == null)
             {
                 MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -204,15 +200,12 @@ namespace Client
         private void btn_sendPrint_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
-            keys.Add((int)Key.Left);
+            keys.Add((int)Key.PrintScreen);
 
             var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
             string json = JsonConvert.SerializeObject(kmsg);
 
             //controllo che string != null, altrimenti mando un msgBox di errore
-            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
             if (json == null)
             {
                 MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
