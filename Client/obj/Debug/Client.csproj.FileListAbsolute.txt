@@ -14,11 +14,13 @@ U:\Documenti\Malnati\Client\Client\bin\Debug\Newtonsoft.Json.dll
 U:\Documenti\Malnati\Client\Client\bin\Debug\WpfAnimatedGif.dll
 U:\Documenti\Malnati\Client\Client\bin\Debug\Newtonsoft.Json.xml
 U:\Documenti\Malnati\Client\Client\bin\Debug\WpfAnimatedGif.xml
+U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
 U:\Documenti\Malnati\Client\Client\obj\Debug\IPTextBox.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\ElementToShow.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\IPTextBox.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\ListBoxWithButtons.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\MainWindow.g.cs
+U:\Documenti\Malnati\Client\Client\obj\Debug\PopupKeyComboToFocus.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\PortTextBox.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\NewConnectionDialog.g.cs
 U:\Documenti\Malnati\Client\Client\obj\Debug\AddressBox.g.cs
@@ -34,6 +36,7 @@ U:\Documenti\Malnati\Client\Client\obj\Debug\App.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\ElementToShow.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\ListBoxWithButtons.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\MainWindow.baml
+U:\Documenti\Malnati\Client\Client\obj\Debug\PopupKeyComboToFocus.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\PortTextBox.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\NewConnectionDialog.baml
 U:\Documenti\Malnati\Client\Client\obj\Debug\AddressBox.baml
@@ -46,6 +49,3 @@ U:\Documenti\Malnati\Client\Client\obj\Debug\Client.Properties.Resources.resourc
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csproj.GenerateResource.Cache
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.exe
 U:\Documenti\Malnati\Client\Client\obj\Debug\Client.pdb
-U:\Documenti\Malnati\Client\Client\obj\Debug\Client.csprojResolveAssemblyReference.cache
-U:\Documenti\Malnati\Client\Client\obj\Debug\PopupKeyComboToFocus.g.cs
-U:\Documenti\Malnati\Client\Client\obj\Debug\PopupKeyComboToFocus.baml

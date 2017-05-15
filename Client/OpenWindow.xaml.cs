@@ -63,15 +63,20 @@ namespace Client
         private UpdateType _status;
         private TimeSpan _hasFocusTime;
         private Stopwatch _focusStopWatch;
+        private ServerElement _grandParent;
+        private PopupKeyComboToFocus _pop;
+
         public BitmapImage Icona { get; private set; }
+
 
         public OpenWindow()
         {
-            InitializeComponent();          
+            InitializeComponent();
         }
 
-        public void Initialize()
+        public void Initialize(ServerElement parent)
         {
+            _grandParent = parent;
             _hasFocusTime = TimeSpan.Zero;  //azzero il timespan di permanenza in focus
             if (!IconaBase64.Equals(""))    //i json successivi al NewWindow non avranno l'icona, quindi arriverà una stringa vuota
             {
@@ -83,7 +88,9 @@ namespace Client
             PropertyChanged += new PropertyChangedEventHandler(HighlightWindowOnFocus);
             txtb_ProcessTimeFocused.Text = "0.0%";
             _focusStopWatch = new Stopwatch();
+            cntxt_keyToFocus.SetGrandParent(_grandParent);
         }
+
         public bool HasFocus()
         {
             if (Status == UpdateType.OnFocus)
@@ -105,15 +112,19 @@ namespace Client
                 if (Status == UpdateType.OnFocus)
                 {   //lo evidenzio cambiando colore di sfondo
                     this.Background = Brushes.Wheat;
-                    cntxtMenu_SendKeyToThisWindow.IsEnabled = true;
-                    cntxtMenu_SendKeyToThisWindow.Visibility = Visibility.Visible;
+                    popup.IsEnabled = true;
+                    popup.Visibility = Visibility.Visible;
+                    //così ascolta gli eventi del mouse (clic destro)
+                    grid.PreviewMouseRightButtonDown += grid_PreviewMouseRightButtonDown;
                     _focusStopWatch.Start();
                 }
                 else
                 {   //qualcun altro è in focus, tolgo il colore di sfondo
                     this.ClearValue(BackgroundProperty);
-                    cntxtMenu_SendKeyToThisWindow.IsEnabled = false;
-                    cntxtMenu_SendKeyToThisWindow.Visibility = Visibility.Hidden;
+                    popup.IsEnabled = false;
+                    popup.Visibility = Visibility.Hidden;
+                    //rimuovo l'ascolto degli eventi del mouse (clic destro)
+                    grid.PreviewMouseRightButtonDown -= grid_PreviewMouseRightButtonDown;
                     _focusStopWatch.Stop();
                 }
             }
@@ -140,6 +151,10 @@ namespace Client
         //converte l'icona in scala di grigi
         public void ConvertToGrayscale()
         {
+            if (HasFocus()) //se this era in focus quando la connessione è caduta, disabilito la possibilità di aprire il menu per inviare la combo tasti
+            {
+                grid.PreviewMouseRightButtonDown -= grid_PreviewMouseRightButtonDown;
+            }
             //ottengo l'icona dal base64 (perchè ha le trasparenze)
             byte[] imageBytes = Convert.FromBase64String(_base64string);
             System.Drawing.Image image;
@@ -211,6 +226,38 @@ namespace Client
                 //Debug.WriteLine(ProcName + ": focusTimeOfAll is ZERO");
                 txtb_ProcessTimeFocused.Text = "0.0%";
             }
+        }
+
+        private void grid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+#if(DEBUG)
+            Debug.WriteLine("GRID onPreviewKeyDown");
+#endif
+            popup.IsOpen = true;
+            popup.StaysOpen = true;
+            e.Handled = true;
+        }
+
+        private void cntxt_keyToFocus_MouseLeave(object sender, MouseEventArgs e)
+        {
+#if(DEBUG)
+            Debug.WriteLine("CNTXT MouseLeave");
+#endif
+            popup.IsOpen = false;
+        }
+
+        private void cntxt_keyToFocus_MouseEnter(object sender, MouseEventArgs e)
+        {
+#if(DEBUG)
+            Debug.WriteLine("CNTXT MouseEnter");
+#endif
+            popup.StaysOpen = false;
+        }
+
+        public void showPopup()
+        {
+            popup.IsOpen = true;
+            popup.StaysOpen = true;
         }
     }
 }

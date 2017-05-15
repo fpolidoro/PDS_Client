@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace Client
         private List<int> _keyCodes;
         private bool _altKeyPressed;
         private MainWindow _parent;
+        private ServerElement _grandParent;
 
         public CatchKeyTextBox()
         {
@@ -43,6 +45,13 @@ namespace Client
         public void SetParent(MainWindow p)
         {
             _parent = p;
+            _grandParent = null;
+        }
+
+        public void SetGrandParent(ServerElement s)
+        {
+            _grandParent = s;
+            _parent = null;
         }
 
         private void txtB_captureKeyCombo_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -122,7 +131,22 @@ namespace Client
                     Debug.Write(k + " ");
                 Debug.WriteLine("");
 
-                _parent.Send(_keyCodes);
+                //bruttissimo
+                if (_parent != null) _parent.Send(_keyCodes);
+                else {
+                    Debug.Assert(_grandParent != null, "_grandParent is NULL!");
+                    var kmsg = new KeyMessage(null, _keyCodes.Count, _keyCodes.ToArray());
+                    string json = JsonConvert.SerializeObject(kmsg);
+
+                    //controllo che string != null, altrimenti mando un msgBox di errore
+                    //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+                    if (json == null)
+                    {
+                        MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    _grandParent.SendKeyCombo(json);
+                 }
                 
                 _keys.Clear();
                 _keyCodes.Clear();

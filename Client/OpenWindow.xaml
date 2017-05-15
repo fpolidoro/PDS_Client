@@ -9,15 +9,15 @@
              >
     <!-- Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBox}}}"-->
     <Grid x:Name="grid" Height="26">
-        <Grid.ContextMenu>
+        <!--<Grid.ContextMenu>
             <ContextMenu x:Name="cntxtMenu_SendKeyToThisWindow" IsEnabled="False" Visibility="Hidden">
                 <ContextMenu.Template>
                     <ControlTemplate>
-                        <local:PopupKeyComboToFocus />
+                        <local:PopupKeyComboToFocus x:Name="cntxt_keyToFocus" />
                     </ControlTemplate>
                 </ContextMenu.Template>
                 </ContextMenu>
-        </Grid.ContextMenu>
+        </Grid.ContextMenu>-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="*" />
@@ -27,5 +27,10 @@
         <Image x:Name="img_OpenWindowIcon" Width="26" Height="26" Grid.Column="0" HorizontalAlignment="Left" Margin="2,0" />
         <TextBlock x:Name="txtb_ProcessName" Grid.Column="1" TextTrimming="WordEllipsis" VerticalAlignment="Center" Margin="2,0"/>
         <TextBlock x:Name="txtb_ProcessTimeFocused" Text="" Grid.Column="2" Margin="2,0" VerticalAlignment="Center" HorizontalAlignment="Right" />
+        <Popup x:Name="popup" HorizontalOffset="0" VerticalOffset="0" PlacementTarget="{Binding ElementName=txtb_ProcessName}"
+                    AllowsTransparency="True" Focusable="True" StaysOpen="False" Margin="0" Placement="Bottom" IsEnabled="False" Visibility="Hidden"
+                    >
+            <local:PopupKeyComboToFocus x:Name="cntxt_keyToFocus" MouseLeave="cntxt_keyToFocus_MouseLeave" MouseEnter="cntxt_keyToFocus_MouseEnter" />
+        </Popup>
     </Grid>
 </UserControl>

@@ -154,16 +154,17 @@ namespace Client
                                 //la rimuovo dalla lista generale dei processi attivi
                                 RemoveFromAllProcessesList(winToUpdate.ProcName);
                             }
-                            if (winToUpdate.Status == OpenWindow.UpdateType.HasLostFocus) {  //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
-                                CurrentlyOnFocus = null;
-                                _hasLostFocus = winToUpdate;
-                                
-                            }
+
+                        }else if (winID == 0)   //la finestra precedente ha perso il focus
+                        {
+                            //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
+                            _hasLostFocus = CurrentlyOnFocus;
+                            CurrentlyOnFocus = null;     
                         }
                         else {  //la finestra non esisteva ancora, quindi creo l'oggetto
                             if (win.Status == OpenWindow.UpdateType.NewWindow)
                             {
-                                win.Initialize();
+                                win.Initialize(this);
                                 _openWindows.Add(win.WindowID, win);
                                 listBox_OpenWindows.Items.Add(win);
                                 //Debug.WriteLine("aggiunto l'item win");
@@ -236,6 +237,7 @@ namespace Client
                     foreach (var v in _openWindows.Values)
                         RemoveFromAllProcessesList(v.ProcName);
                 }
+                CurrentlyOnFocus = null;
             }
             else if (value.Equals("SocketGentlyDisposed"))
             {
@@ -260,6 +262,7 @@ namespace Client
                     foreach (var v in _openWindows.Values)
                         RemoveFromAllProcessesList(v.ProcName);
                 }
+                CurrentlyOnFocus = null;
             }
             else if (value.Equals("Connected"))
             {
@@ -299,6 +302,7 @@ namespace Client
                     foreach (var v in _openWindows.Values)
                         RemoveFromAllProcessesList(v.ProcName);
                 }
+                CurrentlyOnFocus = null;
             }
             else if (value.Equals("SocketClosedByUs") || value.Equals("GenericException")) {
                 //abbiamo ricevuto un json con dimensione brutta, chiuso il socket
@@ -322,6 +326,7 @@ namespace Client
                             stackp_WindowsList.ToolTip = "Socket was closed due to a generic exception. See debug for more details.";
                     }
                 }
+                CurrentlyOnFocus = null;
             }
         }
 
@@ -527,18 +532,19 @@ namespace Client
             _parent.ServerList.Remove(this);
         }
 
+        private void mitem_sendKeyCombo_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentlyOnFocus != null)
+            {
+                CurrentlyOnFocus.showPopup();
+            }
+        }
+
         private string Msg_RetrievingList()
         {
             return "Downloading the list of windows currently open";
         }
 
-        private void mitem_sendKeyCombo_Click(object sender, RoutedEventArgs e)
-        {
-            if (CurrentlyOnFocus != null)
-            {
-                CurrentlyOnFocus.cntxtMenu_SendKeyToThisWindow.PlacementTarget = CurrentlyOnFocus;
-                CurrentlyOnFocus.cntxtMenu_SendKeyToThisWindow.IsOpen = true;
-            }
-        }
+
     }
 }

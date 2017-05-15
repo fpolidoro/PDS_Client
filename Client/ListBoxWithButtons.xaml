@@ -70,7 +70,7 @@
                 <Popup x:Name="popup" HorizontalOffset="-204" VerticalOffset="-66" PlacementTarget="{Binding ElementName=btn_showPopup}"
                     AllowsTransparency="True" Focusable="True" StaysOpen="False" Margin="0" Placement="Bottom" LostFocus="popup_LostFocus"
                     >
-                    <ListBox x:Name="listBox_showAllProcesses" Width="228" Margin="0" MaxHeight="144" MinHeight="66" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Top">
+                    <ListBox x:Name="listBox_showAllProcesses" Width="228" Margin="0" MaxHeight="144" MinHeight="66" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalAlignment="Top" SelectionChanged="listBox_showAllProcesses_SelectionChanged" >
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="{x:Type ListBoxItem}">
                                 <Setter Property="Template">

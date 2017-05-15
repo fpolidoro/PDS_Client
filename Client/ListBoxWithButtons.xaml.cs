@@ -156,6 +156,7 @@ namespace Client
         //Quando seleziono un elemento dal popup, devo renderlo selezionato anche nella lista
         private void popup_LostFocus(object sender, RoutedEventArgs e)
         {
+            Debug.WriteLine("popup LostFocus");
             listView_focusedProcesses.SelectedItems.Clear();
             foreach (ElementToShow v in listBox_showAllProcesses.SelectedItems)
             {
@@ -168,6 +169,24 @@ namespace Client
                 Debug.WriteLine(i.ProcName);
             Debug.WriteLine("-------------------");
 #endif
+        }
+
+        private void listBox_showAllProcesses_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            listView_focusedProcesses.SelectedItems.Clear();
+            foreach (ElementToShow v in listBox_showAllProcesses.SelectedItems)
+            {
+                int index = listBox_showAllProcesses.SelectedIndex;
+                listView_focusedProcesses.SelectedIndex = index;
+            }
+#if (DEBUG)
+            Debug.WriteLine("ListBox SelectionChanged - listView selectedItems: ");
+            foreach (ElementToShow i in listView_focusedProcesses.SelectedItems)
+                Debug.WriteLine(i.ProcName);
+            Debug.WriteLine("-------------------");
+#endif
+            popup.StaysOpen = false;
+            popup.IsOpen = false;
         }
     }
 }

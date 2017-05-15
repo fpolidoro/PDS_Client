@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,69 +26,24 @@ namespace Client
 
         private List<string> _keys;
         private List<int> _keyCodes;
+        private ServerElement _srvElement;
+
         public PopupKeyComboToFocus()
         {
             InitializeComponent();
             _keys = new List<string>();
             _keyCodes = new List<int>();
-    }
+        }
+
+        public void SetGrandParent(ServerElement grandParent)
+        {
+            _srvElement = grandParent;
+            cktxt_getKeyCombo.SetGrandParent(_srvElement);
+        }
 
         private void btn_clean_Click(object sender, RoutedEventArgs e)
         {
-            //cktxt_getKeyCombo.CleanValue();
-        }
-
-        private void btn_cleanSpecial_Click(object sender, RoutedEventArgs e)
-        {
-            //cktxt_getKeyCombo.CleanValue();
-        }
-
-        private void btn_sendALTF4_Click(object sender, RoutedEventArgs e)
-        {
-            List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.F4);
-
-            //Send(keys);
-        }
-
-        private void btn_sendAltTab_Click(object sender, RoutedEventArgs e)
-        {
-            List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
-
-            //Send(keys);
-        }
-
-        private void btn_sendAltTabRight_Click(object sender, RoutedEventArgs e)
-        {
-            List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
-            keys.Add((int)Key.Right);
-
-            //Send(keys);
-        }
-
-        private void btn_sendAltTabLeft_Click(object sender, RoutedEventArgs e)
-        {
-            List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
-            keys.Add((int)Key.Left);
-
-            //Send(keys);
-        }
-
-        private void btn_sendPrint_Click(object sender, RoutedEventArgs e)
-        {
-            List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
-            keys.Add((int)Key.Left);
-
-            //Send(keys);
+            cktxt_getKeyCombo.CleanValue();
         }
 
         private void txtB_GetKey_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -129,6 +85,141 @@ namespace Client
 #endif
                 e.Handled = true;
             }
+        }
+
+        private void btn_cleanSpecial_Click(object sender, RoutedEventArgs e)
+        {
+            if (btn_ctrl.IsChecked == true) btn_ctrl.IsChecked = false;
+            if (btn_alt.IsChecked == true) btn_alt.IsChecked = false;
+            if (btn_shift.IsChecked == true) btn_shift.IsChecked = false;
+            if (btn_win.IsChecked == true) btn_win.IsChecked = false;
+            if (!txtB_GetKey.Text.Equals(string.Empty)) txtB_GetKey.Text = string.Empty;
+
+            if (_keys.Count > 0 || _keyCodes.Count > 0)
+            {
+                _keys.Clear();
+                _keyCodes.Clear();
+            }
+        }
+
+        private void btn_Send_Click(object sender, RoutedEventArgs e)
+        {
+            if (btn_ctrl.IsChecked == true) _keyCodes.Insert(0, (int)Key.LeftCtrl);
+            if (btn_alt.IsChecked == true) _keyCodes.Insert(0, (int)Key.LeftAlt);
+            if (btn_shift.IsChecked == true) _keyCodes.Insert(0, (int)Key.LeftShift);
+            if (btn_win.IsChecked == true) _keyCodes.Insert(0, (int)Key.LWin);
+
+#if(DEBUG)
+            Debug.WriteLine("_keys:");
+            foreach (var v in _keyCodes)
+                Debug.WriteLine(v);
+#endif
+            Debug.Assert(_keyCodes.Count <= 5, "La lista contiene più di 5 tasti.");
+            //_srvElement.SendKeyCombo
+            btn_cleanSpecial_Click(null, null);
+        }
+
+        private void btn_sendALTF4_Click(object sender, RoutedEventArgs e)
+        {
+            List<int> keys = new List<int>();
+            keys.Add((int)Key.LeftAlt);
+            keys.Add((int)Key.F4);
+
+            var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
+            string json = JsonConvert.SerializeObject(kmsg);
+
+            //controllo che string != null, altrimenti mando un msgBox di errore
+            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+            if (json == null)
+            {
+                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            _srvElement.SendKeyCombo(json);
+        }
+
+        private void btn_sendAltTab_Click(object sender, RoutedEventArgs e)
+        {
+            List<int> keys = new List<int>();
+            keys.Add((int)Key.LeftAlt);
+            keys.Add((int)Key.Tab);
+
+            var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
+            string json = JsonConvert.SerializeObject(kmsg);
+
+            //controllo che string != null, altrimenti mando un msgBox di errore
+            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+            if (json == null)
+            {
+                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            _srvElement.SendKeyCombo(json);
+        }
+
+        private void btn_sendAltTabRight_Click(object sender, RoutedEventArgs e)
+        {
+            List<int> keys = new List<int>();
+            keys.Add((int)Key.LeftAlt);
+            keys.Add((int)Key.Tab);
+            keys.Add((int)Key.Right);
+
+            var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
+            string json = JsonConvert.SerializeObject(kmsg);
+
+            //controllo che string != null, altrimenti mando un msgBox di errore
+            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+            if (json == null)
+            {
+                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            _srvElement.SendKeyCombo(json);
+        }
+
+        private void btn_sendAltTabLeft_Click(object sender, RoutedEventArgs e)
+        {
+            List<int> keys = new List<int>();
+            keys.Add((int)Key.LeftAlt);
+            keys.Add((int)Key.Tab);
+            keys.Add((int)Key.Left);
+
+            var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
+            string json = JsonConvert.SerializeObject(kmsg);
+
+            //controllo che string != null, altrimenti mando un msgBox di errore
+            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+            if (json == null)
+            {
+                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            _srvElement.SendKeyCombo(json);
+        }
+
+        private void btn_sendPrint_Click(object sender, RoutedEventArgs e)
+        {
+            List<int> keys = new List<int>();
+            keys.Add((int)Key.LeftAlt);
+            keys.Add((int)Key.Tab);
+            keys.Add((int)Key.Left);
+
+            var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
+            string json = JsonConvert.SerializeObject(kmsg);
+
+            //controllo che string != null, altrimenti mando un msgBox di errore
+            //se string != null, per ciascun ServerElement chiamo la sendJson passandole questo Json
+            if (json == null)
+            {
+                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            _srvElement.SendKeyCombo(json);
         }
 
         private void exp_specialKey_Collapsed(object sender, RoutedEventArgs e)
