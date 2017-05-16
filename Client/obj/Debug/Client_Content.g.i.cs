@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/print_16x16.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/errorinimg.png")]
 
 

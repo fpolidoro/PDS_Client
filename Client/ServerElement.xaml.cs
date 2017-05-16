@@ -44,13 +44,17 @@ namespace Client
 
         public ObservableCollection<string> pendingJSONs;
 
-        public OpenWindow CurrentlyOnFocus{
+        public OpenWindow CurrentlyOnFocus
+        {
             get { return _currentlyOnFocus; }
-            private set { _currentlyOnFocus = value;
+            private set
+            {
+                _currentlyOnFocus = value;
                 OnPropertyChanged("CurrentlyOnFocus");
             }
         }
-        public List<OpenWindow> OpenWindowsValues {
+        public List<OpenWindow> OpenWindowsValues
+        {
             get { return new List<OpenWindow>(_openWindows.Values); }
         }
 
@@ -130,13 +134,15 @@ namespace Client
                         if (_openWindows.ContainsKey(winID))   //la finestra era già stata aperta in precedenza, ora cambia solo stato
                         {
                             OpenWindow winToUpdate;
-                            if(_openWindows.TryGetValue(winID, out winToUpdate))
+                            if (_openWindows.TryGetValue(winID, out winToUpdate))
                             {   //estraggo la OpenWindow e le assegno il nuovo stato
                                 winToUpdate.Status = win.Status;
                             }
-                            if (winToUpdate.HasFocus()) {
+                            if (winToUpdate.HasFocus())
+                            {
                                 Debug.WriteLine(" has focus now", winToUpdate.WinName);
-                                if (CurrentlyOnFocus != null) {
+                                if (CurrentlyOnFocus != null)
+                                {
                                     Debug.WriteLine(" has lost focus", CurrentlyOnFocus.WinName);
                                     CurrentlyOnFocus.Status = OpenWindow.UpdateType.HasLostFocus;
                                     _hasLostFocus = _currentlyOnFocus;
@@ -148,18 +154,21 @@ namespace Client
                             {
                                 listBox_OpenWindows.Items.Remove(winToUpdate);
                                 _openWindows.Remove(winToUpdate.WindowID);
-                                if (CurrentlyOnFocus.WindowID == winToUpdate.WindowID) {  //la finestra che sto chiudendo era currently on focus
+                                if (CurrentlyOnFocus.WindowID == winToUpdate.WindowID)
+                                {  //la finestra che sto chiudendo era currently on focus
                                     CurrentlyOnFocus = null;
                                 }
                                 //la rimuovo dalla lista generale dei processi attivi
                                 RemoveFromAllProcessesList(winToUpdate.ProcName);
                             }
 
-                        }else if (winID == 0)   //la finestra precedente ha perso il focus
+                        }
+                        else if (winID == 0)   //la finestra precedente ha perso il focus
                         {
                             //La finestra è stata minimizzata, ad esempio, o l'utente è sul desktop
+                            CurrentlyOnFocus.Status = OpenWindow.UpdateType.HasLostFocus;
                             _hasLostFocus = CurrentlyOnFocus;
-                            CurrentlyOnFocus = null;     
+                            CurrentlyOnFocus = null;
                         }
                         else {  //la finestra non esisteva ancora, quindi creo l'oggetto
                             if (win.Status == OpenWindow.UpdateType.NewWindow)
@@ -187,18 +196,18 @@ namespace Client
                     }
                     catch (JsonException jsone)
                     {
-                        Debug.WriteLine("{0}: l'elemento non sarà visualizzato", jsone.Message);
+                        Debug.WriteLine(jsone.Message + ": l'elemento non sarà visualizzato");
                     }
                     catch (Exception ex)
                     {
                         //errore nella deserializzazione del json, quindi rimuovo l'elemento dalla lista
-                        Debug.WriteLine("{0}: l'elemento non sarà visualizzato", ex.Message);
+                        Debug.WriteLine(ex.Message + ": l'elemento non sarà visualizzato");
                     }
                     finally
                     {
                         pendingJSONs.Remove(element);
                     }
-                    
+
                 }
             }
 
@@ -226,7 +235,7 @@ namespace Client
                     stackp_WindowsList.ToolTip = "The connection was lost unespectedly.";
                 }
                 mitem_disconnect.Visibility = Visibility.Collapsed;
-                if(mitem_reconnect.IsEnabled)
+                if (mitem_reconnect.IsEnabled)
                     mitem_reconnect.IsEnabled = false;
                 mitem_close.Visibility = Visibility.Visible;
                 _stopWatch.Stop();
@@ -272,11 +281,11 @@ namespace Client
                     _openWindows.Clear();
                     listBox_OpenWindows.Items.Clear();
                 }
-                if(mitem_disconnect.Visibility == Visibility.Collapsed)
+                if (mitem_disconnect.Visibility == Visibility.Collapsed)
                     mitem_disconnect.Visibility = Visibility.Visible;
                 if (mitem_reconnect.IsEnabled)
                     mitem_reconnect.IsEnabled = false;
-                if(mitem_close.Visibility == Visibility.Visible)
+                if (mitem_close.Visibility == Visibility.Visible)
                     mitem_close.Visibility = Visibility.Collapsed;
                 _stopWatch.Start(); //faccio ripartire il timer del tempo
                 _timer.Start();
@@ -304,7 +313,8 @@ namespace Client
                 }
                 CurrentlyOnFocus = null;
             }
-            else if (value.Equals("SocketClosedByUs") || value.Equals("GenericException")) {
+            else if (value.Equals("SocketClosedByUs") || value.Equals("GenericException"))
+            {
                 //abbiamo ricevuto un json con dimensione brutta, chiuso il socket
                 //mettiamo una icona con ! e lasciamo all'utente la possibilità di riconnettersi
                 img_ConnectionStatus.Source = new BitmapImage(_uriDisconnectedByUs);
@@ -320,7 +330,7 @@ namespace Client
                     {
                         RemoveFromAllProcessesList(v.ProcName);
                         v.ConvertToGrayscale();
-                        if(value.Equals("SocketClosedByUs"))
+                        if (value.Equals("SocketClosedByUs"))
                             stackp_WindowsList.ToolTip = "Socket was closed due to an exception on the json length.";
                         else
                             stackp_WindowsList.ToolTip = "Socket was closed due to a generic exception. See debug for more details.";
@@ -345,7 +355,7 @@ namespace Client
                         _parent.AllProcesses.Remove(procName);
                     }
                     else*/
-                    if(values.Contains(this)) values.Remove(this);
+                    if (values.Contains(this)) values.Remove(this);
                 }
             }
         }
@@ -359,7 +369,7 @@ namespace Client
                 {   //aggiungo questo server alla lista solo se non è già presente (nel caso ci fossero due finestre che si riferiscono
                     //allo stesso processo
                     Debug.Assert(values != null);
-                    if(!values.Contains(this))
+                    if (!values.Contains(this))
                         values.Add(this);
                 }
             }
@@ -411,11 +421,13 @@ namespace Client
             }
         }
 
-        private void RecomputeFocusPercentage() {
+        private void RecomputeFocusPercentage()
+        {
             //DateTime now = DateTime.Now;  //ottengo l'ora attuale
             TimeSpan focusTimeOfAll = TimeSpan.Zero;
-            
-            if (_hasLostFocus != null) {
+
+            if (_hasLostFocus != null)
+            {
                 //ottengo TimeSpan da Now-TempoDiConnessione, con l'uguale in realtà aggiungo
                 //_hasLostFocus.FocusTime = now.Subtract(_lastFocusUpdate);
                 //Debug.WriteLine("_hasLostFocus.FocusTime: {0}", _hasLostFocus.FocusTime.ToString(@"ss\.fff"));
@@ -429,7 +441,8 @@ namespace Client
                 {
                     focusTimeOfAll = focusTimeOfAll.Add(item.FocusTime);
                 }
-                foreach (var item in _openWindows.Values) {
+                foreach (var item in _openWindows.Values)
+                {
                     item.ComputeFocusPercentage(focusTimeOfAll);
                 }
             }
@@ -483,7 +496,7 @@ namespace Client
 
         private void mitem_disconnect_Click(object sender, RoutedEventArgs e)
         {
-            if(_timer.IsEnabled)
+            if (_timer.IsEnabled)
                 _timer.Stop();
             if (_stopWatch.IsRunning)
                 _stopWatch.Stop();
@@ -507,7 +520,7 @@ namespace Client
         {
             listBox_OpenWindows.Visibility = Visibility.Collapsed;
             gif_retrievingList.Visibility = Visibility.Visible;
-            stackp_WindowsList.ToolTip = Msg_RetrievingList(); 
+            stackp_WindowsList.ToolTip = Msg_RetrievingList();
             try
             {
                 ImageBehavior.SetAnimatedSource(gif_retrievingList, new BitmapImage(_uriRetrieving));

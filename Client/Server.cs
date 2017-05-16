@@ -24,7 +24,8 @@ namespace Client
         private ServerElement _parentGUIElement;
         private ManualResetEvent CloseEvent = new ManualResetEvent(false); //permette di fermare la ricezione
 
-        public DateTime ConnectionTime {
+        public DateTime ConnectionTime
+        {
             get { return _connectionTime; }
         }
 
@@ -46,7 +47,8 @@ namespace Client
             set;
         }
 
-        public void SetGUIParentElement(ServerElement srv) {
+        public void SetGUIParentElement(ServerElement srv)
+        {
             _parentGUIElement = srv;
         }
 
@@ -56,7 +58,8 @@ namespace Client
             _port = port;
         }
 
-        public string GetAddress() {
+        public string GetAddress()
+        {
             return _address;
         }
 
@@ -83,12 +86,12 @@ namespace Client
             }
             catch (SocketException se)
             {   //An error occurred when attempting to access the socket.
-                if(_socket != null) _socket.Close();
+                if (_socket != null) _socket.Close();
                 return Task.FromResult(se.Message);
             }
             catch (ObjectDisposedException ode)
             {   //The Socket has been closed
-                if (_socket != null) _socket.Close(); 
+                if (_socket != null) _socket.Close();
                 return Task.FromResult(ode.Message);
             }
             catch (Exception e)
@@ -100,7 +103,8 @@ namespace Client
             return Task.FromResult("Connected");
         }
 
-        private string TryReconnect() {
+        private string TryReconnect()
+        {
             bool tryAgain = true;
             string msg;
 #if (DEBUG)
@@ -139,7 +143,7 @@ namespace Client
 #if (DEBUG)
                     Debug.WriteLine("TryReconnect: ObjectDisposedException");
 #endif
-                    tryAgain = true; 
+                    tryAgain = true;
                 }
                 catch (Exception)
                 {
@@ -186,7 +190,7 @@ namespace Client
                 int length;
                 int totalRead;
                 int read;
-                Action<string> addToList = _parentGUIElement.pendingJSONs.Add;   
+                Action<string> addToList = _parentGUIElement.pendingJSONs.Add;
 
                 while (!CloseEvent.WaitOne(0))
                 {//ciclo fino a quando ricevo uno stop dall'esterno oppure ottengo un errore dal socket
@@ -200,7 +204,8 @@ namespace Client
                         {
                             Thread.Sleep(1);
                         }
-                        else */if ((read = nws.Read(bufferLength, 0, 4)) >= 0)
+                        else */
+                        if ((read = nws.Read(bufferLength, 0, 4)) >= 0)
                         {
                             if (read == 0)
                             {//il server ha chiuso la connessione, non ha senso riconnettersi perchè ha proprio fatto socket close
@@ -249,7 +254,8 @@ namespace Client
                         _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "IOException");
                         nws.Dispose();
                         String msg = TryReconnect();
-                        if (msg.Equals("ReconnectionLimitExceeded")) {
+                        if (msg.Equals("ReconnectionLimitExceeded"))
+                        {
                             _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "ReconnectionLimitExceeded");
                             CloseEvent.Set();
                             break;
@@ -262,7 +268,8 @@ namespace Client
                             continue;
                         }
                     }
-                    catch (ObjectDisposedException ode) {
+                    catch (ObjectDisposedException ode)
+                    {
                         Debug.WriteLine("Connessione chiusa per objectDisposed:" + MsgException);
                         MsgException = ode.Message;
                         _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "ObjectDisposedException");
@@ -297,7 +304,7 @@ namespace Client
             {
                 MsgException = e.Message;
 #if(DEBUG)
-                Debug.WriteLine("Eccezione nel try-catch esterno: {0}",MsgException);
+                Debug.WriteLine("Eccezione nel try-catch esterno: {0}", MsgException);
 #endif
                 _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "GenericException");
             }
@@ -312,7 +319,8 @@ namespace Client
             return;
         }
 
-        public void StopReceive() {
+        public void StopReceive()
+        {
             CloseEvent.Set();
         }
 
@@ -330,7 +338,7 @@ namespace Client
                 byte[] concatBuffer;
                 int totalWritten;
                 int written;
-                
+
 
                 while (!CloseEvent.WaitOne(0))
                 {//ciclo fino a quando ricevo uno stop dall'esterno oppure ottengo un errore dal socket
@@ -391,7 +399,7 @@ namespace Client
                             continue;
                         }
                     }
-                    catch(Exception)
+                    catch (Exception)
                     {
                         _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "GenericException");
                         CloseEvent.Set();

@@ -81,7 +81,8 @@ namespace Client
             if (!IconaBase64.Equals(""))    //i json successivi al NewWindow non avranno l'icona, quindi arriverà una stringa vuota
             {
                 Icona = Base64ToBitmapImage(IconaBase64);
-                img_OpenWindowIcon.Source = Icona;
+                if(Icona != null)
+                    img_OpenWindowIcon.Source = Icona;
             }
 
             txtb_ProcessName.Text = WinName;
@@ -131,19 +132,27 @@ namespace Client
         }
 
         //converte da base64 a Image
-        public static BitmapImage Base64ToBitmapImage(string base64String)
+        public BitmapImage Base64ToBitmapImage(string base64String)
         {
             // Convert base 64 string to byte[]
             byte[] imageBytes = Convert.FromBase64String(base64String);
             // Convert byte[] to Image
-            using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
+            try {
+                using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
+                {
+                    BitmapImage bmpimg = new BitmapImage();
+                    bmpimg.BeginInit();
+                    bmpimg.CacheOption = BitmapCacheOption.OnLoad;
+                    bmpimg.StreamSource = ms;
+                    bmpimg.EndInit();
+                    return bmpimg;
+                }
+            }catch(Exception e)
             {
-                BitmapImage bmpimg = new BitmapImage();
-                bmpimg.BeginInit();
-                bmpimg.CacheOption = BitmapCacheOption.OnLoad;
-                bmpimg.StreamSource = ms;
-                bmpimg.EndInit();
-                return bmpimg;
+#if (DEBUG)
+                Debug.WriteLine("Base64ToBitmapImage: " + e.Message);
+#endif
+                return null;
             }
         }
 
@@ -155,52 +164,56 @@ namespace Client
             {
                 grid.PreviewMouseRightButtonDown -= grid_PreviewMouseRightButtonDown;
             }
-            //ottengo l'icona dal base64 (perchè ha le trasparenze)
-            byte[] imageBytes = Convert.FromBase64String(_base64string);
-            System.Drawing.Image image;
-            using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
-            {
-                image = System.Drawing.Image.FromStream(ms);
-            }
-            
-            System.Drawing.Bitmap grayscaleImage = new System.Drawing.Bitmap(image.Width, image.Height, image.PixelFormat);
 
-            // Create the ImageAttributes object and apply the ColorMatrix
-            System.Drawing.Imaging.ImageAttributes attributes = new System.Drawing.Imaging.ImageAttributes();
-            System.Drawing.Imaging.ColorMatrix grayscaleMatrix = new System.Drawing.Imaging.ColorMatrix(new float[][]{
+            if (Icona != null)
+            {
+                //ottengo l'icona dal base64 (perchè ha le trasparenze)
+                byte[] imageBytes = Convert.FromBase64String(_base64string);
+                System.Drawing.Image image;
+                using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
+                {
+                    image = System.Drawing.Image.FromStream(ms);
+                }
+
+                System.Drawing.Bitmap grayscaleImage = new System.Drawing.Bitmap(image.Width, image.Height, image.PixelFormat);
+
+                // Create the ImageAttributes object and apply the ColorMatrix
+                System.Drawing.Imaging.ImageAttributes attributes = new System.Drawing.Imaging.ImageAttributes();
+                System.Drawing.Imaging.ColorMatrix grayscaleMatrix = new System.Drawing.Imaging.ColorMatrix(new float[][]{
         new float[] {0.299f, 0.299f, 0.299f, 0, 0},
         new float[] {0.587f, 0.587f, 0.587f, 0, 0},
         new float[] {0.114f, 0.114f, 0.114f, 0, 0},
         new float[] {     0,      0,      0, 1, 0},
         new float[] {     0,      0,      0, 0, 1}
         });
-            attributes.SetColorMatrix(grayscaleMatrix);
+                attributes.SetColorMatrix(grayscaleMatrix);
 
-            // Use a new Graphics object from the new image.
-            using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(grayscaleImage))
-            {
-                // Draw the original image using the ImageAttributes created above.
-                g.DrawImage(image,
-                            new System.Drawing.Rectangle(0, 0, grayscaleImage.Width, grayscaleImage.Height),
-                            0, 0, grayscaleImage.Width, grayscaleImage.Height,
-                            System.Drawing.GraphicsUnit.Pixel,
-                            attributes);
-            }
+                // Use a new Graphics object from the new image.
+                using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(grayscaleImage))
+                {
+                    // Draw the original image using the ImageAttributes created above.
+                    g.DrawImage(image,
+                                new System.Drawing.Rectangle(0, 0, grayscaleImage.Width, grayscaleImage.Height),
+                                0, 0, grayscaleImage.Width, grayscaleImage.Height,
+                                System.Drawing.GraphicsUnit.Pixel,
+                                attributes);
+                }
 
-            //cast da Bitmap a BitmapImage
-            using (var memory = new MemoryStream())
-            {
-                grayscaleImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
-                memory.Position = 0;
+                //cast da Bitmap a BitmapImage
+                using (var memory = new MemoryStream())
+                {
+                    grayscaleImage.Save(memory, System.Drawing.Imaging.ImageFormat.Png);
+                    memory.Position = 0;
 
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.StreamSource = memory;
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.EndInit();
 
-                //imposto l'icona in scala di grigi
-                img_OpenWindowIcon.Source = bitmapImage;
+                    //imposto l'icona in scala di grigi
+                    img_OpenWindowIcon.Source = bitmapImage;
+                }
             }
             //porto i testi in grigio
             txtb_ProcessName.Foreground = Brushes.Gray;

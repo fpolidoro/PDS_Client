@@ -72,7 +72,7 @@ namespace Client
         {
             ServerList = new AsyncObservableCollection<ServerElement>();
             _serverAddressList = new LinkedList<string>();
-            AllProcesses = new ObservableConcurrentDictionary<string, ObservableCollection<ServerElement>>(); 
+            AllProcesses = new ObservableConcurrentDictionary<string, ObservableCollection<ServerElement>>();
             WindowsToShow = new ObservableCollection<ElementToShow>();
             InitializeComponent();
             ic_serverElements.ItemsSource = ServerList;
@@ -145,43 +145,48 @@ namespace Client
          */
         public void AllProcessesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-                ObservableCollection<ServerElement> values = new ObservableCollection<ServerElement>();
-                foreach (var v in AllProcesses.Keys)
+            ObservableCollection<ServerElement> values = new ObservableCollection<ServerElement>();
+            foreach (var v in AllProcesses.Keys)
+            {
+                if (AllProcesses.TryGetValue(v, out values))
                 {
-                    if (AllProcesses.TryGetValue(v, out values))
+                    if (values.Count > 0)//se ho almeno due elementi, aggiungo il nome processo alla lista
                     {
-                        if (values.Count > 0)//se ho almeno due elementi, aggiungo il nome processo alla lista
+                        //estraggo l'icona
+                        var win = values[0].OpenWindowsValues.FirstOrDefault(p => p.ProcName.Equals(v));
+                        Debug.Assert(win != null);
+                        ElementToShow el = new ElementToShow(v, win.Icona);
+                        if (!WindowsToShow.Any(p => p.ProcName.Equals(v)))
                         {
-                            //estraggo l'icona
-                            var win = values[0].OpenWindowsValues.FirstOrDefault(p => p.ProcName.Equals(v));
-                            Debug.Assert(win != null);
-                            ElementToShow el = new ElementToShow(v, win.Icona);
-                            if (!WindowsToShow.Any(p => p.ProcName.Equals(v)))
-                            {
                             var le = new ElementToShow(v, win.Icona);    //necessario perchè non posso aggiungere lo stesso elemento wpf due volte (altrimenti System.InvalidOperationException - Element already has a logical parent)
                             WindowsToShow.Add(el);
-                                listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Add(el);
-                                listBoxWButtons_activeProcesses.listBox_showAllProcesses.Items.Add(le);
-                            }
-                    }else
+                            listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Add(el);
+                            listBoxWButtons_activeProcesses.listBox_showAllProcesses.Items.Add(le);
+                        }
+                    }
+                    else
                     {
                         var el = WindowsToShow.FirstOrDefault(p => p.ProcName.Equals(v));
                         if (el != null)
                         {
-                            var le = WindowsToShow.FirstOrDefault(p => p.ProcName.Equals(v)); //necessario perchè non posso aggiungere lo stesso elemento wpf due volte
                             WindowsToShow.Remove(el);
                             listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Remove(el);
-                            listBoxWButtons_activeProcesses.listBox_showAllProcesses.Items.Remove(le);
+                            foreach (ElementToShow ets in listBoxWButtons_activeProcesses.listBox_showAllProcesses.Items)
+                                if (ets.ProcName.Equals(el.ProcName))
+                                {
+                                    listBoxWButtons_activeProcesses.listBox_showAllProcesses.Items.Remove(ets);
+                                    break;
+                                }
                         }
                     }
-                    }
                 }
+            }
 #if (DEBUG)
-                Debug.WriteLine("WindowsToShow: " + listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Count);
-                foreach (var v in WindowsToShow)
-                {
-                    Debug.WriteLine(" -" + v.ProcName);
-                }
+            Debug.WriteLine("WindowsToShow: " + listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Count);
+            foreach (var v in WindowsToShow)
+            {
+                Debug.WriteLine(" -" + v.ProcName);
+            }
 #endif
         }
 
@@ -227,7 +232,7 @@ namespace Client
                 Debug.Assert(servers != null, "list 'servers' is NULL!");
                 foreach (ServerElement v in servers)
                 {
-                    v.SendKeyCombo(json);
+                    v.SendKeyCombo(keys);
                 }
             }
             else MessageBox.Show("Occorre selezionare un processo per poter inviare la combinazione di tasti", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
