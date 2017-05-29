@@ -65,23 +65,23 @@ namespace Client
             //questo trova tutte le combinazioni eccetto alt+modificatore+qualcosa, alt+qualcosa
             if ((e.KeyboardDevice.Modifiers & (ModifierKeys.Alt)) == ModifierKeys.Alt)
                 if (!_keys.Contains("ALT")) { _keys.Add("ALT");
-                    _keyCodes.Add((int)key);
+                    _keyCodes.Add(KeyInterop.VirtualKeyFromKey(key));
                 }
             if ((e.KeyboardDevice.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
                 if (!_keys.Contains("CTRL"))
                 {
                     _keys.Add("CTRL");
-                    _keyCodes.Add((int)key);
+                    _keyCodes.Add(KeyInterop.VirtualKeyFromKey(key));
                 }
             if ((e.KeyboardDevice.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
-                if (!_keys.Contains("SHIFT")) { _keys.Add("SHIFT"); _keyCodes.Add((int)key); }
+                if (!_keys.Contains("SHIFT")) { _keys.Add("SHIFT"); _keyCodes.Add(KeyInterop.VirtualKeyFromKey(key)); }
             if ((e.KeyboardDevice.Modifiers & ModifierKeys.Windows) == ModifierKeys.Windows)
-                if (!_keys.Contains("WINDOWS")) { _keys.Add("WINDOWS"); _keyCodes.Add((int)key); }
+                if (!_keys.Contains("WINDOWS")) { _keys.Add("WINDOWS"); _keyCodes.Add(KeyInterop.VirtualKeyFromKey(key)); }
 
             if (e.SystemKey == Key.F10) //questo trova quando premo F10, che è una special key per windows
             {
                     keyString = e.SystemKey.ToString();
-                    keyValue = (int)key;
+                    keyValue = KeyInterop.VirtualKeyFromKey(key);
                     Debug.WriteLine("F10 pressed");
             }
 
@@ -93,31 +93,31 @@ namespace Client
                     e.Handled = true;
                 keyString = key.ToString();
                 if (_altKeyPressed) _altKeyPressed = false;
-                keyValue = (int)key;
+                keyValue = KeyInterop.VirtualKeyFromKey(key);
             }
             else if (DigitKeys.Contains(key)) //ho premuto un numero
             {
                 if (e.Key.ToString().Contains("D"))
                     keyString = key.ToString().Replace("D", string.Empty);
                 else keyString = key.ToString().Replace("NumPad", string.Empty);
-                keyValue = (int)key;
+                keyValue = KeyInterop.VirtualKeyFromKey(key);
                 if (_altKeyPressed) _altKeyPressed = false;
             }
             else if (FunctionKeys.Contains(key)) //ho premuto un tasto tra F1 ed F12
             {
                 keyString = key.ToString();
-                keyValue = (int)key;
+                keyValue = KeyInterop.VirtualKeyFromKey(key);
                 if (_altKeyPressed) _altKeyPressed = false;
             }
             else if (WinKeys.Contains(key)) {   //ho premuto WINDOWS
                 if (!_keys.Contains("WINDOWS")) { _keys.Add("WINDOWS");
-                    keyValue = (int)key;
+                    keyValue = KeyInterop.VirtualKeyFromKey(key);
                 }
             }
             else if (!ModKeys.Contains(key))//ho premuto una lettera
             {
                 keyString = key.ToString();
-                keyValue = (int)key;
+                keyValue = KeyInterop.VirtualKeyFromKey(key);
                 if (_altKeyPressed) _altKeyPressed = false;
             }
             else e.Handled = true;

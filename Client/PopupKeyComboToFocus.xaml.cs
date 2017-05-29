@@ -56,13 +56,13 @@ namespace Client
             if (e.SystemKey == Key.F10) //questo trova quando premo F10, che è una special key per windows
             {
                 keyString = e.SystemKey.ToString();
-                keyValue = (int)key;
+                keyValue = KeyInterop.VirtualKeyFromKey(key);
                 Debug.WriteLine("F10 pressed");
             }
             else if (!ModKeys.Contains(key))//ho premuto una lettera
             {
                 keyString = key.ToString();
-                keyValue = (int)key;
+                keyValue = KeyInterop.VirtualKeyFromKey(key);
             }
             else e.Handled = true;
 
@@ -104,9 +104,9 @@ namespace Client
 
         private void btn_Send_Click(object sender, RoutedEventArgs e)
         {
-            if (btn_ctrl.IsChecked == true) _keyCodes.Insert(0, (int)Key.LeftCtrl);
-            if (btn_alt.IsChecked == true) _keyCodes.Insert(0, (int)Key.LeftAlt);
-            if (btn_shift.IsChecked == true) _keyCodes.Insert(0, (int)Key.LeftShift);
+            if (btn_ctrl.IsChecked == true) _keyCodes.Insert(0, KeyInterop.VirtualKeyFromKey(Key.LeftCtrl));
+            if (btn_alt.IsChecked == true) _keyCodes.Insert(0, KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+            if (btn_shift.IsChecked == true) _keyCodes.Insert(0, KeyInterop.VirtualKeyFromKey(Key.LeftShift));
             if (btn_win.IsChecked == true) _keyCodes.Insert(0, (int)Key.LWin);
 
 #if(DEBUG)
@@ -122,7 +122,7 @@ namespace Client
         private void btn_sendALTF4_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
             keys.Add((int)Key.F4);
 
             var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
@@ -141,8 +141,8 @@ namespace Client
         private void btn_sendAltTab_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
 
             var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
             string json = JsonConvert.SerializeObject(kmsg);
@@ -160,9 +160,9 @@ namespace Client
         private void btn_sendAltTabRight_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
-            keys.Add((int)Key.Right);
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Right));
 
             var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
             string json = JsonConvert.SerializeObject(kmsg);
@@ -180,9 +180,9 @@ namespace Client
         private void btn_sendAltTabLeft_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
-            keys.Add((int)Key.Left);
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Left));
 
             var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
             string json = JsonConvert.SerializeObject(kmsg);

@@ -271,8 +271,8 @@ namespace Client
         private void btn_sendALTF4_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.F4);
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.F4));
 
             Send(keys);
         }
@@ -280,8 +280,8 @@ namespace Client
         private void btn_sendAltTab_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
 
             Send(keys);
         }
@@ -289,9 +289,9 @@ namespace Client
         private void btn_sendAltTabRight_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
-            keys.Add((int)Key.Right);
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Right));
 
             Send(keys);
         }
@@ -299,9 +299,9 @@ namespace Client
         private void btn_sendAltTabLeft_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add((int)Key.LeftAlt);
-            keys.Add((int)Key.Tab);
-            keys.Add((int)Key.Left);
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Left));
 
             Send(keys);
         }

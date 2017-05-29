@@ -151,15 +151,21 @@ namespace Client
                                 CurrentlyOnFocus = winToUpdate;
                             }
                             if (winToUpdate.Status == OpenWindow.UpdateType.Closed)
-                            {
+                            {   
+                                //la rimuovo dalla lista generale dei processi attivi
+                                if (_openWindows.Values.Count(p => p.ProcName.Equals(winToUpdate.ProcName)) < 2)
+                                {
+                                    Debug.WriteLine("Count: " + _openWindows.Values.Count(p => p.ProcName.Equals(winToUpdate.ProcName)));
+                                    RemoveFromAllProcessesList(winToUpdate.ProcName);
+                                }
+
                                 listBox_OpenWindows.Items.Remove(winToUpdate);
                                 _openWindows.Remove(winToUpdate.WindowID);
                                 if (CurrentlyOnFocus.WindowID == winToUpdate.WindowID)
                                 {  //la finestra che sto chiudendo era currently on focus
                                     CurrentlyOnFocus = null;
                                 }
-                                //la rimuovo dalla lista generale dei processi attivi
-                                RemoveFromAllProcessesList(winToUpdate.ProcName);
+
                             }
 
                         }

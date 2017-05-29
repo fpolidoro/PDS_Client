@@ -45,13 +45,13 @@ namespace Client
             if (e.SystemKey == Key.F10) //questo trova quando premo F10, che è una special key per windows
             {
                 keyString = e.SystemKey.ToString();
-                keyValue = (int)key;
+                keyValue = KeyInterop.VirtualKeyFromKey(key);
                 Debug.WriteLine("F10 pressed");
             }
             else if (!ModKeys.Contains(key))//ho premuto una lettera
             {
                 keyString = key.ToString();
-                keyValue = (int)key;
+                keyValue = KeyInterop.VirtualKeyFromKey(key);
             }
             else e.Handled = true;
 
@@ -92,9 +92,9 @@ namespace Client
 
         private void btn_Send_Click(object sender, RoutedEventArgs e)
         {
-            if (btn_ctrl.IsChecked == true) _keyCodes.Add((int)Key.LeftCtrl);
-            if (btn_alt.IsChecked == true) _keyCodes.Add((int)Key.LeftAlt);
-            if (btn_shift.IsChecked == true) _keyCodes.Add((int)Key.LeftShift);
+            if (btn_ctrl.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftCtrl));
+            if (btn_alt.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+            if (btn_shift.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftShift));
             if (btn_win.IsChecked == true) _keyCodes.Add((int)Key.LWin);
 #if(DEBUG)
             Debug.WriteLine("_keys:");
