@@ -353,15 +353,15 @@ namespace Client
                             Thread.Sleep(1);
                         }
                         else */
-                        buffer = Encoding.ASCII.GetBytes(json);
-                        bufferLength = BitConverter.GetBytes(json.Length);
+                        
+                        buffer = Encoding.ASCII.GetBytes(json + "\0");
+                        bufferLength = BitConverter.GetBytes(json.Length + 1);
 
                         //concateno il buffer contenente il json al buffer contenente la dimensione del json
                         var s = new MemoryStream();
                         s.Write(bufferLength, 0, bufferLength.Length);
                         s.Write(buffer, 0, buffer.Length);
                         concatBuffer = s.ToArray();
-
                         written = 0;
                         totalWritten = 0;
                         while (totalWritten < buffer.Length)

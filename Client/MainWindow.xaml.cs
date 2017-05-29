@@ -154,14 +154,17 @@ namespace Client
                     {
                         //estraggo l'icona
                         var win = values[0].OpenWindowsValues.FirstOrDefault(p => p.ProcName.Equals(v));
-                        Debug.Assert(win != null);
-                        ElementToShow el = new ElementToShow(v, win.Icona);
-                        if (!WindowsToShow.Any(p => p.ProcName.Equals(v)))
+                        //Debug.Assert(win != null, "Win is NULL!");
+                        if (win != null)
                         {
-                            var le = new ElementToShow(v, win.Icona);    //necessario perchè non posso aggiungere lo stesso elemento wpf due volte (altrimenti System.InvalidOperationException - Element already has a logical parent)
-                            WindowsToShow.Add(el);
-                            listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Add(el);
-                            listBoxWButtons_activeProcesses.listBox_showAllProcesses.Items.Add(le);
+                            ElementToShow el = new ElementToShow(v, win.Icona);
+                            if (!WindowsToShow.Any(p => p.ProcName.Equals(v)))
+                            {
+                                var le = new ElementToShow(v, win.Icona);    //necessario perchè non posso aggiungere lo stesso elemento wpf due volte (altrimenti System.InvalidOperationException - Element already has a logical parent)
+                                WindowsToShow.Add(el);
+                                listBoxWButtons_activeProcesses.listView_focusedProcesses.Items.Add(el);
+                                listBoxWButtons_activeProcesses.listBox_showAllProcesses.Items.Add(le);
+                            }
                         }
                     }
                     else
