@@ -105,11 +105,6 @@ namespace Client
             DisconnectAll = true;
         }
 
-        public void UpdateStatusBar(string status)
-        {
-            //lbl_status.Content = status;
-        }
-
         //Gestore evento di chiusura [X] della MainWindow
         public void OnClose(object sender, CancelEventArgs e)
         {
@@ -134,6 +129,11 @@ namespace Client
 
         private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
+            if(args.NewItems != null)
+            {
+                //qua dovrei mettere la grid e aggiungere colonne righe in base al # di server element
+            }
+
             if (args.OldItems != null)
             {
                 _serverAddressList.RemoveLast();
@@ -232,7 +232,7 @@ namespace Client
                 Debug.Assert(servers != null, "list 'servers' is NULL!");
                 foreach (ServerElement v in servers)
                 {
-                    v.SendKeyCombo(keys);
+                    v.SendKeyCombo(json);
                 }
             }
             else MessageBox.Show("Occorre selezionare un processo per poter inviare la combinazione di tasti", "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);

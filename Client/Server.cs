@@ -328,6 +328,7 @@ namespace Client
         {
 #if (DEBUG)
             Debug.WriteLine("Send è partita.");
+            Debug.WriteLine(json);
 #endif
             Action<string> notifySocketStatus = _parentGUIElement.SocketStatusChanged;
             try

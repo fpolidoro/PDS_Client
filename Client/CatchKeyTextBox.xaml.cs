@@ -135,7 +135,10 @@ namespace Client
                 if (_parent != null) _parent.Send(_keyCodes);
                 else {
                     Debug.Assert(_grandParent != null, "_grandParent is NULL!");
-                    var kmsg = new KeyMessage(null, _keyCodes.Count, _keyCodes.ToArray());
+                    KeyMessage kmsg = new KeyMessage(null, _keyCodes.Count, _keyCodes.ToArray());
+#if (DEBUG)
+                    kmsg.PrintKMsg();
+#endif
                     string json = JsonConvert.SerializeObject(kmsg);
 
                     //controllo che string != null, altrimenti mando un msgBox di errore

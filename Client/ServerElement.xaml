@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:Client"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" MinWidth="200" MinHeight="200">
-    <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Margin="3">
-        <StackPanel Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
-            <DockPanel Height="24">
+    <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Margin="3" Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}" MaxHeight="400">
+        <DockPanel Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}">
+            <DockPanel Height="24" DockPanel.Dock="Top">
                 <Image x:Name="img_ConnectionStatus" Source="imgs/connected16x16.png" Stretch="Fill" Width="16" Height="16" Margin="2,0,0,0"/>
                 <TextBlock x:Name="txtb_serverAddress" TextTrimming="WordEllipsis" Margin="2,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 <Menu x:Name="menu" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="36">
@@ -39,7 +39,7 @@
                     </MenuItem>
                 </Menu>
             </DockPanel>
-            <StackPanel x:Name="stackp_WindowsList"  MinHeight="162" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Margin="2,0,2,2">
+            <Grid x:Name="stackp_WindowsList" DockPanel.Dock="Bottom" MinHeight="162" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Margin="2,0,2,2">
                 <ListBox x:Name="listBox_OpenWindows"  MinHeight="162" Margin="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Visibility="Collapsed" Background="{x:Null}">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="{x:Type ListBoxItem}">
@@ -65,9 +65,8 @@
                         </Style>
                     </ListBox.ItemContainerStyle>
                 </ListBox>
-                <Image x:Name="gif_retrievingList" Stretch="None" Margin="0,74,0,0" MinWidth="32" MinHeight="32" ScrollViewer.VerticalScrollBarVisibility="Disabled" Width="32" Height="32" Source="imgs/32x32_RetrievingList.gif"/>
-            </StackPanel>
-
-        </StackPanel>
-        </Border>
+                <Image x:Name="gif_retrievingList" Stretch="None" Margin="0" MinWidth="32" MinHeight="32" ScrollViewer.VerticalScrollBarVisibility="Disabled" Width="32" Height="32" Source="imgs/32x32_RetrievingList.gif" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
+        </DockPanel>
+    </Border>
 </UserControl>
