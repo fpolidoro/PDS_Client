@@ -64,7 +64,6 @@ namespace Client
         private TimeSpan _hasFocusTime;
         private Stopwatch _focusStopWatch;
         private ServerElement _grandParent;
-        private PopupKeyComboToFocus _pop;
 
         public BitmapImage Icona { get; private set; }
 
@@ -228,7 +227,8 @@ namespace Client
         public void ComputeFocusPercentage(TimeSpan focusTimeOfAll) {
             if (!focusTimeOfAll.Equals(TimeSpan.Zero)) {
                 double focusPercentage = _focusStopWatch.ElapsedMilliseconds / focusTimeOfAll.TotalMilliseconds;
-                txtb_ProcessTimeFocused.Text = focusPercentage.ToString("##0.0#%", CultureInfo.InvariantCulture);
+                if (focusPercentage >= 100.0) txtb_ProcessTimeFocused.Text = "100.0%";
+                txtb_ProcessTimeFocused.Text = focusPercentage.ToString("##0.0%", CultureInfo.InvariantCulture);
                 //Nota: non ho bisogno di moltiplicare per 100 in focusPercentage perchè lo fa già il metodo ToString qui sopra,
                 //grazie al simbolo %: # indica una cifra (se non presente, nulla visualizzato), 0 indica una cifra, se non presente, visualizza 0
                 //Debug.WriteLine(ProcName + ": " + focusPercentage + "*100 = " + focusPercentage*100 + "%");

@@ -132,11 +132,33 @@ namespace Client
             if(args.NewItems != null)
             {
                 //qua dovrei mettere la grid e aggiungere colonne righe in base al # di server element
+                switch(ServerList.Count + args.NewItems.Count){ 
+                    case 2:
+                        stackp_serverGrid.VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Hidden;
+                        break;
+                    /*case 3:
+                        stackp_serverGrid.VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
+                        stackp_serverGrid.MaxHeight = stackp_serverGrid.ActualHeight;
+                        foreach (ServerElement s in ServerList)
+                            s.Height = s.ActualHeight / 2;
+                        break;*/
+                    
+                }
+
             }
 
             if (args.OldItems != null)
             {
                 _serverAddressList.RemoveLast();
+                switch (ServerList.Count - args.OldItems.Count)
+                {
+                    case 2:
+                        stackp_serverGrid.VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Hidden;
+                        break;
+                    case 3:
+                        stackp_serverGrid.VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Visible;
+                        break;
+                }
             }
         }
 
