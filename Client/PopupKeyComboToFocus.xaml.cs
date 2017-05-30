@@ -107,7 +107,7 @@ namespace Client
             if (btn_ctrl.IsChecked == true) _keyCodes.Insert(0, KeyInterop.VirtualKeyFromKey(Key.LeftCtrl));
             if (btn_alt.IsChecked == true) _keyCodes.Insert(0, KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
             if (btn_shift.IsChecked == true) _keyCodes.Insert(0, KeyInterop.VirtualKeyFromKey(Key.LeftShift));
-            if (btn_win.IsChecked == true) _keyCodes.Insert(0, (int)Key.LWin);
+            if (btn_win.IsChecked == true) _keyCodes.Insert(0, KeyInterop.VirtualKeyFromKey(Key.LWin));
 
 #if(DEBUG)
             Debug.WriteLine("_keys:");
@@ -115,7 +115,17 @@ namespace Client
                 Debug.WriteLine(v);
 #endif
             Debug.Assert(_keyCodes.Count <= 5, "La lista contiene più di 5 tasti.");
-            //_srvElement.SendKeyCombo
+            var kmsg = new KeyMessage(null, _keyCodes.Count, _keyCodes.ToArray());
+            string json = JsonConvert.SerializeObject(kmsg);
+
+            //controllo che string != null, altrimenti mando un msgBox di errore
+            if (json == null)
+            {
+                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            _srvElement.SendKeyCombo(json);
             btn_cleanSpecial_Click(null, null);
         }
 
@@ -123,7 +133,7 @@ namespace Client
         {
             List<int> keys = new List<int>();
             keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
-            keys.Add((int)Key.F4);
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.F4));
 
             var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
             string json = JsonConvert.SerializeObject(kmsg);
@@ -200,7 +210,7 @@ namespace Client
         private void btn_sendPrint_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add((int)Key.PrintScreen);
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.PrintScreen));
 
             var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
             string json = JsonConvert.SerializeObject(kmsg);

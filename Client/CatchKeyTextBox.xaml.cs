@@ -61,6 +61,7 @@ namespace Client
             Debug.Assert(_keys != null);
             Key key = (e.Key == Key.System ? e.SystemKey : e.Key);
 
+            /*
             //CASO #1
             //questo trova tutte le combinazioni eccetto alt+modificatore+qualcosa, alt+qualcosa
             if ((e.KeyboardDevice.Modifiers & (ModifierKeys.Alt)) == ModifierKeys.Alt)
@@ -77,7 +78,7 @@ namespace Client
                 if (!_keys.Contains("SHIFT")) { _keys.Add("SHIFT"); _keyCodes.Add(KeyInterop.VirtualKeyFromKey(key)); }
             if ((e.KeyboardDevice.Modifiers & ModifierKeys.Windows) == ModifierKeys.Windows)
                 if (!_keys.Contains("WINDOWS")) { _keys.Add("WINDOWS"); _keyCodes.Add(KeyInterop.VirtualKeyFromKey(key)); }
-
+*/
             if (e.SystemKey == Key.F10) //questo trova quando premo F10, che è una special key per windows
             {
                     keyString = e.SystemKey.ToString();
@@ -109,11 +110,12 @@ namespace Client
                 keyValue = KeyInterop.VirtualKeyFromKey(key);
                 if (_altKeyPressed) _altKeyPressed = false;
             }
-            else if (WinKeys.Contains(key)) {   //ho premuto WINDOWS
-                if (!_keys.Contains("WINDOWS")) { _keys.Add("WINDOWS");
+            /*else if (WinKeys.Contains(key)) {   //ho premuto WINDOWS
+                if (!_keys.Contains("WINDOWS")) { //_keys.Add("WINDOWS");
                     keyValue = KeyInterop.VirtualKeyFromKey(key);
+                    //keyString = key.ToString();
                 }
-            }
+            }*/
             else if (!ModKeys.Contains(key))//ho premuto una lettera
             {
                 keyString = key.ToString();
@@ -124,8 +126,72 @@ namespace Client
 
             if (keyString != null)
             {
-                _keys.Add(keyString);
-                _keyCodes.Add(keyValue);
+                if (Keyboard.IsKeyDown(Key.LeftShift)) {
+                    int k = KeyInterop.VirtualKeyFromKey(Key.LeftShift);
+                    Debug.WriteLine("LShift is down");
+                    if (!_keys.Contains("SHIFT")){
+                        _keyCodes.Add(k);
+                        _keys.Add("SHIFT");
+                    } 
+                }
+                else if (Keyboard.IsKeyDown(Key.RightShift)) {
+                    int k = KeyInterop.VirtualKeyFromKey(Key.RightShift);
+                    if (!_keys.Contains("SHIFT")){
+                        _keys.Add("SHIFT");
+                        _keyCodes.Add(k);
+                    }
+                }
+                if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                {
+                    int k = KeyInterop.VirtualKeyFromKey(Key.LeftCtrl);
+                    if (!_keys.Contains("CTRL")){
+                        _keyCodes.Add(k);
+                        _keys.Add("CTRL");
+                    }     
+                }
+                else if (Keyboard.IsKeyDown(Key.RightCtrl))
+                {
+                    int k = KeyInterop.VirtualKeyFromKey(Key.RightCtrl);
+                    if (!_keys.Contains("CTRL")){
+                        _keyCodes.Add(k);
+                        _keys.Add("CTRL");
+                    }    
+                }
+                if(Keyboard.IsKeyDown(Key.LeftAlt)){
+                    int k = KeyInterop.VirtualKeyFromKey(Key.LeftAlt);
+                    if (!_keys.Contains("ALT")) {
+                        _keyCodes.Add(k);
+                        _keys.Add("ALT");
+                    }
+                        
+                }else if(Keyboard.IsKeyDown(Key.RightAlt))
+                {
+                    int k = KeyInterop.VirtualKeyFromKey(Key.RightAlt);
+                    if (!_keys.Contains("ALT")) {
+                        _keyCodes.Add(k);
+                        _keys.Add("ALT");
+                    }  
+                }
+                if(Keyboard.IsKeyDown(Key.LWin)){
+                    int k = KeyInterop.VirtualKeyFromKey(Key.LWin);
+                    if (!_keys.Contains("WIN")) {
+                        _keys.Add("WIN");
+                        _keyCodes.Add(k);
+                    }     
+                }else if(Keyboard.IsKeyDown(Key.RWin)) {
+                    int k = KeyInterop.VirtualKeyFromKey(Key.RWin);
+                    if (!_keys.Contains("WIN")){
+                        _keyCodes.Add(k);
+                        _keys.Add("WIN");
+                    }
+                }
+
+                if (!_keyCodes.Contains(keyValue))
+                {
+                    _keys.Add(keyString);
+                    _keyCodes.Add(keyValue);
+                }
+
                 txtB_captureKeyCombo.Text = string.Join("+", _keys);
                 foreach (var k in _keyCodes)
                     Debug.Write(k + " ");

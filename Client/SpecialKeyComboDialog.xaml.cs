@@ -95,7 +95,7 @@ namespace Client
             if (btn_ctrl.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftCtrl));
             if (btn_alt.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
             if (btn_shift.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftShift));
-            if (btn_win.IsChecked == true) _keyCodes.Add((int)Key.LWin);
+            if (btn_win.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LWin));
 #if(DEBUG)
             Debug.WriteLine("_keys:");
             foreach (var v in _keys)
