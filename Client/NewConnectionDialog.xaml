@@ -7,12 +7,12 @@
         xmlns:local="clr-namespace:Client"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         mc:Ignorable="d"
-        Title="Connect to new host" Height="280" Width="280" ResizeMode="NoResize" SizeToContent="Height" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" Topmost="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
+        Title="Nuova connessione" Height="280" Width="280" ResizeMode="NoResize" SizeToContent="Height" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" Topmost="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Icon="imgs/client.png">
     <StackPanel x:Name="stackp_Main" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
         <StackPanel Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
             <StackPanel Height="18" MaxHeight="18" MinHeight="18" Panel.ZIndex="1">
                 <Rectangle Fill="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Height="18"  Width="125" Stroke="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Margin="4,0,0,0" HorizontalAlignment="Left"/>
-                <RadioButton x:Name="rdbtn_IPaddress" Content="Use this IP address:" Panel.ZIndex="1" Margin="4,-16,0,0" GroupName="rdgrp_addressType" Checked="rdbtn_IPaddress_Checked"/>
+                <RadioButton x:Name="rdbtn_IPaddress" Content="Usa questo indirizzo IP:" Panel.ZIndex="1" Margin="4,-16,0,0" GroupName="rdgrp_addressType" Checked="rdbtn_IPaddress_Checked"/>
             </StackPanel>
             <Border BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="1" Height="65" Margin="2,-8,2,0" Padding="4,8,4,4">
                 <Grid x:Name="grid_IPaddress">
@@ -24,9 +24,9 @@
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
-                    <Label x:Name="lbl_IPaddress" Content="IP address:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="164"/>
+                    <Label x:Name="lbl_IPaddress" Content="Indirizzo IP:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="164"/>
                     <local:IPTextBox x:Name="iptxt_IPaddress" Address="{Binding AddressInVM}" Grid.Row="1" VerticalAlignment="Top" Width="120" Height="18" Margin="0"/>
-                    <Label x:Name="lbl_IPport" Content="Port:" Grid.Column="1" VerticalAlignment="Top" Height="26" Margin="23,0,0,0"/>
+                    <Label x:Name="lbl_IPport" Content="Porta:" Grid.Column="1" VerticalAlignment="Top" Height="26" Margin="23,0,0,0"/>
                     <local:PortTextBox x:Name="ptxt_IPport" Grid.Column="1" VerticalAlignment="Top" Margin="25,23,0,0" Grid.RowSpan="2"/>
                 </Grid>
             </Border>
@@ -47,9 +47,9 @@
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
-                    <Label x:Name="lbl_DNSaddress" Content="IP address:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="164" Grid.ColumnSpan="2"/>
+                    <Label x:Name="lbl_DNSaddress" Content="Nome dell'host:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="164" Grid.ColumnSpan="2"/>
                     <local:AddressBox x:Name="atxt_DNSaddress" Height="18" VerticalAlignment="Top" Width="120" Grid.Row="1" Margin="0"/>
-                    <Label x:Name="lbl_DNSport" Content="Port:" Grid.Column="1" VerticalAlignment="Top" Height="26" Margin="23,0,0,0" Grid.ColumnSpan="2"/>
+                    <Label x:Name="lbl_DNSport" Content="Porta:" Grid.Column="1" VerticalAlignment="Top" Height="26" Margin="23,0,0,0" Grid.ColumnSpan="2"/>
                     <local:PortTextBox x:Name="ptxt_DNSport" Grid.Column="1" VerticalAlignment="Top" Margin="28,23,0,0" Grid.RowSpan="2" ScrollViewer.VerticalScrollBarVisibility="Disabled" Grid.ColumnSpan="2"/>
                 </Grid>
             </Border>
@@ -68,13 +68,13 @@
         </StackPanel>
         <StackPanel Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" ToolTip="Automatically close this window on successful connection">
             <CheckBox x:Name="chk_closeOnConnected" Margin="2,2,0,2" Checked="chk_closeOnConnected_Checked">
-                <TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="Close on successful connection"/>
+                <TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="Chiudi automaticamente quando connesso"/>
             </CheckBox>
         </StackPanel>
         <StackPanel x:Name="stackp_ConnectAndCancel" Orientation="Horizontal" MinHeight="24" FlowDirection="RightToLeft">
-            <Button x:Name="btn_Connect" Content="Connect" IsDefault="True" Width="60" Margin="2,2,16,2" HorizontalAlignment="Right" Click="btn_Connect_Click"/>
+            <Button x:Name="btn_Connect" Content="Connetti" IsDefault="True" Width="60" Margin="2,2,16,2" HorizontalAlignment="Right" Click="btn_Connect_Click"/>
             <Button x:Name="btn_Ok" Content="Ok" Width="60" Margin="2" Visibility="Collapsed" Click="btn_Ok_Click"/>
-            <Button x:Name="btn_Cancel" Content="Cancel" IsCancel="True" Width="60" HorizontalAlignment="Right" Margin="0,2"/>
+            <Button x:Name="btn_Cancel" Content="Annulla" IsCancel="True" Width="60" HorizontalAlignment="Right" Margin="0,2"/>
         </StackPanel>
     </StackPanel>
 </Window>

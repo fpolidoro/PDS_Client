@@ -167,32 +167,10 @@ namespace Client
             _srvElement.SendKeyCombo(json);
         }
 
-        private void btn_sendAltTabRight_Click(object sender, RoutedEventArgs e)
+        private void btn_sendWinKey_Click(object sender, RoutedEventArgs e)
         {
             List<int> keys = new List<int>();
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Right));
-
-            var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
-            string json = JsonConvert.SerializeObject(kmsg);
-
-            //controllo che string != null, altrimenti mando un msgBox di errore
-            if (json == null)
-            {
-                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            _srvElement.SendKeyCombo(json);
-        }
-
-        private void btn_sendAltTabLeft_Click(object sender, RoutedEventArgs e)
-        {
-            List<int> keys = new List<int>();
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Left));
+            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LWin));
 
             var kmsg = new KeyMessage(null, keys.Count, keys.ToArray());
             string json = JsonConvert.SerializeObject(kmsg);

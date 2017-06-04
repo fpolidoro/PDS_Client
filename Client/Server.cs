@@ -209,7 +209,9 @@ namespace Client
                         {
                             if (read == 0)
                             {//il server ha chiuso la connessione, non ha senso riconnettersi perchè ha proprio fatto socket close
+#if (DEBUG)
                                 Debug.WriteLine("Connessione chiusa gentilmente dalla controparte");
+#endif
                                 _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "SocketGentlyDisposed");
                                 CloseEvent.Set();
                                 //devo ancora specificare un flag per dire che il server si è disconnesso gentilmente e quindi non si
@@ -303,7 +305,7 @@ namespace Client
             catch (Exception e)
             {
                 MsgException = e.Message;
-#if(DEBUG)
+#if (DEBUG)
                 Debug.WriteLine("Eccezione nel try-catch esterno: {0}", MsgException);
 #endif
                 _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "GenericException");
@@ -374,7 +376,9 @@ namespace Client
                     catch (SocketException se) //errore del sistema operativo nel tentare di accedere al socket
                     {   //chiudo tutto e metto in grigio la finestra
                         MsgException = se.Message;
+#if (DEBUG)
                         Debug.WriteLine("Connessione chiusa per SocketException:\n" + MsgException);
+#endif
                         _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "SocketException");
                         CloseEvent.Set();
                         break;
@@ -382,7 +386,9 @@ namespace Client
                     catch (ObjectDisposedException ode)
                     {
                         MsgException = ode.Message;
+#if (DEBUG)
                         Debug.WriteLine("Connessione chiusa per objectDisposed:" + MsgException);
+#endif
                         _parentGUIElement.Dispatcher.BeginInvoke(notifySocketStatus, "ObjectDisposedException");
                         nws.Dispose();
                         String msg = TryReconnect();
@@ -457,7 +463,7 @@ namespace Client
             set;
         }
 
-        #region IDisposable Support
+#region IDisposable Support
         private bool disposedValue = false; // Per rilevare chiamate ridondanti
 
         protected virtual void Dispose(bool disposing)
@@ -494,7 +500,7 @@ namespace Client
             // TODO: rimuovere il commento dalla riga seguente se è stato eseguito l'override del finalizzatore.
             GC.SuppressFinalize(this);
         }
-        #endregion
+#endregion
 
 
     }

@@ -114,6 +114,9 @@
     <Compile Include="SpecialKeyComboDialog.xaml.cs">
       <DependentUpon>SpecialKeyComboDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="InfoWindow.xaml.cs">
+      <DependentUpon>InfoWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="ElementToShow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -170,6 +173,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SpecialKeyComboDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InfoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -312,6 +319,24 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="imgs\errorInImg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\windows_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\PolitoLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\client.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\client16x16.png" />
+    <Resource Include="imgs\client24x24.png" />
+    <Resource Include="imgs\client32x32.png" />
+    <Resource Include="imgs\client64x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="imgs\client.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,27 @@
+﻿<Window x:Class="Client.InfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="Informazioni" Height="200" Width="250" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" ShowInTaskbar="False" Icon="imgs/client.png">
+    <StackPanel HorizontalAlignment="Center" Margin="0,5,0,0">
+        <TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="Client - Server" FontWeight="Bold" HorizontalAlignment="Center" DockPanel.Dock="Top"/>
+        <DockPanel HorizontalAlignment="Center" Width="200">
+            <Image x:Name="image" Height="85" Width="85" VerticalAlignment="Top" HorizontalAlignment="Left" Source="imgs/PolitoLogo.png"/>
+        <StackPanel DockPanel.Dock="Right" VerticalAlignment="Center" HorizontalAlignment="Right" >
+        <TextBlock Text="Autori:" HorizontalAlignment="Center" Margin="0,0" TextDecorations="Underline"/>
+        <TextBlock Text="Fabiola Polidoro" HorizontalAlignment="Center"/>
+            <TextBlock Text="Davide Trenti" HorizontalAlignment="Center"/>
+        </StackPanel>
+        
+        </DockPanel>
+        <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center">
+        <TextBlock Text="Progetto di Programmazione di Sistema" HorizontalAlignment="Center" Margin="0,0"/>
+        <TextBlock Text="Politecnico di Torino" HorizontalAlignment="Center"/>
+        <TextBlock Text="a.a. 2015/2016" HorizontalAlignment="Center"/>
+        </StackPanel>
+
+    </StackPanel>
+</Window>

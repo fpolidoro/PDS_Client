@@ -1,4 +1,4 @@
-﻿#define DEBUG
+﻿//#define DEBUG
 
 using Newtonsoft.Json;
 using System;
@@ -33,7 +33,9 @@ namespace Client
                 _disconnectAll = value;
                 if (value)
                 {
+#if (DEBUG)
                     Debug.WriteLine("MAIN_WINDOW: disconnectAll changed to TRUE");
+#endif
                     OnPropertyChanged("DisconnectAll");
                 }
             }
@@ -101,8 +103,13 @@ namespace Client
 
         private void btn_disconnectAll_Click(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("disconnectAll is TRUE");
-            DisconnectAll = true;
+            if (ServerList.Count != 0)
+            {
+#if (DEBUG)
+                Debug.WriteLine("disconnectAll is TRUE");
+#endif
+                DisconnectAll = true;
+            }
         }
 
         //Gestore evento di chiusura [X] della MainWindow
@@ -120,7 +127,9 @@ namespace Client
         //Ciascun server element si registra qua e ascolta quando viene fatto click
         protected virtual void OnPropertyChanged(string propertyName)
         {
+#if (DEBUG)
             Debug.WriteLine("MAIN_WINDOW: OnPropertyChanged");
+#endif
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
             DisconnectAll = false; //riporto la proprietà a false, perchè ormai l'evento è andato
@@ -221,11 +230,11 @@ namespace Client
         {
             if (ServerList.Count != 0 && ServerList.Count > 3)
             {
-#if(DEBUG)
+#if (DEBUG)
                 Debug.WriteLine("width = " + stackp_serverGrid.ActualWidth + " srv.Count = " + ServerList.Count);
 #endif
                 _cols = (int)Math.Floor(stackp_serverGrid.ActualWidth / (ServerList.Count * 200));
-#if(DEBUG)
+#if (DEBUG)
                 Debug.WriteLine("_cols = {0}", _cols);
 #endif
             }
@@ -273,16 +282,19 @@ namespace Client
 
         private void btn_sendSpecialKey_Click(object sender, RoutedEventArgs e)
         {
-            List<int> keyCodes;
-            var dialog = new SpecialKeyComboDialog(out keyCodes);
-            dialog.ShowDialog();
-            if (keyCodes.Count == 0) return;    //ho chiuso la finestra con [X]
+            if (ServerList.Count != 0)
+            {
+                List<int> keyCodes;
+                var dialog = new SpecialKeyComboDialog(out keyCodes);
+                dialog.ShowDialog();
+                if (keyCodes.Count == 0) return;    //ho chiuso la finestra con [X]
 #if (DEBUG)
-            Debug.WriteLine("MAIN - keys:");
-            foreach (var v in keyCodes)
-                Debug.WriteLine(v);
+                Debug.WriteLine("MAIN - keys:");
+                foreach (var v in keyCodes)
+                    Debug.WriteLine(v);
 #endif
-            Send(keyCodes);
+                Send(keyCodes);
+            }
         }
 
         private void btn_clean_Click(object sender, RoutedEventArgs e)
@@ -292,40 +304,53 @@ namespace Client
 
         private void btn_sendALTF4_Click(object sender, RoutedEventArgs e)
         {
-            List<int> keys = new List<int>();
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.F4));
+            if (ServerList.Count != 0)
+            {
+                List<int> keys = new List<int>();
+                keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+                keys.Add(KeyInterop.VirtualKeyFromKey(Key.F4));
 
-            Send(keys);
+                Send(keys);
+            }
         }
 
         private void btn_sendAltTab_Click(object sender, RoutedEventArgs e)
         {
-            List<int> keys = new List<int>();
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
+            if (ServerList.Count != 0)
+            {
+                List<int> keys = new List<int>();
+                keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+                keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
 
-            Send(keys);
+                Send(keys);
+            }
         }
 
-        private void btn_sendAltTabRight_Click(object sender, RoutedEventArgs e)
+        private void btn_sendWinKey_Click(object sender, RoutedEventArgs e)
         {
-            List<int> keys = new List<int>();
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Right));
+            if (ServerList.Count != 0)
+            {
+                List<int> keys = new List<int>();
+                keys.Add(KeyInterop.VirtualKeyFromKey(Key.LWin));
 
-            Send(keys);
+                Send(keys);
+            }
         }
 
-        private void btn_sendAltTabLeft_Click(object sender, RoutedEventArgs e)
+        private void btn_sendPrintKey_Click(object sender, RoutedEventArgs e)
         {
-            List<int> keys = new List<int>();
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Tab));
-            keys.Add(KeyInterop.VirtualKeyFromKey(Key.Left));
+            if (ServerList.Count != 0)
+            {
+                List<int> keys = new List<int>();
+                keys.Add(KeyInterop.VirtualKeyFromKey(Key.PrintScreen));
+                Send(keys);
+            }
+        }
 
-            Send(keys);
+        private void btn_help_Click(object sender, RoutedEventArgs e)
+        {
+            Window infoDialog = new InfoWindow();
+            infoDialog.ShowDialog();//showDialog fa in modo che la finestra sia modale
         }
     }
 }

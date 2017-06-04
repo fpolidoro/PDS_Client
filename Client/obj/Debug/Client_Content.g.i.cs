@@ -8,6 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/errorinimg.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("imgs/client.ico")]
 
 
