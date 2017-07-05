@@ -61,8 +61,18 @@ namespace Client
                 //e ora ne ho riscritta un'altra
                 if(_keyCodes.Count > 0 || _keys.Count > 0)
                 {
-                    _keys.Clear();
-                    _keyCodes.Clear();
+                    foreach(int k in _keyCodes)
+                    { //elimino dalla lista solo i tasti diversi dai modificatori
+                        if (k != KeyInterop.VirtualKeyFromKey(Key.LeftCtrl) &&
+                            k != KeyInterop.VirtualKeyFromKey(Key.LWin) &&
+                            k != KeyInterop.VirtualKeyFromKey(Key.LeftAlt) &&
+                            k != KeyInterop.VirtualKeyFromKey(Key.LeftShift))
+                        {
+                            int index = _keyCodes.IndexOf(k);
+                            _keys.RemoveAt(index);
+                            _keyCodes.Remove(k);
+                        }
+                    }
                 }
                 _keys.Add(keyString);
                 _keyCodes.Add(keyValue);
@@ -92,10 +102,10 @@ namespace Client
 
         private void btn_Send_Click(object sender, RoutedEventArgs e)
         {
-            if (btn_ctrl.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftCtrl));
+            /*if (btn_ctrl.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftCtrl));
             if (btn_alt.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
             if (btn_shift.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftShift));
-            if (btn_win.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LWin));
+            if (btn_win.IsChecked == true) _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LWin));*/
 #if(DEBUG)
             Debug.WriteLine("_keys:");
             foreach (var v in _keys)
@@ -117,6 +127,78 @@ namespace Client
             {
                 _keys.Clear();
                 _keyCodes.Clear();
+            }
+        }
+
+        private void btn_ctrl_Click(object sender, RoutedEventArgs e)
+        {
+            if (btn_ctrl.IsChecked == true)
+            {
+                if (!_keyCodes.Contains(KeyInterop.VirtualKeyFromKey(Key.LeftCtrl)))
+                    _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftCtrl));
+                else
+                {   //qui non dovrei mai arrivare
+                    _keyCodes.Remove(KeyInterop.VirtualKeyFromKey(Key.LeftCtrl));
+                    _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftCtrl));
+                }
+            }
+            else {
+                if (_keyCodes.Contains(KeyInterop.VirtualKeyFromKey(Key.LeftCtrl)))
+                    _keyCodes.Remove(KeyInterop.VirtualKeyFromKey(Key.LeftCtrl));
+            }
+        }
+
+        private void btn_alt_Click(object sender, RoutedEventArgs e)
+        {
+            if (btn_alt.IsChecked == true)
+            {
+                if (!_keyCodes.Contains(KeyInterop.VirtualKeyFromKey(Key.LeftAlt)))
+                    _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+                else
+                {   //qui non dovrei mai arrivare
+                    _keyCodes.Remove(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+                    _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+                }
+            }
+            else {
+                if (_keyCodes.Contains(KeyInterop.VirtualKeyFromKey(Key.LeftAlt)))
+                    _keyCodes.Remove(KeyInterop.VirtualKeyFromKey(Key.LeftAlt));
+            }
+        }
+
+        private void btn_shift_Click(object sender, RoutedEventArgs e)
+        {
+            if (btn_shift.IsChecked == true)
+            {
+                if (!_keyCodes.Contains(KeyInterop.VirtualKeyFromKey(Key.LeftShift)))
+                    _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftShift));
+                else
+                {   //qui non dovrei mai arrivare
+                    _keyCodes.Remove(KeyInterop.VirtualKeyFromKey(Key.LeftShift));
+                    _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LeftShift));
+                }
+            }
+            else {
+                if (_keyCodes.Contains(KeyInterop.VirtualKeyFromKey(Key.LeftShift)))
+                    _keyCodes.Remove(KeyInterop.VirtualKeyFromKey(Key.LeftShift));
+            }
+        }
+
+        private void btn_win_Click(object sender, RoutedEventArgs e)
+        {
+            if (btn_win.IsChecked == true)
+            {
+                if (!_keyCodes.Contains(KeyInterop.VirtualKeyFromKey(Key.LWin)))
+                    _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LWin));
+                else
+                {   //qui non dovrei mai arrivare
+                    _keyCodes.Remove(KeyInterop.VirtualKeyFromKey(Key.LWin));
+                    _keyCodes.Add(KeyInterop.VirtualKeyFromKey(Key.LWin));
+                }
+            }
+            else {
+                if (_keyCodes.Contains(KeyInterop.VirtualKeyFromKey(Key.LWin)))
+                    _keyCodes.Remove(KeyInterop.VirtualKeyFromKey(Key.LWin));
             }
         }
     }

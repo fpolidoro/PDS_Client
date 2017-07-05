@@ -222,7 +222,9 @@ namespace Client
                             length = BitConverter.ToInt32(bufferLength, 0);
                             if (length < 10000 && length > 0)
                             {
-                                //Debug.WriteLine("length = {0}", length);
+#if (DEBUG)
+                                Debug.WriteLine("length = " + length);
+#endif
                                 buffer = new byte[length];
                                 read = 0;
                                 while (totalRead < buffer.Length)

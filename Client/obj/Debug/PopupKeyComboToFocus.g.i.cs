@@ -288,15 +288,39 @@ namespace Client {
             return;
             case 11:
             this.btn_ctrl = ((System.Windows.Controls.Primitives.ToggleButton)(target));
+            
+            #line 63 "..\..\PopupKeyComboToFocus.xaml"
+            this.btn_ctrl.Click += new System.Windows.RoutedEventHandler(this.btn_ctrl_Click);
+            
+            #line default
+            #line hidden
             return;
             case 12:
             this.btn_alt = ((System.Windows.Controls.Primitives.ToggleButton)(target));
+            
+            #line 64 "..\..\PopupKeyComboToFocus.xaml"
+            this.btn_alt.Click += new System.Windows.RoutedEventHandler(this.btn_alt_Click);
+            
+            #line default
+            #line hidden
             return;
             case 13:
             this.btn_shift = ((System.Windows.Controls.Primitives.ToggleButton)(target));
+            
+            #line 65 "..\..\PopupKeyComboToFocus.xaml"
+            this.btn_shift.Click += new System.Windows.RoutedEventHandler(this.btn_shift_Click);
+            
+            #line default
+            #line hidden
             return;
             case 14:
             this.btn_win = ((System.Windows.Controls.Primitives.ToggleButton)(target));
+            
+            #line 66 "..\..\PopupKeyComboToFocus.xaml"
+            this.btn_win.Click += new System.Windows.RoutedEventHandler(this.btn_win_Click);
+            
+            #line default
+            #line hidden
             return;
             case 15:
             this.txtB_GetKey = ((System.Windows.Controls.TextBox)(target));

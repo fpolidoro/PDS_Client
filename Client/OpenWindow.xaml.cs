@@ -146,7 +146,7 @@ namespace Client
                     bmpimg.EndInit();
                     return bmpimg;
                 }
-            }catch(Exception)
+            }catch(Exception e)
             {
 #if (DEBUG)
                 Debug.WriteLine("Base64ToBitmapImage: " + e.Message);

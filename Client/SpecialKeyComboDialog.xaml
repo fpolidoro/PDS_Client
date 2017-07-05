@@ -35,10 +35,10 @@
 
     <DockPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" >
         <StackPanel DockPanel.Dock="Top"  Orientation="Horizontal" Height="62" Margin="5" Background="White" HorizontalAlignment="Center">
-            <ToggleButton x:Name="btn_ctrl" Content="CTRL" Width="60" Height="22" Background="{x:Null}" Margin="8,0,2,0"/>
-            <ToggleButton x:Name="btn_alt" Content="ALT" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
-            <ToggleButton x:Name="btn_shift" Content="SHIFT" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
-            <ToggleButton x:Name="btn_win" Content="WIN" Width="60" Height="22" Background="{x:Null}" Margin="2,0"/>
+            <ToggleButton x:Name="btn_ctrl" Content="CTRL" Width="60" Height="22" Background="{x:Null}" Margin="8,0,2,0" Click="btn_ctrl_Click"/>
+            <ToggleButton x:Name="btn_alt" Content="ALT" Width="60" Height="22" Background="{x:Null}" Margin="2,0" Click="btn_alt_Click"/>
+            <ToggleButton x:Name="btn_shift" Content="SHIFT" Width="60" Height="22" Background="{x:Null}" Margin="2,0" Click="btn_shift_Click"/>
+            <ToggleButton x:Name="btn_win" Content="WIN" Width="60" Height="22" Background="{x:Null}" Margin="2,0" Click="btn_win_Click"/>
             <TextBox x:Name="txtB_GetKey" DockPanel.Dock="Bottom" Height="22" Width="110" Margin="2,0,8,0" PreviewKeyDown="txtB_GetKey_PreviewKeyDown">
                 <TextBox.ContextMenu>
                     <ContextMenu x:Name="cntxtMenu_captureKeyCombo" Visibility="Hidden" IsEnabled="False"/>
