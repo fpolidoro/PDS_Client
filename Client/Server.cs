@@ -231,9 +231,11 @@ namespace Client
                                 {
                                     read = nws.Read(buffer, totalRead, buffer.Length - totalRead);
                                     totalRead += read;
-                                    received = Encoding.ASCII.GetString(buffer);
-                                    json.Append(received);
                                 }
+
+                                received = Encoding.ASCII.GetString(buffer);
+                                json.Append(received);
+
                                 _parentGUIElement.Dispatcher.BeginInvoke(addToList, json.ToString());
                                 json.Clear();   //ripulisco la stringa contenente il json
 #if (DEBUG)
@@ -451,6 +453,18 @@ namespace Client
             {
                 _socket.Dispose();
                 _socket.Close();
+            }
+        }
+
+        public void ShutDown() {
+            try {
+                _socket.Shutdown(SocketShutdown.Both);
+            }
+            catch (Exception e)
+            {
+#if (DEBUG)
+                Debug.WriteLine("Exception in ShutDown():\n" + e);
+#endif
             }
         }
 

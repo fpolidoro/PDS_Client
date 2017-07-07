@@ -46,7 +46,7 @@
                     <TabItem.Header>
                     <Menu Background="#FF80397B" BorderBrush="#FF80397B" >
                         <MenuItem Header="FILE" Foreground="White">
-                            <MenuItem Header="Quit" Foreground="Black"/>
+                            <MenuItem x:Name="menu_quit"  Header="Quit" Foreground="Black" Click="menu_quit_Click"/>
                         </MenuItem>
                     </Menu>
                 </TabItem.Header>

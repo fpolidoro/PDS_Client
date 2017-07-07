@@ -352,5 +352,15 @@ namespace Client
             Window infoDialog = new InfoWindow();
             infoDialog.ShowDialog();//showDialog fa in modo che la finestra sia modale
         }
+
+        private void menu_quit_Click(object sender, RoutedEventArgs e)
+        {
+            if (ServerList.Count != 0)
+            {
+                DisconnectAll = true;
+            }
+
+            this.Close();
+        }
     }
 }

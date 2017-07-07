@@ -461,6 +461,7 @@ namespace Client
             {   //bottone premuto, disconnetto questo server
                 Debug.WriteLine("SERVER_ELEMENT: OnPropertyChanged stopping the servers");
                 _srv.StopReceive();
+                _srv.ShutDown();
                 _srv.Close();
                 _parent.ServerList.Remove(this);
             }
@@ -515,6 +516,7 @@ namespace Client
             Debug.WriteLine("Receive stopped.");
             _srv.StopReceive();
             Debug.WriteLine("Thread joined.");
+            _srv.ShutDown();
             _srv.Close();
             Debug.WriteLine("_srv closed.");
             //rimuove il server element dalla lista dei server
