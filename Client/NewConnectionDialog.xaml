@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:Client"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         mc:Ignorable="d"
-        Title="Nuova connessione" Height="280" Width="280" ResizeMode="NoResize" SizeToContent="Height" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" Topmost="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Icon="imgs/client.png">
+        Title="Nuova connessione" Height="222" Width="280" ResizeMode="NoResize" SizeToContent="Height" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" Topmost="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Icon="imgs/client.png">
     <StackPanel x:Name="stackp_Main" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
         <StackPanel Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
             <StackPanel Height="18" MaxHeight="18" MinHeight="18" Panel.ZIndex="1">
@@ -55,19 +55,19 @@
             </Border>
         </StackPanel>
         <StackPanel x:Name="stackp_ConnectionStatus" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Margin="3,0" Visibility="Collapsed">
-            <StackPanel x:Name="stackp_ConnectionImgs" Orientation="Horizontal" Height="48" VerticalAlignment="Top" Margin="0">
+           <!--<StackPanel x:Name="stackp_ConnectionImgs" Orientation="Horizontal" Height="48" VerticalAlignment="Top" Margin="0">
                 <Image x:Name="img_client" Source="imgs/48x48_Computer.png" Margin="0"/>
                 <Image x:Name="gif_loading2world" Stretch="None" Height="1" Width="64"/>
                 <Image x:Name="img_world" Width="32" Height="32" Margin="0"/>
                 <Image x:Name="gif_loading2server" Height="1" Stretch="None" Width="64"/>
                 <Image x:Name="img_server" Height="48" Width="48" Margin="0"/>
-            </StackPanel>
+            </StackPanel>-->
             <StackPanel>
                 <TextBlock x:Name="lbl_ConnectionStatus" TextWrapping="Wrap"/>
             </StackPanel>
         </StackPanel>
         <StackPanel Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" ToolTip="Automatically close this window on successful connection">
-            <CheckBox x:Name="chk_closeOnConnected" Margin="2,2,0,2" Checked="chk_closeOnConnected_Checked">
+            <CheckBox x:Name="chk_closeOnConnected" Margin="2,2,0,2" Checked="chk_closeOnConnected_Checked" IsChecked="True">
                 <TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="Chiudi automaticamente quando connesso"/>
             </CheckBox>
         </StackPanel>

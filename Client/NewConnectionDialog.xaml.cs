@@ -30,14 +30,15 @@ namespace Client
         private Int32 _port;
         private string _connectStatus;
         private LinkedList<string> _existingServers;
-
+        
+        /*
         private Uri _uriWorld;
         private Uri _uriCrossedWorld;
         private Uri _uriComputerBN;
         private Uri _uriComputer;
         private Uri _uriLoadCorrect;
         private Uri _uriLoadFailed;
-        private Uri _uriLoading;
+        private Uri _uriLoading;*/
         private Server _srv;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -50,21 +51,21 @@ namespace Client
             _existingServers = existingServers;
             _parentWindow = parentWin;
             InitializeComponent();
-            rdbtn_IPaddress.IsChecked = true;   //altrimenti dà nullRefException perchè il secondo radio non è ancora inizializzato quando il primo viene spuntato
-            btn_Connect.IsEnabled = false;
-            ptxt_DNSport.SetParent(this);
-            ptxt_IPport.SetParent(this);
             iptxt_IPaddress.SetParent(this);
             atxt_DNSaddress.SetParent(this);
+            ptxt_DNSport.SetParent(this);
+            ptxt_IPport.SetParent(this);
             _portIsValid = false;
+            rdbtn_IPaddress.IsChecked = true;   //altrimenti dà nullRefException perchè il secondo radio non è ancora inizializzato quando il primo viene spuntato
+            btn_Connect.IsEnabled = false;
             _connectStatus = "";
-            _uriWorld = new Uri(@"pack://application:,,,/imgs/32x32_world.png");
+            /*_uriWorld = new Uri(@"pack://application:,,,/imgs/32x32_world.png");
             _uriCrossedWorld = new Uri(@"pack://application:,,,/imgs/32x32_worldCrossed.png");
             _uriComputerBN = new Uri(@"pack://application:,,,/imgs/48x48_ComputerBN.png");
             _uriComputer = new Uri(@"pack://application:,,,/imgs/48x48_Computer.png");
             _uriLoadCorrect = new Uri(@"pack://application:,,,/imgs/loadCorrect.gif");
             _uriLoadFailed = new Uri(@"pack://application:,,,/imgs/loadFailed.gif");
-            _uriLoading = new Uri(@"pack://application:,,,/imgs/loadingBar.gif");
+            _uriLoading = new Uri(@"pack://application:,,,/imgs/loadingBar.gif");*/
             iptxt_IPaddress.Focus();
             iptxt_IPaddress.SetFocus();
         }
@@ -88,7 +89,7 @@ namespace Client
             }
             _portIsValid = false;
             btn_Connect.IsEnabled = false;
-
+            ptxt_IPport.txt_port.Text = "27015";
         }
 
         private void rdbtn_DNSaddress_Checked(object sender, RoutedEventArgs e)
@@ -109,6 +110,7 @@ namespace Client
             }
             _portIsValid = false;
             btn_Connect.IsEnabled = false;
+            ptxt_DNSport.txt_port.Text = "27015";
         }
 
         public bool AddressValid
@@ -186,7 +188,7 @@ namespace Client
             }
             else {*/
                 stackp_ConnectionStatus.Visibility = Visibility.Visible;
-                try
+               /* try
                 { //se le immagini non possono essere caricate, non visualizzo il pannello con le immagini
                     img_world.Source = new BitmapImage(_uriWorld);
                     img_server.Source = new BitmapImage(_uriComputerBN);
@@ -196,7 +198,7 @@ namespace Client
                 catch (System.IO.IOException)
                 {
                     stackp_ConnectionImgs.Visibility = Visibility.Collapsed;
-                } 
+                }*/
                 ConnectionLabel = "Connecting";
                 _srv.SetAddressAndPort(_address, _port);
                 //Action<string> actionUpdateStatusBar = _parentWindow.UpdateStatusBar;
@@ -274,7 +276,7 @@ namespace Client
                     if (!_connectStatus.Equals("Connected"))    //la connessione è fallita
                     {   //porto la lbl su rosso e cambio le immaginette
                         lbl_ConnectionStatus.Foreground = Brushes.Red;
-                        try
+                        /*try
                         {
                             if (stackp_ConnectionImgs.Visibility == Visibility.Visible)
                             {
@@ -286,7 +288,7 @@ namespace Client
                         catch (System.IO.IOException)
                         {   //se una delle immaginette non può essere caricata, rendo collapsed il pannello delle imgs
                             stackp_ConnectionImgs.Visibility = Visibility.Collapsed;
-                        }
+                        }*/
                         _srv.IsValid = false;
                     }
                     else
@@ -295,7 +297,7 @@ namespace Client
                         //Metto il colore della lbl a nero
                         if (lbl_ConnectionStatus.Foreground != Brushes.Black)
                             lbl_ConnectionStatus.Foreground = Brushes.Black;
-                        try
+                        /*try
                         {   //imposto le immaginette di connessione avvenuta
                             if (stackp_ConnectionImgs.Visibility == Visibility.Visible)
                             {
@@ -307,7 +309,7 @@ namespace Client
                         catch (System.IO.IOException)
                         {
                             stackp_ConnectionImgs.Visibility = Visibility.Collapsed;
-                        }
+                        }*/
                         //collasso il bottone connect e rendo visibile il bottone ok
                         btn_Connect.Visibility = Visibility.Collapsed;
                         btn_Cancel.Visibility = Visibility.Collapsed;
