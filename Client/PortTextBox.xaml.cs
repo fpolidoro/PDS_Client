@@ -141,7 +141,7 @@ namespace Client
 
         private string Msg_InvalidPort()
         {
-            return "Invalid port. Port number must be a value between 1 and 65535";
+            return "Numero di porta invalido. La porta deve essere un numero tra 1 and 65535";
         }
     }
 }

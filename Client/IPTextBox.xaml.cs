@@ -162,12 +162,12 @@ namespace Client
                 {
                     if (value > 223)
                     {
-                        MessageBox.Show(Msg_AddressNotValid(value), "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show(Msg_AddressNotValid(value), "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
                         currentTextBox.Text = "223";    //sostituisco il valore errato con 223
                     }
                     else if (value == 0)
                     {
-                        MessageBox.Show(Msg_AddressNotValid(value), "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show(Msg_AddressNotValid(value), "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
                         currentTextBox.Text = "1";  //sostituisco lo 0 con 1
                     }
                 }
@@ -175,7 +175,7 @@ namespace Client
                 {   //per gli altri segmenti basta non andare oltre 255
                     if (value > 255)
                     {
-                        MessageBox.Show(Msg_AddressNotValid(value), "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show(Msg_AddressNotValid(value), "Attenzione", MessageBoxButton.OK, MessageBoxImage.Warning);
                         currentTextBox.Text = "255";
                     }
                 }
@@ -281,7 +281,7 @@ namespace Client
 
         private string Msg_AddressNotValid(Int32 value)
         {
-            string msg = String.Format(value.ToString() + " is not a valid value. A value between 1 and 223 must be specified.");
+            string msg = String.Format(value.ToString() + " non è un valore valido. Occorre specificare un numero tra 1 e 223.");
             return msg;
         }
 

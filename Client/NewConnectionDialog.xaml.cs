@@ -184,7 +184,7 @@ namespace Client
                 }
             if (_existingServers.Contains(_address))
             {   //MA devo controllare il caso in cui prima metto l'ip e poi il nome corrispondente allo stesso ip
-                MessageBox.Show(MsgServerAlreadyExisting(_address), "Warning", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show(MsgServerAlreadyExisting(_address), "Attenzione", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             else {
                 stackp_ConnectionStatus.Visibility = Visibility.Visible;
@@ -339,7 +339,7 @@ namespace Client
 
         private string MsgServerAlreadyExisting(string ip)
         {
-            return "Server " + ip + " already exists.";
+            return "Il server " + ip + " esiste già.";
         }
     }
 }

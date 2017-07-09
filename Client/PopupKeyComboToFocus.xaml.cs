@@ -131,7 +131,7 @@ namespace Client
             //controllo che string != null, altrimenti mando un msgBox di errore
             if (json == null)
             {
-                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Errore nella serializzazione del JSON", "Errore interno", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -151,7 +151,7 @@ namespace Client
             //controllo che string != null, altrimenti mando un msgBox di errore
             if (json == null)
             {
-                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Errore nella serializzazione del JSON", "Errore interno", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -170,7 +170,7 @@ namespace Client
             //controllo che string != null, altrimenti mando un msgBox di errore
             if (json == null)
             {
-                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Errore nella serializzazione del JSON", "Errore interno", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -188,7 +188,7 @@ namespace Client
             //controllo che string != null, altrimenti mando un msgBox di errore
             if (json == null)
             {
-                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Errore nella serializzazione del JSON", "Errore interno", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -206,7 +206,7 @@ namespace Client
             //controllo che string != null, altrimenti mando un msgBox di errore
             if (json == null)
             {
-                MessageBox.Show("Error in serializing key combo into JSON", "Internal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Errore nella serializzazione del JSON", "Errore interno", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
