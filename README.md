@@ -1,10 +1,10 @@
 # PDS_Client
 This repository contains the __Client part__ of the school project due for the _Programmazione di Sistema_ class at _Politecnico di Torino_, Master of Science in _Computer Engineering_.
 
+## Requirements
 The project consists in a client-server solution for remote control of one or more Windows machines.
 The system is made of two parts: a server, written in C++, and a client, written in C#.
 
-## Requirements
 ### Server part
 The server shall:
 - [x] expose a socket and listen for a client on a specific port. No security is required for the communication between the two peers.
