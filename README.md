@@ -1,5 +1,7 @@
 # PDS_Client
-This repository contains the __Client part__ of the school project due for the _Programmazione di Sistema_ class at _Politecnico di Torino_, Master of Science in _Computer Engineering_.
+This repository contains the __Client part__ of the school project due for the _Programmazione di Sistema_ class at _Politecnico di Torino_, Master of Science in _Computer Engineering_.  
+
+The __Server part__ can be found [here](https://github.com/fpolidoro/PDS_Server).
 
 ## Requirements
 The project consists in a client-server solution for remote control of one or more Windows machines.
